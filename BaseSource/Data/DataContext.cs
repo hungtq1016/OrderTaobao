@@ -1,9 +1,7 @@
 ﻿
 
-using System.Reflection.Metadata;
 using BaseSource.Configurations;
 using BaseSource.Model;
-using BaseSource.Model.Log;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaseScource.Data
