@@ -7,7 +7,7 @@ namespace BaseSource.Model
     [Table("CUSTOMERS")]
     public class Customer : BaseUser
     {
-        public ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
+        //public ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
 
         [Column("REMEMBER_TOKEN", TypeName = "varchar"), MaxLength(36)]
         public Guid RememberToken { get; set; } 

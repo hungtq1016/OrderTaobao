@@ -12,55 +12,55 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public CustomersController(DataContext context)
+        public CategoriesController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Customers
+        // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-          if (_context.Customers == null)
+          if (_context.Categories == null)
           {
               return NotFound();
           }
-            return await _context.Customers.ToListAsync();
+            return await _context.Categories.ToListAsync();
         }
 
-        // GET: api/Customers/5
+        // GET: api/Categories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(Guid id)
+        public async Task<ActionResult<Category>> GetCategory(Guid id)
         {
-          if (_context.Customers == null)
+          if (_context.Categories == null)
           {
               return NotFound();
           }
-            var customer = await _context.Customers.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
 
-            if (customer == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return customer;
+            return category;
         }
 
-        // PUT: api/Customers/5
+        // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(Guid id, Customer customer)
+        public async Task<IActionResult> PutCategory(Guid id, Category category)
         {
-            if (id != customer.Id)
+            if (id != category.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(customer).State = EntityState.Modified;
+            _context.Entry(category).State = EntityState.Modified;
 
             try
             {
@@ -68,7 +68,7 @@ namespace BaseSource.BackendAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CategoryExists(id))
                 {
                     return NotFound();
                 }
@@ -81,44 +81,44 @@ namespace BaseSource.BackendAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Customers
+        // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-          if (_context.Customers == null)
+          if (_context.Categories == null)
           {
-              return Problem("Entity set 'DataContext.Customers'  is null.");
+              return Problem("Entity set 'DataContext.Categories'  is null.");
           }
-            _context.Customers.Add(customer);
+            _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
 
-        // DELETE: api/Customers/5
+        // DELETE: api/Categories/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(Guid id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            if (_context.Customers == null)
+            if (_context.Categories == null)
             {
                 return NotFound();
             }
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
 
-            _context.Customers.Remove(customer);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CustomerExists(Guid id)
+        private bool CategoryExists(Guid id)
         {
-            return (_context.Customers?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

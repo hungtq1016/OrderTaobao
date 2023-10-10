@@ -6,10 +6,8 @@ namespace BaseSource.Model
     public abstract class BaseEntity
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID", TypeName = "varchar"), MaxLength(36)]
         public Guid Id { get; set; }
-
         [Column("CREATED_AT")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

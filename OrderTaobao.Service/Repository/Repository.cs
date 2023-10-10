@@ -1,4 +1,4 @@
-﻿using BaseScource.Data;
+﻿/*using BaseScource.Data;
 using BaseSource.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,3 +85,4 @@ namespace BaseSource.BackendAPI.Services
         }
     }
 }
+*/

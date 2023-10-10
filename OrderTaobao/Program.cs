@@ -3,6 +3,10 @@ global using BaseSource.Dto;
 global using BaseSource.Model;
 global using Microsoft.EntityFrameworkCore;
 global using BaseSource.BackendAPI.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,11 +17,36 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthenticateRepository, AuthenticateRepository>();
+builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
+//builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+/*builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));*/
+ConfigurationManager configuration = builder.Configuration;
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = configuration["JWT:ValidAudience"],
+            ValidIssuer = configuration["JWT:ValidIssuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]!))
+        };
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,5 +61,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseAuthorization();
 app.Run();
