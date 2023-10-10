@@ -2,44 +2,46 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+using BaseSource.Dto;
+using BaseSource.Model;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Common;
 
-namespace OrderTaobao.Services.Auth
+namespace BaseSource.BackendAPI.Services
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthService : IAuthService
     {
-        private readonly DataContext _context;
-        public static Customer customer = new Customer();
-        public AuthRepository(DataContext context)
+        private readonly IAuthRepository _authRepo;
+        private readonly IRoleRepository _roleRepo;
+        private readonly IRepository<AuthHistory> _historyRepo;
+
+        public AuthService(IAuthRepository authRepo, IRepository<AuthHistory> historyRepo, IRoleRepository roleRepo)
         {
-            _context = context;
+            _authRepo = authRepo;
+            _roleRepo = roleRepo;
+            _historyRepo = historyRepo;
         }
         public async Task<bool> UserExists(string username)
         {
-            if (await _context.Customers.AnyAsync(c => c.UserName == username))
-                return true;
-            else
-                return false;
+            return await _authRepo.UserExists(username);
         }
 
         public async Task<Object> Login(LoginDto request)
         {
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserName == request.UserName);
-            var error = new
-            {
-                error = true,
-                message = "Tài khoản hoặc mật khẩu sai",
-            };
-            if (customer == null)
-                return error;
+            var customer = await _authRepo.Login(request);
+            
+            if (customer == null || VerifyPasswordHash(request.Password, customer.Password))
+                return new
+                {
+                    error = true,
+                    message = "Tài khoản hoặc mật khẩu sai",
+                };
+            string token = await CreateToken(customer);
+            AuthHistory history = new AuthHistory();
+            history.Content = "Đã đăng nhập";
+            history.CustomerId = customer.Id;
+            _historyRepo.Create(history,customer.UserName);
 
-            if (VerifyPasswordHash(request.Password, customer.Password))
-                return error;
-            string token = CreateToken(customer);
-            var response = new
+            return new
             {
                 data = new
                 {
@@ -53,27 +55,21 @@ namespace OrderTaobao.Services.Auth
                 message = "Đăng nhập thành công",
                 token_code = token,
                 token_type = "jwt"
-            };
-            return response;
+            }; ;
         }
 
         public async Task<Object> Register(RegisterDto request)
         {
-            customer.Id = Guid.NewGuid();
-            customer.FirstName = request.FirstName;
-            customer.LastName = request.LastName;
-            customer.UserName = request.UserName.ToLower();
-            customer.Phone = request.Phone;
-            customer.Email = request.Email;
-            customer.RememberToken = Guid.NewGuid();
-            customer.Enable = true;
-            customer.Password = CreatePasswordHash(request.Password);
 
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-            string token = CreateToken(customer);
+            var customer =  await _authRepo.Register(request,CreatePasswordHash(request.Password));
+            string token = await CreateToken(customer);
 
-            var response = new
+            _roleRepo.CreateRole(customer.Id, customer.UserName);
+            AuthHistory history = new AuthHistory();
+            history.Content = "Đã đăng ký";
+            history.CustomerId = customer.Id;
+            _historyRepo.Create(history, customer.UserName);
+            return new
             {
                 data = new
                 {
@@ -88,20 +84,19 @@ namespace OrderTaobao.Services.Auth
                 token_code = token,
                 token_type = "jwt"
             };
-            return response;
         }
         
-        internal bool VerifyPasswordHash(string password, string hashPasword)
+        bool VerifyPasswordHash(string password, string hashPasword)
         {
             return !BCrypt.Net.BCrypt.Verify(password, hashPasword);
         }
 
-        internal string CreatePasswordHash(string password)
+        string CreatePasswordHash(string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password); ;
         }
 
-        internal string CreateToken(Customer customer)
+        async Task<string> CreateToken(Customer customer)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -115,7 +110,9 @@ namespace OrderTaobao.Services.Auth
                     signingCredentials: credentials
                 );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
+            string jwt_token = await _authRepo.GenerateToken(customer.Id, jwt);
+            return jwt_token;
         }
+
     }
 }

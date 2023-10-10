@@ -34,18 +34,24 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("CUSTOMER_ID");
 
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
                     b.Property<DateTime>("ExpireAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("EXPIRE_AT");
-
-                    b.Property<bool>("IsVerify")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("LastUsedAt")
                         .HasColumnType("datetime2")
@@ -53,9 +59,17 @@ namespace BaseSource.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("TOKEN");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
 
@@ -74,7 +88,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -83,6 +96,10 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
 
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -90,7 +107,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("STREET");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -120,11 +136,17 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("EMAIL");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
@@ -142,26 +164,96 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar")
                         .HasColumnName("LAST_NAME");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("PASSWORD");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar")
-                        .HasColumnName("PHONE");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("USER_NAME");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("ADMIN");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("CONTENT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("CUSTOMER_ID");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("AUTH_HISTORY");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Category", b =>
@@ -173,7 +265,7 @@ namespace BaseSource.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -205,7 +297,7 @@ namespace BaseSource.Migrations
                         .HasColumnName("SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -230,11 +322,17 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("EMAIL");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
@@ -252,16 +350,34 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar")
                         .HasColumnName("LAST_NAME");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("PASSWORD");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar")
-                        .HasColumnName("PHONE");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("RememberToken")
                         .IsRequired()
@@ -269,11 +385,14 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("REMEMBER_TOKEN");
 
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("USER_NAME");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -331,7 +450,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("CODE");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -339,6 +457,10 @@ namespace BaseSource.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -371,7 +493,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("TYPE_SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -395,15 +516,37 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("CUSTOMER_ID");
 
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
                     b.Property<bool>("IsVerify")
                         .HasColumnType("bit")
                         .HasColumnName("IS_VERIFY");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
 
                     b.Property<DateTime>("VerifyAt")
                         .HasColumnType("datetime2")
@@ -415,32 +558,6 @@ namespace BaseSource.Migrations
                         .IsUnique();
 
                     b.ToTable("EMAIL_VERIFY");
-                });
-
-            modelBuilder.Entity("BaseSource.Model.Log.AuthHistory", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("ID");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CUSTOMER_ID");
-
-                    b.Property<string>("OldValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("CONTENT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("AUTH_HISTORY");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Notification", b =>
@@ -458,7 +575,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("CONTENT");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -473,6 +589,10 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("CUSTOMER_ID");
 
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit")
                         .HasColumnName("IS_READ");
@@ -484,7 +604,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("ORDER_ID");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -513,7 +632,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -537,7 +655,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("STATUS");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -605,7 +722,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("CATEGORY_ID");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -650,7 +766,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -679,7 +794,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("CODE");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -687,6 +801,10 @@ namespace BaseSource.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -713,7 +831,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("TYPE_SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -736,7 +853,7 @@ namespace BaseSource.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -757,7 +874,7 @@ namespace BaseSource.Migrations
                         .HasColumnName("NAME");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -769,69 +886,7 @@ namespace BaseSource.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ROLES");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "78e6f28b-65c1-4a0e-ad56-1d1e1b6a887e",
-                            CreatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3633),
-                            CreatedBy = "admin",
-                            Enable = true,
-                            Name = "Customer",
-                            UpdatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3634),
-                            UpdatedBy = "admin"
-                        },
-                        new
-                        {
-                            Id = "8c80e5e6-21ad-4a86-8a75-80931d78382e",
-                            CreatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3638),
-                            CreatedBy = "admin",
-                            Enable = true,
-                            Name = "Staff",
-                            UpdatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3638),
-                            UpdatedBy = "admin"
-                        },
-                        new
-                        {
-                            Id = "5a1e86e4-7272-4e22-a242-c00e22e4302c",
-                            CreatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3641),
-                            CreatedBy = "admin",
-                            Enable = true,
-                            Name = "Collaborator",
-                            UpdatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3641),
-                            UpdatedBy = "admin"
-                        },
-                        new
-                        {
-                            Id = "8f7fc39c-c2ac-4f21-9686-d0adb983120e",
-                            CreatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3644),
-                            CreatedBy = "admin",
-                            Enable = true,
-                            Name = "Manager",
-                            UpdatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3644),
-                            UpdatedBy = "admin"
-                        },
-                        new
-                        {
-                            Id = "566f1d1d-34bb-4ce4-af18-ac9165badc7d",
-                            CreatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3646),
-                            CreatedBy = "admin",
-                            Enable = true,
-                            Name = "Admin",
-                            UpdatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3647),
-                            UpdatedBy = "admin"
-                        },
-                        new
-                        {
-                            Id = "30370dbd-e39f-467a-ad5d-5645db0b01d8",
-                            CreatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3649),
-                            CreatedBy = "admin",
-                            Enable = true,
-                            Name = "Super Admin",
-                            UpdatedAt = new DateTime(2023, 10, 8, 16, 46, 57, 817, DateTimeKind.Utc).AddTicks(3650),
-                            UpdatedBy = "admin"
-                        });
+                    b.ToTable("ROLEStest");
                 });
 
             modelBuilder.Entity("BaseSource.Model.UserRole", b =>
@@ -843,7 +898,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -858,6 +912,10 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("CUSTOMER_ID");
 
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
                     b.Property<string>("RoleId")
                         .IsRequired()
                         .HasMaxLength(36)
@@ -865,7 +923,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("ROLE_ID");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -880,7 +937,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("CUSTOMER_ROLE");
+                    b.ToTable("CUSTOMER_ROLEtewst");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Ward", b =>
@@ -896,7 +953,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("CODE");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -910,6 +966,10 @@ namespace BaseSource.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("DISTRICT_ID");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -936,7 +996,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("TYPE_SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
@@ -950,6 +1009,204 @@ namespace BaseSource.Migrations
                     b.HasIndex("DistrictId");
 
                     b.ToTable("WARDS");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("ROLE", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("ROLE_CLAIM", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("USER", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("USER_CLAIM", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("USER_LOGIN", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("USER_ROLE", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("USER_TOKEN", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.AccessToken", b =>
@@ -972,6 +1229,17 @@ namespace BaseSource.Migrations
                         .IsRequired();
 
                     b.Navigation("Ward");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
+                {
+                    b.HasOne("BaseSource.Model.Customer", "Customer")
+                        .WithMany("AuthHistories")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Category", b =>
@@ -1011,17 +1279,6 @@ namespace BaseSource.Migrations
                     b.HasOne("BaseSource.Model.Customer", "Customer")
                         .WithOne("EmailVerify")
                         .HasForeignKey("BaseSource.Model.EmailVerify", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("BaseSource.Model.Log.AuthHistory", b =>
-                {
-                    b.HasOne("BaseSource.Model.Customer", "Customer")
-                        .WithMany("AuthHistories")
-                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1116,6 +1373,57 @@ namespace BaseSource.Migrations
                         .IsRequired();
 
                     b.Navigation("District");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BaseSource.Model.Category", b =>

@@ -1,20 +1,17 @@
 ﻿
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace BaseSource.Model
 {
-    public abstract class BaseUser 
+    public abstract class BaseUser : IdentityUser<Guid>
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         [Column("ID", TypeName = "varchar"), MaxLength(36)]
-        public Guid Id { get; set; }
+        public override Guid Id { get; set; }
 
-        [Column("USER_NAME",TypeName ="nvarchar"),MaxLength(36)]
-        public string UserName { get; set; } = string.Empty;
-
-        [Column("PASSWORD")]
         public string Password { get; set; } = string.Empty;
 
         [Column("FIRST_NAME", TypeName = "nvarchar"), MaxLength(36)]
@@ -23,12 +20,6 @@ namespace BaseSource.Model
         [Column("LAST_NAME", TypeName = "nvarchar"), MaxLength(36)]
         public string LastName { get; set; } = string.Empty;
 
-        [Column("EMAIL", TypeName = "nvarchar"), MaxLength(255)]
-        [Required]
-        public string Email { get; set; } = string.Empty;
-
-        [Column("PHONE", TypeName = "varchar"), MaxLength(15)]
-        [Required]
         public string Phone { get; set; } = string.Empty;
 
        /* [Column("ADDRESS_ID", TypeName = "varchar"), MaxLength(36)]

@@ -6,11 +6,7 @@ namespace BaseSource.Model
     [Table("NOTIFICATIONS")]
     public class Notification :  BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("ID", TypeName = "varchar"), MaxLength(36)]
-        public Guid Id { get; set; }
-
+       
         [Column("CONTENT", TypeName = "nvarchar"), MaxLength(255)]
         public string Content { get; set; } = string.Empty;
 

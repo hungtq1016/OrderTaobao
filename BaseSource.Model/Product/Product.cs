@@ -7,10 +7,6 @@ namespace BaseSource.Model
     [Table("PRODUCTS")]
     public class Product : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("ID", TypeName = "varchar"), MaxLength(36)]
-        public Guid Id { get; set; }
 
         [Column("NAME", TypeName = "nvarchar"), MaxLength(255)]
         public string Name { get; set; } = string.Empty;
@@ -29,8 +25,6 @@ namespace BaseSource.Model
 
         [Column("IS_AVAILABLE")]
         public bool IsAvailable { get; set; } = false;
-        [Column("ENABLE")]
-        public bool Enable { get; set; } = true;
 
         [Column("CATEGORY_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Category")]

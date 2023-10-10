@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BaseSource.Model.Log;
+using BaseSource.Model;
 
 namespace BaseSource.Model
 {

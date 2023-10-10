@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BaseScource.Data;
 using BaseSource.Model;
 
-namespace OrderTaobao.Controllers
+namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

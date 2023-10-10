@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BaseSource.Model
 {
-    [Table("ROLES")]
+    [Table("ROLEStest")]
     public class Role : BaseEntity
     {
         [Key]

@@ -1,7 +1,8 @@
 global using BaseScource.Data;
 global using BaseSource.Dto;
 global using BaseSource.Model;
-using OrderTaobao.Services.Auth;
+global using Microsoft.EntityFrameworkCore;
+global using BaseSource.BackendAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderTaobao", "OrderTaobao\OrderTaobao.csproj", "{67905F02-67C2-44DE-A84F-EB61CA20C455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseSource.BackendAPI", "OrderTaobao\BaseSource.BackendAPI.csproj", "{67905F02-67C2-44DE-A84F-EB61CA20C455}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4F87551D-01F3-43B0-8A4B-4A9688776421}"
 EndProject
@@ -13,7 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{58DCE7A0-8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseSource", "BaseSource\BaseSource.csproj", "{B49FA4B5-B212-4C86-948A-E424B4392A02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseSource.Dto", "BaseSource.Dto\BaseSource.Dto.csproj", "{2B99D2F3-6D91-4B90-AB94-064386366413}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseSource.Dto", "BaseSource.Dto\BaseSource.Dto.csproj", "{2B99D2F3-6D91-4B90-AB94-064386366413}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Host", "Host", "{8DC82AD4-6C4C-475B-ABD8-C2DA842AD38D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseSource.BackendAPI.Services", "OrderTaobao.Service\BaseSource.BackendAPI.Services.csproj", "{B1E8A444-F3F4-4AA4-9641-37A5EE011769}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{A300A710-14AB-4F2B-B2E3-9009B4093489}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseSource.Infrastructure", "BaseSource.Infrastructure\BaseSource.Infrastructure.csproj", "{20579AA1-4C0F-49CF-9A98-63C4F8FD7BE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +45,25 @@ Global
 		{2B99D2F3-6D91-4B90-AB94-064386366413}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B99D2F3-6D91-4B90-AB94-064386366413}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B99D2F3-6D91-4B90-AB94-064386366413}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1E8A444-F3F4-4AA4-9641-37A5EE011769}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1E8A444-F3F4-4AA4-9641-37A5EE011769}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1E8A444-F3F4-4AA4-9641-37A5EE011769}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1E8A444-F3F4-4AA4-9641-37A5EE011769}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20579AA1-4C0F-49CF-9A98-63C4F8FD7BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20579AA1-4C0F-49CF-9A98-63C4F8FD7BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20579AA1-4C0F-49CF-9A98-63C4F8FD7BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20579AA1-4C0F-49CF-9A98-63C4F8FD7BE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{67905F02-67C2-44DE-A84F-EB61CA20C455} = {8DC82AD4-6C4C-475B-ABD8-C2DA842AD38D}
 		{D34C8F33-CA07-42EB-A160-498EAA2B6B7B} = {4F87551D-01F3-43B0-8A4B-4A9688776421}
 		{B49FA4B5-B212-4C86-948A-E424B4392A02} = {58DCE7A0-81CC-403A-BB00-BE86F4984DDB}
 		{2B99D2F3-6D91-4B90-AB94-064386366413} = {4F87551D-01F3-43B0-8A4B-4A9688776421}
+		{B1E8A444-F3F4-4AA4-9641-37A5EE011769} = {8DC82AD4-6C4C-475B-ABD8-C2DA842AD38D}
+		{20579AA1-4C0F-49CF-9A98-63C4F8FD7BE6} = {A300A710-14AB-4F2B-B2E3-9009B4093489}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8EE5FD1B-FF01-4EB6-988B-3FAB1836EC92}

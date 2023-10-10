@@ -1,17 +1,14 @@
-﻿
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-
 
 namespace BaseSource.Model
 {
-    [Table("EMAIL_VERIFY")]
-    public class EmailVerify : BaseEntity
+    [Table("AUTH_HISTORY")]
+    public class AuthHistory : BaseEntity
     {
-        [Column("VERIFY_AT")]
-        public DateTime VerifyAt { get; set; }
-        [Column("IS_VERIFY")]
-        public bool IsVerify { get; set; } = false;
+
+        [Column("CONTENT", TypeName = "nvarchar"),MaxLength(100)]
+        public string Content { get; set; } = string.Empty;
 
         [Column("CUSTOMER_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Customer")]
