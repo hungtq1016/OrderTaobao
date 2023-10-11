@@ -1,10 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers
 {
@@ -19,9 +13,9 @@ namespace BaseSource.BackendAPI.Controllers
         }
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(LoginDto model)
+        public async Task<IActionResult> Login(LoginRequest model)
         {
-            ResponseDto result = await _authenService.Login(model);
+            AuthenResponse result = await _authenService.Login(model);
             if (result.Error)
             {
                 return Unauthorized(result);
@@ -31,25 +25,12 @@ namespace BaseSource.BackendAPI.Controllers
                 return Ok(result);
             }
         }
-        [HttpPost]
-        [Route("register-admin")]
-        public async Task<IActionResult> RegisterAdmin(RegisterDto model)
-        {
-            ResponseDto result = await _authenService.Register(model, UserRoles.Admin);
-            if (result.Error)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,result);
-            }
-            else
-            {
-                return Ok(result);
-            }
-        }
+
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterDto model)
+        public async Task<IActionResult> Register(RegisterRequest model)
         {
-            ResponseDto result = await _authenService.Register(model, "Customer");
+            AuthenResponse result = await _authenService.Register(model, UserRoles.Customer);
             if (result.Error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, result);

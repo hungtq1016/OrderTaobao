@@ -9,6 +9,7 @@ namespace BaseSource.BackendAPI.Services
     public interface IAuthenticateRepository
     {
         Task<IdentityResult> Register(IdentityUser user, string password, string role);
+        Task<IdentityResult> Login(IdentityUser user, UserLoginInfo info);
         Task<IdentityUser?> UserExists(string username);
         Task<IdentityUser?> EmailExists(string email);
         Task<bool> IsPasswordValid(IdentityUser user, string password);
@@ -20,19 +21,28 @@ namespace BaseSource.BackendAPI.Services
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public AuthenticateRepository(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AuthenticateRepository(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IdentityResult> Register(IdentityUser user, string password,string role)
         {
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
-                return null!;
+                return result;
             await AddRoleForUser(user, role);
+            
+            return result;
+        }
+
+        public async Task<IdentityResult> Login(IdentityUser user, UserLoginInfo info)
+        {
+            var result = await _userManager.AddLoginAsync(user, info);
             return result;
         }
 

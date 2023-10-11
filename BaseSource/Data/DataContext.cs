@@ -28,7 +28,7 @@ namespace BaseScource.Data
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
-            /* modelBuilder.ApplyConfiguration(new RoleConfiguration());*/
+
             modelBuilder.Entity<IdentityUser>().ToTable("USER");
             modelBuilder.Entity<IdentityRole>().ToTable("ROLE");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("USER_ROLE");

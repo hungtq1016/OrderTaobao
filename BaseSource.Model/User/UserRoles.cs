@@ -13,8 +13,8 @@ namespace BaseSource.Model
         public const string Manager = "Manager";
         public const string Staff = "Staff";
         public const string Customer = "Customer";
-        public const string Collaborator = "COLLABORATOR";
-        public const string SuperAdmin = "SUPERADMIN";
+        public const string Collaborator = "Collaborator";
+        public const string SuperAdmin = "SuperAdmin";
 
     }
 }

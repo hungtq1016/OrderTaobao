@@ -27,6 +27,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 /*builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));*/
 ConfigurationManager configuration = builder.Configuration;
 
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,6 +48,14 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]!))
         };
     });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly",
+            authBuilder =>
+            {
+                authBuilder.RequireRole("Admin");
+            });
+});
 
 var app = builder.Build();
 

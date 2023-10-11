@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BaseScource.Data;
 using BaseSource.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseSource.BackendAPI.Controllers
 {
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
