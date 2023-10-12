@@ -4,6 +4,7 @@ using BaseScource.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseSource.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231012110401_change-model")]
+    partial class changemodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -582,7 +585,7 @@ namespace BaseSource.Migrations
                     b.ToTable("PRODUCTS");
                 });
 
-            modelBuilder.Entity("BaseSource.Model.User", b =>
+            modelBuilder.Entity("BaseSource.Model.User.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -600,14 +603,6 @@ namespace BaseSource.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -690,43 +685,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4aaa6a73-77a7-4617-8d9a-61ba0bb69147",
+                            Id = "c6acd422-57d0-49e1-94dc-d6d4268ccf6e",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "616bb54a-f3ec-4074-8190-b45189dca70e",
+                            Id = "13c20144-905f-4613-a941-e28f1170f2fc",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "70932924-b442-40d4-8f7e-05833cf513b5",
+                            Id = "b3f0d28b-8b0e-4665-9328-056446258913",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "725cdaa4-aa64-458d-a493-d68fe1e1667a",
+                            Id = "a30734d1-0188-408e-82b7-009a3cde15ab",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "efb3eea1-9e87-4980-b241-ca41bbc3ed55",
+                            Id = "f58bb811-3c9a-49c3-a873-4da534c72a11",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "46fb2017-3e37-4b18-87eb-9801bc007562",
+                            Id = "bb81f25b-e579-453a-be4e-278deb149361",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "467f3cc9-0ec5-482a-aa79-adb760883532",
+                            Id = "1f3b52b0-220a-4af1-9a93-0cab26956a74",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });
@@ -963,7 +958,7 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BaseSource.Model.User", null)
+                    b.HasOne("BaseSource.Model.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -972,7 +967,7 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BaseSource.Model.User", null)
+                    b.HasOne("BaseSource.Model.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -987,7 +982,7 @@ namespace BaseSource.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BaseSource.Model.User", null)
+                    b.HasOne("BaseSource.Model.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -996,7 +991,7 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("BaseSource.Model.User", null)
+                    b.HasOne("BaseSource.Model.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -8,32 +8,35 @@ using Microsoft.Extensions.Configuration;
 namespace BaseSource.BackendAPI.Services
 {
     public interface IAuthenticateRepository
-    {
-        Task<IdentityResult> Register(IdentityUser user, string password, string role);
-        Task<IdentityUser?> UserExists(string username);
-        Task<IdentityUser?> EmailExists(string email);
-        Task<bool> IsPasswordValid(IdentityUser user, string password);
-        Task<IList<string>> GetRolesByUser(IdentityUser user);
-        Task<IdentityResult> CreateToken(IdentityUser user, string LoginProvider, TokenResponse token);
-        Task<IdentityResult> AddRoleForUser(IdentityUser user,string role);
-        Task<IdentityResult> AddToHistoryLogin(IdentityUser user, UserLoginInfo info);
-        Task<IdentityResult> RemoveFromHistoryLogin(IdentityUser user, UserLoginInfo info);
+    { 
+        Task<IdentityResult> CreateUserAsync(User user, string password, string role);
+        Task<IdentityResult> UpdateUserAsync(User user);
+        Task<User?> UserExists(string username);
+        Task<User?> EmailExists(string email);
+        Task<bool> IsPasswordValid(User user, string password);
+        Task<IList<string>> GetRolesByUser(User user);
+        Task<IdentityResult> CreateUserRoleAsync(User user,string role);
     }
 
     public class AuthenticateRepository : IAuthenticateRepository
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AuthenticateRepository(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager)
+        public AuthenticateRepository(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
         }
 
-        public async Task<IdentityResult> Register(IdentityUser user, string password,string role)
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            return await _userManager.UpdateAsync(user);
+        }
+
+        public async Task<IdentityResult> CreateUserAsync(User user, string password,string role)
         {
             //Create new user
             var result = await _userManager.CreateAsync(user, password);
@@ -41,18 +44,12 @@ namespace BaseSource.BackendAPI.Services
                 return result;
 
             //And set role
-            await AddRoleForUser(user, role);
+            await CreateUserRoleAsync(user, role);
             
             return result;
         }
 
-        public async Task<IdentityResult> CreateToken(IdentityUser user, string LoginProvider, TokenResponse token)
-        {
-            //Save token of user like refesh_token, bearer
-            return await _userManager.SetAuthenticationTokenAsync(user,LoginProvider,token.Type,token.Value);
-        }
-
-        public async Task<IdentityUser?> UserExists(string username)
+        public async Task<User?> UserExists(string username)
         {
             //Find user by username
             var userExists = await _userManager.FindByNameAsync(username);
@@ -61,7 +58,7 @@ namespace BaseSource.BackendAPI.Services
             return userExists;
 
         }
-        public async Task<IdentityUser?> EmailExists(string email)
+        public async Task<User?> EmailExists(string email)
         {
             //Find user by email
             var emailExists = await _userManager.FindByEmailAsync(email);
@@ -70,19 +67,19 @@ namespace BaseSource.BackendAPI.Services
             return emailExists;
         }
 
-        public async Task<bool> IsPasswordValid(IdentityUser user ,string password)
+        public async Task<bool> IsPasswordValid(User user ,string password)
         {
             //Return true if password validate ,else false
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
-        public async Task<IList<string>> GetRolesByUser(IdentityUser user)
+        public async Task<IList<string>> GetRolesByUser(User user)
         {
             //Return all roles of user have (Customer,Staff,...)
             return await _userManager.GetRolesAsync(user);
         }
 
-        public async Task<IdentityResult> AddRoleForUser(IdentityUser user, string role)
+        public async Task<IdentityResult> CreateUserRoleAsync(User user, string role)
         {
             //All users create default role are customer, if login via google, fb or something else then visitor
             //Only admin role have permission to update role for user
@@ -91,17 +88,5 @@ namespace BaseSource.BackendAPI.Services
             return await _userManager.AddToRoleAsync(user, role.ToUpper());
         }
 
-        public async Task<IdentityResult> AddToHistoryLogin(IdentityUser user, UserLoginInfo info)
-        {
-            //Save history login
-            //New feature: Auto remove if expired
-            return await _userManager.AddLoginAsync(user,info);
-        }
-
-        public async Task<IdentityResult> RemoveFromHistoryLogin(IdentityUser user, UserLoginInfo info)
-        {
-            //Remove if have callback
-            return await _userManager.RemoveLoginAsync(user, info.LoginProvider, info.ProviderKey);
-        }
     }
 }

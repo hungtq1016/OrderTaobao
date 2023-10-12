@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BaseScource.Data
 {
-    public class DataContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class DataContext : IdentityDbContext<User, IdentityRole, string>
     {
         public DataContext(){}
 
@@ -29,7 +29,7 @@ namespace BaseScource.Data
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
 
-            modelBuilder.Entity<IdentityUser>().ToTable("USER");
+            modelBuilder.Entity<User>().ToTable("USER");
             modelBuilder.Entity<IdentityRole>().ToTable("ROLE");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("USER_ROLE");
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("USER_CLAIM");

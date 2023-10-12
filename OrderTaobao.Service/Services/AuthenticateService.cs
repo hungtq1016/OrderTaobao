@@ -1,6 +1,7 @@
 ﻿
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using BaseSource.Dto;
 using BaseSource.Model;
@@ -36,13 +37,10 @@ namespace BaseSource.BackendAPI.Services
                 var roles = await _authenRepo.GetRolesByUser(user);
 
                 //Generate token and add claims user info and role
-                TokenResponse token = await GetToken(roles, user, "local");
+                TokenResponse token = GetToken(roles, user);
 
-                //Save history login into database
-                UserLoginInfo info = new UserLoginInfo("local", token.Value, user.UserName);
-                await _authenRepo.AddToHistoryLogin(user, info);
 
-                return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công",Data= user.ToString(), Token= token };
+                return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công", Token= token };
             }
 
             //If null return error
@@ -58,15 +56,21 @@ namespace BaseSource.BackendAPI.Services
                 return new AuthenResponse { Error = true, StatusCode = 500, Message = "Tài khoản đã tồn tại!", Data = null! };
             if (email != null)
                 return new AuthenResponse { Error = true, StatusCode = 500, Message = "Email đã tồn tại!", Data = null! };
+            var refreshToken = GenerateRefreshToken();
 
+            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+
+     
             //If all pass then create new user
-            IdentityUser newUser = new()
+            User newUser = new()
             {
                 Email = request.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = request.UserName
+                UserName = request.UserName,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
             };
-            var result = await _authenRepo.Register(newUser,request.Password, role);
+            var result = await _authenRepo.CreateUserAsync(newUser,request.Password, role);
 
             //Return any errors if have when create like (password incorrect, phone,....) 
             if (!result.Succeeded)
@@ -76,23 +80,21 @@ namespace BaseSource.BackendAPI.Services
             var roles = await _authenRepo.GetRolesByUser(newUser);
 
             //Generate token and add claims user info and role
-            TokenResponse token = await GetToken(roles, newUser,"local");
+            TokenResponse token = GetToken(roles, newUser);
 
-            //Save history login into database
-            UserLoginInfo info = new UserLoginInfo("local", token.Value, newUser.UserName);
-            await _authenRepo.AddToHistoryLogin(newUser, info);
 
-            return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Data = newUser.ToString(), Token = token };
+            return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Token = token };
         }
 
-        private async Task<TokenResponse> GetToken(IList<string> roles,IdentityUser user,string LoginProvider)
+        private TokenResponse GetToken(IList<string> roles,User user)
         {
             //Add data of user into claim
             var authClaims = new List<Claim>
             {
-                    new Claim(ClaimTypes.Name, user.UserName!),
+                    new Claim(ClaimTypes.Name,user.UserName!),
+                    new Claim(ClaimTypes.Email,user.Email!),
+                    new Claim(ClaimTypes.NameIdentifier,user.Id),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                  /*  new Claim(ClaimTypes.Expired,DateTime.Now.AddDays(1).ToString())*/
             };
 
             //Then add roles
@@ -103,32 +105,37 @@ namespace BaseSource.BackendAPI.Services
             //Transform claim to token
             var token = GenerateToken(authClaims);
 
-            //Return
-            TokenResponse res = new TokenResponse
+            return new TokenResponse
             {
-                Value = new JwtSecurityTokenHandler().WriteToken(token),
-                Type = "Bearer",
-                ExpiredAt = DateTime.Now.AddDays(1).ToString()
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshToken = user.RefreshToken!,
+                TokenType = "Bearer",
+                ExpiredAt = user.RefreshTokenExpiryTime
             };
-
-            //Save in database after generate
-            await _authenRepo.CreateToken(user, LoginProvider, res);
-            return res;
         }
 
         private JwtSecurityToken GenerateToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
+            _ = int.TryParse(_configuration["JWT:AccessTokenValidityInMinutes"], out int accessTokenValidityInMinutes);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddMinutes(accessTokenValidityInMinutes),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
 
             return token;
+        }
+
+        private static string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }
