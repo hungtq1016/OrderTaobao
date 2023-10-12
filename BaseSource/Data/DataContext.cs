@@ -43,7 +43,8 @@ namespace BaseScource.Data
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Collaborator", NormalizedName = "COLLABORATOR" },
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Manager", NormalizedName = "MANAGER" },
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Super Admin", NormalizedName = "SUPER ADMIN" }
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Super Admin", NormalizedName = "SUPER ADMIN" },
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Visitor", NormalizedName = "VISITOR" }
             );
 
         }

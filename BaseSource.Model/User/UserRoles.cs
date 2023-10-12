@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BaseSource.Model
 {
-    public  class UserRoles
+    public class UserRoles
     {
         public const string Admin = "Admin";
         public const string Manager = "Manager";
@@ -15,6 +15,6 @@ namespace BaseSource.Model
         public const string Customer = "Customer";
         public const string Collaborator = "Collaborator";
         public const string SuperAdmin = "SuperAdmin";
-
+        public const string Visitor = "Visitor";
     }
 }

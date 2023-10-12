@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 
@@ -51,14 +52,24 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly",
-            authBuilder =>
-            {
-                authBuilder.RequireRole("Admin");
-            });
+        policy => policy.RequireClaim("Customer", "IT")
+                        .RequireRole("Customer"));
+    options.AddPolicy("AuthUsers", policy => policy.RequireAuthenticatedUser());
+
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                        builder =>
+                        {
+                            builder.WithOrigins("http://localhost:3000",
+                                                "https://localhost:3000")
+                            .WithMethods("GET","POST","PUT","PATCH","DELETE") // defining the allowed HTTP method
+                            .AllowAnyHeader(); ;
+                        });
+});
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,4 +83,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseAuthorization();
+app.UseCors(MyAllowSpecificOrigins);
+
 app.Run();

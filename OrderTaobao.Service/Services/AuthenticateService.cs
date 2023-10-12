@@ -27,20 +27,31 @@ namespace BaseSource.BackendAPI.Services
         }
         public async Task<AuthenResponse> Login(LoginRequest request)
         {
+            //Check if username exists
             var user = await _authenRepo.UserExists(request.UserName);
+
             if (user != null && await _authenRepo.IsPasswordValid(user, request.Password))
             {
+                //Get all roles and permission by user
                 var roles = await _authenRepo.GetRolesByUser(user);
-                TokenResponse token = SignUpClaim(roles, user);
-                UserLoginInfo info = new UserLoginInfo ("local",token.Value,user.UserName);
-                var res = await _authenRepo.Login(user, info);
-                return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công",Data= res.ToString(), Token= token };
+
+                //Generate token and add claims user info and role
+                TokenResponse token = await GetToken(roles, user, "local");
+
+                //Save history login into database
+                UserLoginInfo info = new UserLoginInfo("local", token.Value, user.UserName);
+                await _authenRepo.AddToHistoryLogin(user, info);
+
+                return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công",Data= user.ToString(), Token= token };
             }
+
+            //If null return error
             return new AuthenResponse { Error = true, StatusCode = 500, Message = "Tài khoản hoặc mật khẩu không chính xác!",Data=null! };
         }
 
         public async Task<AuthenResponse> Register(RegisterRequest request,string role =UserRoles.Customer)
         {
+            // Check if email or username exists
             var user = await _authenRepo.UserExists(request.UserName);
             var email = await _authenRepo.EmailExists(request.Email);
             if (user != null)
@@ -48,6 +59,7 @@ namespace BaseSource.BackendAPI.Services
             if (email != null)
                 return new AuthenResponse { Error = true, StatusCode = 500, Message = "Email đã tồn tại!", Data = null! };
 
+            //If all pass then create new user
             IdentityUser newUser = new()
             {
                 Email = request.Email,
@@ -55,37 +67,56 @@ namespace BaseSource.BackendAPI.Services
                 UserName = request.UserName
             };
             var result = await _authenRepo.Register(newUser,request.Password, role);
+
+            //Return any errors if have when create like (password incorrect, phone,....) 
             if (!result.Succeeded)
                 return new AuthenResponse { Error = true, StatusCode = 500, Message = "Có lỗi xảy ra! Thử lại sao ít phút", Data = result.ToString() };
+            
+            //Get all roles and permission by user
             var roles = await _authenRepo.GetRolesByUser(newUser);
-            TokenResponse token = SignUpClaim(roles, newUser);
+
+            //Generate token and add claims user info and role
+            TokenResponse token = await GetToken(roles, newUser,"local");
+
+            //Save history login into database
             UserLoginInfo info = new UserLoginInfo("local", token.Value, newUser.UserName);
-            var res = await _authenRepo.Login(newUser, info);
-            return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Token = SignUpClaim(roles, newUser) };
+            await _authenRepo.AddToHistoryLogin(newUser, info);
+
+            return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Data = newUser.ToString(), Token = token };
         }
 
-        private TokenResponse SignUpClaim(IList<string> roles,IdentityUser user)
+        private async Task<TokenResponse> GetToken(IList<string> roles,IdentityUser user,string LoginProvider)
         {
+            //Add data of user into claim
             var authClaims = new List<Claim>
-                {
+            {
                     new Claim(ClaimTypes.Name, user.UserName!),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                  /*  new Claim(ClaimTypes.Expired,DateTime.Now.AddDays(1).ToString())*/
             };
 
+            //Then add roles
             foreach (var role in roles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
-            var token = GetToken(authClaims);
-            return new TokenResponse
+            //Transform claim to token
+            var token = GenerateToken(authClaims);
+
+            //Return
+            TokenResponse res = new TokenResponse
             {
                 Value = new JwtSecurityTokenHandler().WriteToken(token),
                 Type = "Bearer",
                 ExpiredAt = DateTime.Now.AddDays(1).ToString()
             };
+
+            //Save in database after generate
+            await _authenRepo.CreateToken(user, LoginProvider, res);
+            return res;
         }
 
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        private JwtSecurityToken GenerateToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
 
