@@ -1,11 +1,11 @@
 ﻿
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseSource.Model
 {
     [Table("DISTRICTS")]
-    public class District: BaseAddress
+    public class District : BaseAddress
     {
         [Column("PROVINCE_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Province")]

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseSource.Model
 {
@@ -18,6 +18,6 @@ namespace BaseSource.Model
         public Guid? ParentId { get; set; }
         public Category Parent { get; set; } = null!;
 
-        public ICollection<Category> Children { get;} = new List<Category>();
+        public ICollection<Category> Children { get; } = new List<Category>();
     }
 }

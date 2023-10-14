@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseSource.Model
 {
@@ -18,6 +18,6 @@ namespace BaseSource.Model
 
         public Notification? Notification { get; set; }
 
-        public ICollection<OrderDetail> Details {get;} = new List<OrderDetail>();
+        public ICollection<OrderDetail> Details { get; } = new List<OrderDetail>();
     }
 }

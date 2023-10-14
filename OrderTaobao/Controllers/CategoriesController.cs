@@ -1,12 +1,20 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using BaseScource.Data;
+using BaseSource.Model;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BaseSource.BackendAPI.Controllers
 {
-/*    [Authorize(Policy = "AuthUsers")]*/
+    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly DataContext _context;

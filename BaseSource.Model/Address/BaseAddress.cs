@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseSource.Model
 {
@@ -18,6 +18,6 @@ namespace BaseSource.Model
         [Column("TYPE_SLUG", TypeName = "nvarchar"), MaxLength(36)]
         public string TypeSlug { get; set; } = string.Empty;
         [Column("CODE")]
-        public int Code { get; set; } 
+        public int Code { get; set; }
     }
 }

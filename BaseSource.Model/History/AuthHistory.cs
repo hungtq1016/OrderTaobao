@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseSource.Model
 {
@@ -7,7 +7,7 @@ namespace BaseSource.Model
     public class AuthHistory : BaseEntity
     {
 
-        [Column("CONTENT", TypeName = "nvarchar"),MaxLength(100)]
+        [Column("CONTENT", TypeName = "nvarchar"), MaxLength(100)]
         public string Content { get; set; } = string.Empty;
 
         [Column("CUSTOMER_ID", TypeName = "varchar"), MaxLength(36)]

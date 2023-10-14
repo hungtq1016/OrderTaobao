@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BaseSource.Model
 {
     [Table("NOTIFICATIONS")]
-    public class Notification :  BaseEntity
+    public class Notification : BaseEntity
     {
-       
+
         [Column("CONTENT", TypeName = "nvarchar"), MaxLength(255)]
         public string Content { get; set; } = string.Empty;
 

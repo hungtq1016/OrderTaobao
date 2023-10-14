@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BaseSource.Model;
 
 namespace BaseSource.Model
 {
@@ -10,7 +9,7 @@ namespace BaseSource.Model
         //public ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
 
         [Column("REMEMBER_TOKEN", TypeName = "varchar"), MaxLength(36)]
-        public Guid RememberToken { get; set; } 
+        public Guid RememberToken { get; set; }
         [Column("ENABLE")]
         public bool Enable { get; set; } = true;
         public Notification? Notification { get; set; }

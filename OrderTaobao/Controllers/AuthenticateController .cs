@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BaseSource.BackendAPI.Controllers
 {
@@ -39,6 +45,55 @@ namespace BaseSource.BackendAPI.Controllers
             {
                 return Ok(result);
             }
+        }
+
+        [HttpPost]
+        [Route("check-oauth")]
+        [Authorize]
+        public async Task<IActionResult> CheckOAuth(TokenRequest model)
+        {
+
+            var roles = await _authenService.CheckOAuth(model);
+            if (roles is null)
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                return Ok(roles);
+            }
+        }
+
+        [HttpPost]
+        [Route("refresh-token")]
+        public async Task<IActionResult> RefreshToken(TokenRequest request)
+        {
+            if (request is null)
+            {
+                return BadRequest();
+            }
+            var result = await _authenService.RefreshToken(request);
+            if (result is null)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("access-token")]
+        public async Task<IActionResult> AccessToken(TokenRequest request)
+        {
+            if (request is null)
+            {
+                return BadRequest();
+            }
+            var result = await _authenService.CreateNewAccessToken(request);
+            if (result is null)
+            {
+                return Unauthorized();
+            }
+            return Ok(result);
         }
     }
 }

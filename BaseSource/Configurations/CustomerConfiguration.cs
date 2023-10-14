@@ -9,7 +9,7 @@ namespace BaseSource.Configurations
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-            builder.HasIndex(u => new { u.Email, u.UserName});
+            builder.HasIndex(u => new { u.Email, u.UserName });
         }
     }
 }

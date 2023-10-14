@@ -2,17 +2,17 @@
 
 using BaseSource.Configurations;
 using BaseSource.Model;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace BaseScource.Data
 {
     public class DataContext : IdentityDbContext<User, IdentityRole, string>
     {
-        public DataContext(){}
+        public DataContext() { }
 
-        public DataContext(DbContextOptions<DataContext> options) : base(options){}
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,7 +20,8 @@ namespace BaseScource.Data
             optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=OrderTaoBao;Trusted_Connection=true;TrustServerCertificate=true;");
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder){
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             base.OnModelCreating(modelBuilder);
 
 
@@ -49,24 +50,24 @@ namespace BaseScource.Data
 
         }
         public DbSet<Category> Categories => Set<Category>();
-      /*  public DbSet<Customer> Customers => Set<Customer>();
-        public DbSet<Role> Roles => Set<Role>();
-        public DbSet<User> Users => Set<User>();
-        public DbSet<Admin> Admin => Set<Admin>();
-        public DbSet<UserRole> UserRole => Set<UserRole>();
-    
-        public DbSet<Product> Products => Set<Product>();
-        public DbSet<Order> Orders => Set<Order>();
-        public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
-        public DbSet<Notification> Notifications => Set<Notification>();
-        public DbSet<Address> Address => Set<Address>();
-        public DbSet<Province> Provinces => Set<Province>();
-        public DbSet<Ward> Wards => Set<Ward>();
-        public DbSet<District> Districts => Set<District>();
-        public DbSet<AccessToken> AccessToken => Set<AccessToken>();
-        public DbSet<EmailVerify> EmailVerify => Set<EmailVerify>();
-        public DbSet<AuthHistory> AuthHistory => Set<AuthHistory>();
-        public DbSet<CustomerHistory> CustomerHistory => Set<CustomerHistory>();*/
+        /*  public DbSet<Customer> Customers => Set<Customer>();
+          public DbSet<Role> Roles => Set<Role>();
+          public DbSet<User> Users => Set<User>();
+          public DbSet<Admin> Admin => Set<Admin>();
+          public DbSet<UserRole> UserRole => Set<UserRole>();
+
+          public DbSet<Product> Products => Set<Product>();
+          public DbSet<Order> Orders => Set<Order>();
+          public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+          public DbSet<Notification> Notifications => Set<Notification>();
+          public DbSet<Address> Address => Set<Address>();
+          public DbSet<Province> Provinces => Set<Province>();
+          public DbSet<Ward> Wards => Set<Ward>();
+          public DbSet<District> Districts => Set<District>();
+          public DbSet<AccessToken> AccessToken => Set<AccessToken>();
+          public DbSet<EmailVerify> EmailVerify => Set<EmailVerify>();
+          public DbSet<AuthHistory> AuthHistory => Set<AuthHistory>();
+          public DbSet<CustomerHistory> CustomerHistory => Set<CustomerHistory>();*/
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace BaseSource.Model
@@ -22,8 +22,8 @@ namespace BaseSource.Model
 
         public string Phone { get; set; } = string.Empty;
 
-       /* [Column("ADDRESS_ID", TypeName = "varchar"), MaxLength(36)]
-        public Guid AddressId { get; set; }
-        public Address Address { get; set; } = null!;*/
+        /* [Column("ADDRESS_ID", TypeName = "varchar"), MaxLength(36)]
+         public Guid AddressId { get; set; }
+         public Address Address { get; set; } = null!;*/
     }
 }

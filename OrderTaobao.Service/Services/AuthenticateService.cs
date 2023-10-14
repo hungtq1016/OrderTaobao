@@ -1,11 +1,13 @@
 ﻿
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using BaseSource.Dto;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,8 +15,11 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IAuthenticateService
     {
-        Task<AuthenResponse> Register(RegisterRequest request,string role);
+        Task<AuthenResponse> Register(RegisterRequest request, string role);
         Task<AuthenResponse> Login(LoginRequest request);
+        Task<IList<string>> CheckOAuth(TokenRequest model);
+        Task<TokenResponse> RefreshToken(TokenRequest model);
+        Task<TokenResponse> CreateNewAccessToken(TokenRequest request);
     }
 
     public class AuthenticateService : IAuthenticateService
@@ -37,17 +42,17 @@ namespace BaseSource.BackendAPI.Services
                 var roles = await _authenRepo.GetRolesByUser(user);
 
                 //Generate token and add claims user info and role
-                TokenResponse token = GetToken(roles, user);
+                TokenResponse token = ResponseToken(roles, user);
 
 
-                return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công", Token= token };
+                return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công", Token = token };
             }
 
             //If null return error
-            return new AuthenResponse { Error = true, StatusCode = 500, Message = "Tài khoản hoặc mật khẩu không chính xác!",Data=null! };
+            return new AuthenResponse { Error = true, StatusCode = 500, Message = "Tài khoản hoặc mật khẩu không chính xác!", Data = null! };
         }
 
-        public async Task<AuthenResponse> Register(RegisterRequest request,string role =UserRoles.Customer)
+        public async Task<AuthenResponse> Register(RegisterRequest request, string role = UserRoles.Customer)
         {
             // Check if email or username exists
             var user = await _authenRepo.UserExists(request.UserName);
@@ -60,7 +65,7 @@ namespace BaseSource.BackendAPI.Services
 
             _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
 
-     
+
             //If all pass then create new user
             User newUser = new()
             {
@@ -70,40 +75,98 @@ namespace BaseSource.BackendAPI.Services
                 RefreshToken = refreshToken,
                 RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
             };
-            var result = await _authenRepo.CreateUserAsync(newUser,request.Password, role);
+            var result = await _authenRepo.CreateUserAsync(newUser, request.Password, role);
 
             //Return any errors if have when create like (password incorrect, phone,....) 
             if (!result.Succeeded)
                 return new AuthenResponse { Error = true, StatusCode = 500, Message = "Có lỗi xảy ra! Thử lại sao ít phút", Data = result.ToString() };
-            
+
             //Get all roles and permission by user
             var roles = await _authenRepo.GetRolesByUser(newUser);
 
             //Generate token and add claims user info and role
-            TokenResponse token = GetToken(roles, newUser);
+            TokenResponse token = ResponseToken(roles, newUser);
 
 
             return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Token = token };
         }
-
-        private TokenResponse GetToken(IList<string> roles,User user)
+        public async Task<IList<string>> CheckOAuth(TokenRequest model)
         {
+            var principal = GetPrincipalFromExpiredToken(model.AccessToken);
+            string id = principal!.Identity!.Name!;
+
+            var user =await _authenRepo.ReadUserAsync(id);
+            IList<string> roles =await _authenRepo.GetRolesByUser(user);
+
+            if (user == null)
+                return null!;
+
+            return roles;
+
+        }
+
+        public async Task<TokenResponse> CreateNewAccessToken(TokenRequest request)
+        {
+            _ = int.TryParse(_configuration["JWT:AccessTokenValidityInMinutes"], out int accessTokenValidityInMinutes);
+
+            var principal = GetPrincipalFromExpiredToken(request.AccessToken);
+            string id = principal!.Identity!.Name!;
+
+            var user = await _authenRepo.ReadUserAsync(id);
+
+            if (user.RefreshToken != request.RefreshToken)
+            {
+                return null!;
+            }
+            //If to day is bigger than expire time that mean token expire
+            if (DateTime.Compare(DateTime.Now,user.RefreshTokenExpiryTime)>0)
+            {
+                await RefreshToken(request);
+            }
+
+            var authClaims = new List<Claim>
+            {
+                    new Claim("Id",user.Id!),
+                    new Claim(ClaimTypes.Name,user.Id!),
+                    new Claim("Email",user.Email!),
+                    new Claim("Expired",DateTime.Now.AddMinutes(accessTokenValidityInMinutes).ToString()),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+            var access = GenerateAccessToken(authClaims);
+
+            return new TokenResponse
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(access),
+                RefreshToken = user.RefreshToken!,
+                TokenType = "Bearer",
+                ExpiredAt = user.RefreshTokenExpiryTime
+            };
+
+
+        }
+
+
+        private TokenResponse ResponseToken(IList<string> roles, User user)
+        {
+            _ = int.TryParse(_configuration["JWT:AccessTokenValidityInMinutes"], out int accessTokenValidityInMinutes);
+
             //Add data of user into claim
             var authClaims = new List<Claim>
             {
-                    new Claim(ClaimTypes.Name,user.UserName!),
-                    new Claim(ClaimTypes.Email,user.Email!),
-                    new Claim(ClaimTypes.NameIdentifier,user.Id),
+                    new Claim("Id",user.Id!),
+                    new Claim(ClaimTypes.Name,user.Id!),
+                    new Claim("Email",user.Email!),
+                    new Claim("Expired",DateTime.Now.AddMinutes(accessTokenValidityInMinutes).ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             //Then add roles
             foreach (var role in roles)
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, role));
+                authClaims.Add(new Claim("Role", role));
             }
             //Transform claim to token
-            var token = GenerateToken(authClaims);
+            var token = GenerateAccessToken(authClaims);
 
             return new TokenResponse
             {
@@ -114,7 +177,7 @@ namespace BaseSource.BackendAPI.Services
             };
         }
 
-        private JwtSecurityToken GenerateToken(List<Claim> authClaims)
+        private JwtSecurityToken GenerateAccessToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
             _ = int.TryParse(_configuration["JWT:AccessTokenValidityInMinutes"], out int accessTokenValidityInMinutes);
@@ -136,6 +199,57 @@ namespace BaseSource.BackendAPI.Services
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
+        }
+
+        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!)),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            return principal;
+
+        }
+
+        public async Task<TokenResponse> RefreshToken(TokenRequest model)
+        {
+            var principal = GetPrincipalFromExpiredToken(model.AccessToken);
+            string id = principal!.Identity!.Name!;
+
+            if (principal == null || id==null)
+            {
+                return null!;
+            }
+
+            var user = await _authenRepo.ReadUserAsync(id!);
+            if (user == null || user.RefreshToken != model.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return null!;
+            }
+
+            var newAccessToken = GenerateAccessToken(principal.Claims.ToList());
+            var newRefreshToken = GenerateRefreshToken();
+
+            user.RefreshToken = newRefreshToken;
+            await _authenRepo.UpdateUserAsync(user);
+
+            return new TokenResponse
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                RefreshToken = newRefreshToken,
+                ExpiredAt = DateTime.Now,
+                TokenType = "Beared"
+            };
         }
     }
 }
