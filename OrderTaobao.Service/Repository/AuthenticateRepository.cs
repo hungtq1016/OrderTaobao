@@ -13,6 +13,7 @@ namespace BaseSource.BackendAPI.Services
         Task<bool> IsPasswordValid(User user, string password);
         Task<IList<string>> GetRolesByUser(User user);
         Task<IdentityResult> CreateUserRoleAsync(User user, string role);
+        Task<bool> IsInRole(User user, string role);
     }
 
     public class AuthenticateRepository : IAuthenticateRepository
@@ -84,6 +85,12 @@ namespace BaseSource.BackendAPI.Services
         {
             //Return all roles of user have (Customer,Staff,...)
             return await _userManager.GetRolesAsync(user);
+        }
+
+        public async Task<bool> IsInRole(User user,string role="Customer")
+        {
+            //Return all roles of user have (Customer,Staff,...)
+            return await _userManager.IsInRoleAsync(user,role);
         }
 
         public async Task<IdentityResult> CreateUserRoleAsync(User user, string role)

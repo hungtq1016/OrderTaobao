@@ -49,19 +49,28 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("check-oauth")]
-        [Authorize]
+        
         public async Task<IActionResult> CheckOAuth(TokenRequest model)
         {
+            if (model is null)
+            {
+                return Ok();
+            }
+            var result = await _authenService.CheckOAuth(model);
+            return Ok(result);
+        }
 
-            var roles = await _authenService.CheckOAuth(model);
-            if (roles is null)
+        [HttpPost]
+        [Route("user-info")]
+        [Authorize]
+        public async Task<IActionResult> UserInfo(TokenRequest model)
+        {
+            if (model is null)
             {
-                return Unauthorized();
+                return Ok();
             }
-            else
-            {
-                return Ok(roles);
-            }
+            var result = await _authenService.GetUserByToken(model);
+            return Ok(result);
         }
 
         [HttpPost]

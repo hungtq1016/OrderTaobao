@@ -1,13 +1,15 @@
 ﻿
+using BaseSource.Model;
+
 namespace BaseSource.Dto
 {
-    public class UserResponse
+    public class UserResponse : Response
     {
-        public string Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public IList<string> Role { get; set; }
+        public UserResponse()
+        {
+            User = new HashSet<User>();
+        }
+        public virtual ICollection<User> User { get; set; }   
+
     }
 }

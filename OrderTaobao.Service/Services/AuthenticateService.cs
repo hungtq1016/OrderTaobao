@@ -1,15 +1,20 @@
 ﻿
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Net;
+using System.Security;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using BaseSource.Dto;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BaseSource.BackendAPI.Services
 {
@@ -17,9 +22,10 @@ namespace BaseSource.BackendAPI.Services
     {
         Task<AuthenResponse> Register(RegisterRequest request, string role);
         Task<AuthenResponse> Login(LoginRequest request);
-        Task<IList<string>> CheckOAuth(TokenRequest model);
+        Task<PermissionResponse> CheckOAuth(TokenRequest model);
         Task<TokenResponse> RefreshToken(TokenRequest model);
         Task<TokenResponse> CreateNewAccessToken(TokenRequest request);
+        Task<UserResponse> GetUserByToken(TokenRequest request);
     }
 
     public class AuthenticateService : IAuthenticateService
@@ -90,19 +96,74 @@ namespace BaseSource.BackendAPI.Services
 
             return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Token = token };
         }
-        public async Task<IList<string>> CheckOAuth(TokenRequest model)
+        public async Task<PermissionResponse> CheckOAuth(TokenRequest model)
         {
             var principal = GetPrincipalFromExpiredToken(model.AccessToken);
+            if (principal is null)
+            {
+                return new PermissionResponse
+                {
+                    Error = true,
+                    StatusCode = 200,
+                    Message = "Không tìm thấy",
+                };
+            }
             string id = principal!.Identity!.Name!;
-
+            var expired = principal.FindFirst("Expired")!.Value;
+     
+            
             var user =await _authenRepo.ReadUserAsync(id);
-            IList<string> roles =await _authenRepo.GetRolesByUser(user);
 
-            if (user == null)
-                return null!;
+            IList<string> roles = await _authenRepo.GetRolesByUser(user);
 
-            return roles;
+            if (user is null)
+                return new PermissionResponse
+                {
+                    Error = true,
+                    StatusCode = 200,
+                    Message = "Không tìm thấy",  
+                };
+            
+            if (DateTime.Compare(DateTime.Now, DateTime.Parse(expired)) > 0)
+            {
+                return new PermissionResponse
+                {
+                    Error = true,
+                    StatusCode = 200,
+                    Message = "Hết hạn đăng nhập",      
+                };
+            }
+            return new PermissionResponse
+            {
+                Error = false,
+                StatusCode = 200,
+                Message = "Đã đăng nhập",
+                Roles = roles,
+            }; 
 
+        }
+        public async Task<UserResponse> GetUserByToken(TokenRequest request)
+        {
+            var principal = GetPrincipalFromExpiredToken(request.AccessToken);
+            if (principal is null)
+            {
+                return new UserResponse
+                {
+                    Error = true,
+                    StatusCode = 200,
+                    Message = "Không tìm thấy",
+                };
+            }
+            string id = principal!.Identity!.Name!;
+            var user = await _authenRepo.ReadUserAsync(id);
+            UserResponse res =  new UserResponse
+            { 
+                Error = false,
+                StatusCode = 200,
+                Message = "Hoàn thành"
+            };
+            res.User.Add(user);
+            return res;
         }
 
         public async Task<TokenResponse> CreateNewAccessToken(TokenRequest request)
@@ -211,7 +272,7 @@ namespace BaseSource.BackendAPI.Services
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!)),
                 ValidateLifetime = false
             };
-
+            
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
             if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
@@ -251,5 +312,6 @@ namespace BaseSource.BackendAPI.Services
                 TokenType = "Beared"
             };
         }
+
     }
 }
