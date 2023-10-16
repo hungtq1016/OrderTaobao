@@ -1,10 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BaseSource.BackendAPI.Controllers
 {
@@ -19,9 +14,9 @@ namespace BaseSource.BackendAPI.Controllers
         }
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(LoginRequest model)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            AuthenResponse result = await _authenService.Login(model);
+            AuthenResponse result = await _authenService.Login(request);
             if (result.Error)
             {
                 return Unauthorized(result);
@@ -34,9 +29,9 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterRequest model)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
-            AuthenResponse result = await _authenService.Register(model, UserRoles.Customer);
+            AuthenResponse result = await _authenService.Register(request, UserRoles.Customer);
             if (result.Error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, result);
@@ -48,61 +43,30 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         [HttpPost]
-        [Route("check-oauth")]
+        [Route("refresh-token")]
         
-        public async Task<IActionResult> CheckOAuth(TokenRequest model)
+        public async Task<IActionResult> RefreshToken(TokenRequest request)
         {
-            if (model is null)
+            if (request is null)
             {
                 return Ok();
             }
-            var result = await _authenService.CheckOAuth(model);
+            var result = await _authenService.RefreshToken(request);
             return Ok(result);
         }
 
         [HttpPost]
         [Route("user-info")]
         [Authorize]
-        public async Task<IActionResult> UserInfo(TokenRequest model)
+        public async Task<IActionResult> UserInfo(TokenRequest request)
         {
-            if (model is null)
+            if (request is null)
             {
                 return Ok();
             }
-            var result = await _authenService.GetUserByToken(model);
+            var result = await _authenService.GetUserByToken(request);
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("refresh-token")]
-        public async Task<IActionResult> RefreshToken(TokenRequest request)
-        {
-            if (request is null)
-            {
-                return BadRequest();
-            }
-            var result = await _authenService.RefreshToken(request);
-            if (result is null)
-            {
-                return BadRequest();
-            }
-            return Ok(result);
-        }
-
-        [HttpPost]
-        [Route("access-token")]
-        public async Task<IActionResult> AccessToken(TokenRequest request)
-        {
-            if (request is null)
-            {
-                return BadRequest();
-            }
-            var result = await _authenService.CreateNewAccessToken(request);
-            if (result is null)
-            {
-                return Unauthorized();
-            }
-            return Ok(result);
-        }
     }
 }
