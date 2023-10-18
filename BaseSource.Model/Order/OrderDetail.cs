@@ -6,10 +6,14 @@ namespace BaseSource.Model
     [Table("ORDER_DETAILS")]
     public class OrderDetail
     {
+        public OrderDetail()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID", TypeName = "varchar"), MaxLength(36)]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [Column("QUANTITY")]
         public int Quantity { get; set; } = 1;
@@ -19,13 +23,13 @@ namespace BaseSource.Model
 
         [Column("PRODUCT_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Product")]
-        public Guid ProductId { get; set; }
+        public string ProductId { get; set; }
 
         public Product Product { get; set; } = null!;
 
         [Column("ORDER_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Order")]
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public Order Order { get; set; } = null!;
     }

@@ -1,17 +1,21 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using BaseSource.Model;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 
 namespace BaseSource.Configurations
 {
-    public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
+    public class UserConfiguration : IEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<Notification> builder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-            /*builder.HasOne(n => n.User)
-            .WithMany(u => u.Notifications)
-             .HasForeignKey<Notification>(n => n.UserId)
+ /*           builder.HasMany(u => u.Notifications)
+       
+             .Use
              .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.HasOne(n => n.Order)
@@ -20,4 +24,5 @@ namespace BaseSource.Configurations
              .OnDelete(DeleteBehavior.ClientCascade);*/
         }
     }
+   
 }

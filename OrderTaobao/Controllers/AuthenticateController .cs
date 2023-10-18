@@ -8,6 +8,7 @@ namespace BaseSource.BackendAPI.Controllers
     public class AuthenticateController : ControllerBase
     {
         private readonly IAuthenticateService _authenService;
+        
         public AuthenticateController(IAuthenticateService authenService)
         {
             _authenService = authenService;
@@ -17,6 +18,7 @@ namespace BaseSource.BackendAPI.Controllers
         public async Task<IActionResult> Login(LoginRequest request)
         {
             AuthenResponse result = await _authenService.Login(request);
+            
             if (result.Error)
             {
                 return Unauthorized(result);
@@ -55,18 +57,7 @@ namespace BaseSource.BackendAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("user-info")]
-        [Authorize]
-        public async Task<IActionResult> UserInfo(TokenRequest request)
-        {
-            if (request is null)
-            {
-                return Ok();
-            }
-            var result = await _authenService.GetUserByToken(request);
-            return Ok(result);
-        }
+        
 
     }
 }

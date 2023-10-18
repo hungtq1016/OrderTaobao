@@ -10,10 +10,10 @@ namespace BaseSource.Model
         [Column("CONTENT", TypeName = "nvarchar"), MaxLength(100)]
         public string Content { get; set; } = string.Empty;
 
-        [Column("CUSTOMER_ID", TypeName = "varchar"), MaxLength(36)]
-        [ForeignKey("Customer")]
-        public Guid CustomerId { get; set; }
-        public Customer Customer { get; set; } = null!;
+        [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public User User { get; set; } = null!;
 
     }
 }

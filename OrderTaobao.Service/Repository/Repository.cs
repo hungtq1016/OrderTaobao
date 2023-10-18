@@ -1,9 +1,19 @@
-﻿/*using BaseScource.Data;
+﻿using BaseScource.Data;
 using BaseSource.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaseSource.BackendAPI.Services
 {
+    public interface IRepository<T> where T : BaseEntity
+    {
+        IEnumerable<T> GetAll();
+        T GetById(string id);
+        void Create(T entity, string user);
+        void Delete(T entity, string user);
+        void AbsoluteDelete(T entity);
+        void Update(T entity, string user);
+        void Save();
+    }
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly DataContext _context;
@@ -16,11 +26,11 @@ namespace BaseSource.BackendAPI.Services
 
         public IEnumerable<T> GetAll()
         {
-            return  entities.ToList();
+            return entities.ToList();
         }
-        public T GetById(Guid id)
+        public T GetById(string id)
         {
-            var customer = entities.FirstOrDefault(t =>  t.Id == id && t.Enable);
+            var customer = entities.FirstOrDefault(t => t.Id == id && t.Enable);
 
             if (customer == null)
                 return null!;
@@ -33,9 +43,7 @@ namespace BaseSource.BackendAPI.Services
             {
                 throw new ArgumentNullException("entity");
             }
-            entity.Id = Guid.NewGuid();
-            entity.CreatedAt = DateTime.Now;
-            entity.UpdatedAt = DateTime.Now;
+
             entity.CreatedBy = user;
             entity.UpdatedBy = user;
 
@@ -85,4 +93,3 @@ namespace BaseSource.BackendAPI.Services
         }
     }
 }
-*/

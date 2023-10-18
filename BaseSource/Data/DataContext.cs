@@ -2,6 +2,7 @@
 
 using BaseSource.Configurations;
 using BaseSource.Model;
+using BaseSource.Model.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +25,10 @@ namespace BaseScource.Data
         {
             base.OnModelCreating(modelBuilder);
 
-
-            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
 
             modelBuilder.Entity<User>().ToTable("USER");
             modelBuilder.Entity<IdentityRole>().ToTable("ROLE");
@@ -38,7 +38,7 @@ namespace BaseScource.Data
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("USER_TOKEN");
             modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("USER_LOGIN");
 
-            modelBuilder.Entity<IdentityRole>().HasData(
+/*            modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Customer", NormalizedName = "CUSTOMER" },
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Staff", NormalizedName = "STAFF" },
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Collaborator", NormalizedName = "COLLABORATOR" },
@@ -46,28 +46,21 @@ namespace BaseScource.Data
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Super Admin", NormalizedName = "SUPER ADMIN" },
                 new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Visitor", NormalizedName = "VISITOR" }
-            );
+            );*/
 
         }
         public DbSet<Category> Categories => Set<Category>();
-        /*  public DbSet<Customer> Customers => Set<Customer>();
-          public DbSet<Role> Roles => Set<Role>();
-          public DbSet<User> Users => Set<User>();
-          public DbSet<Admin> Admin => Set<Admin>();
-          public DbSet<UserRole> UserRole => Set<UserRole>();
-
-          public DbSet<Product> Products => Set<Product>();
-          public DbSet<Order> Orders => Set<Order>();
-          public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
-          public DbSet<Notification> Notifications => Set<Notification>();
-          public DbSet<Address> Address => Set<Address>();
-          public DbSet<Province> Provinces => Set<Province>();
-          public DbSet<Ward> Wards => Set<Ward>();
-          public DbSet<District> Districts => Set<District>();
-          public DbSet<AccessToken> AccessToken => Set<AccessToken>();
-          public DbSet<EmailVerify> EmailVerify => Set<EmailVerify>();
-          public DbSet<AuthHistory> AuthHistory => Set<AuthHistory>();
-          public DbSet<CustomerHistory> CustomerHistory => Set<CustomerHistory>();*/
+        public DbSet<Product> Products => Set<Product>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+        public DbSet<Notification> Notifications => Set<Notification>();
+        public DbSet<Address> Address => Set<Address>();
+        public DbSet<Province> Provinces => Set<Province>();
+        public DbSet<Ward> Wards => Set<Ward>();
+        public DbSet<District> Districts => Set<District>();
+        public DbSet<ResetPassword> ResetPassword => Set<ResetPassword>();
+        public DbSet<AuthHistory> AuthHistory => Set<AuthHistory>();
+        public DbSet<UserHistory> UserHistory => Set<UserHistory>();
 
     }
 }

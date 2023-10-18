@@ -13,7 +13,7 @@ namespace BaseSource.Model
 
         [Column("WARD_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Ward")]
-        public Guid WardId { get; set; }
+        public string WardId { get; set; }
         public Ward Ward { get; set; } = null!;
     }
 }

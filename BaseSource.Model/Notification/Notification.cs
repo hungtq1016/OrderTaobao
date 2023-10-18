@@ -13,15 +13,14 @@ namespace BaseSource.Model
         [Column("IS_READ")]
         public bool IsRead { get; set; } = false;
 
-        [Column("CUSTOMER_ID", TypeName = "varchar"), MaxLength(36)]
-        [ForeignKey("Customer")]
-        public Guid CustomerId { get; set; }
-
-        public Customer Customer { get; set; } = null!;
+        [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public User User { get; set; } = null!;
 
         [Column("ORDER_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Order")]
-        public Guid OrderID { get; set; }
+        public string OrderID { get; set; }
 
         public Order Order { get; set; } = null!;
     }

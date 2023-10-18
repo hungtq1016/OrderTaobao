@@ -7,6 +7,7 @@
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IAuthHistoryService, AuthHistoryService>();
             return services;
         }
     }

@@ -28,7 +28,7 @@ namespace BaseSource.Model
 
         [Column("CATEGORY_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Category")]
-        public Guid CategoryId { get; set; }
+        public string CategoryId { get; set; }
 
         public Category Category { get; set; } = null!;
         public ICollection<OrderDetail> Orders { get; } = new List<OrderDetail>();

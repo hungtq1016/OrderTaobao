@@ -10,11 +10,10 @@ namespace BaseSource.Model
         [Column("STATUS")]
         public int Status { get; set; } = 1;
 
-        [Column("CUSTOMER_ID", TypeName = "varchar"), MaxLength(36)]
-        [ForeignKey("Customer")]
-        public Guid CustomerId { get; set; }
-
-        public Customer Customer { get; set; } = null!;
+        [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public User User { get; set; } = null!;
 
         public Notification? Notification { get; set; }
 

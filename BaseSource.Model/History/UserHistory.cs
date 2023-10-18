@@ -4,26 +4,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BaseSource.Model
 {
     [Table("CUSTOMER_HISTORY")]
-    public class CustomerHistory
+    public class UserHistory
     {
+        public UserHistory()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID", TypeName = "varchar"), MaxLength(36)]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [Column("OLD_VALUE", TypeName = "nvarchar")]
         public string OldValue { get; set; } = string.Empty;
+        [Column("NEW_VALUE", TypeName = "nvarchar")]
+        public string NewValue { get; set; } = string.Empty;
 
         [Column("FIELD", TypeName = "nvarchar"), MaxLength(36)]
         public string Field { get; set; } = string.Empty;
 
-        [Column("UPDATED_AT")]
-        public DateTime UpdatedAt { get; set; }
+        [Column("MODIFIED_AT")]
+        public DateTime ModifiedAt { get; set; }
 
-        [Column("CUSTOMER_ID", TypeName = "varchar"), MaxLength(36)]
-        [ForeignKey("Customer")]
-        public Guid CustomerId { get; set; }
-        public Customer Customer { get; set; } = null!;
+        [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public User User { get; set; } = null!;
 
     }
 }

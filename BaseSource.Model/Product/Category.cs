@@ -15,7 +15,7 @@ namespace BaseSource.Model
 
         [Column("PARENT_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Parent")]
-        public Guid? ParentId { get; set; }
+        public string? ParentId { get; set; }
         public Category Parent { get; set; } = null!;
 
         public ICollection<Category> Children { get; } = new List<Category>();

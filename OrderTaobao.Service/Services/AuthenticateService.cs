@@ -10,19 +10,23 @@ namespace BaseSource.BackendAPI.Services
         Task<AuthenResponse> Register(RegisterRequest request, string role);
         Task<AuthenResponse> Login(LoginRequest request);
         Task<TokenResponse> RefreshToken(TokenRequest request);
-        Task<UserResponse> GetUserByToken(TokenRequest request);
+        Task<User> GetUserByToken(TokenRequest request);
+        Task<IList<string>> GetRolesByUser(User user);
+        bool IsPermission(IList<string> userRoles, IList<string> roles);
     }
 
     public class AuthenticateService : IAuthenticateService
     {
-        IAuthenticateRepository _authenRepo;
-        IConfiguration _configuration;
-        ITokenService _tokenService;
-        public AuthenticateService(IAuthenticateRepository authenRepo, IConfiguration configuration, ITokenService tokenService)
+        private readonly IAuthenticateRepository _authenRepo;
+        private readonly IConfiguration _configuration;
+        private readonly ITokenService _tokenService;
+        private readonly IAuthHistoryService _historyService;
+        public AuthenticateService(IAuthenticateRepository authenRepo, IConfiguration configuration, ITokenService tokenService, IAuthHistoryService historyService)
         {
             _authenRepo = authenRepo;
             _configuration = configuration;
             _tokenService = tokenService;
+            _historyService = historyService;
         }
         public async Task<AuthenResponse> Login(LoginRequest request)
         {
@@ -36,7 +40,7 @@ namespace BaseSource.BackendAPI.Services
 
                 //Generate token and add claims user info and role
                 TokenResponse token = _tokenService.CreateAccessToken(user, roles);
-
+                _historyService.CreateAuthHistory(user,"Đã đăng nhập");
 
                 return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công", Token = token };
             }
@@ -79,7 +83,7 @@ namespace BaseSource.BackendAPI.Services
 
             //Generate token and add claims user info and role
             TokenResponse token = _tokenService.CreateAccessToken(newUser, roles);
-
+            _historyService.CreateAuthHistory(newUser, "Đã đăng ký");
             return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Token = token };
         }
         public async Task<TokenResponse> RefreshToken(TokenRequest request)
@@ -98,29 +102,34 @@ namespace BaseSource.BackendAPI.Services
             };
 
         }
-        public async Task<UserResponse> GetUserByToken(TokenRequest request)
+        public async Task<User> GetUserByToken(TokenRequest request)
         {
             var principal = _tokenService.GetPrincipalFromExpiredToken(request.AccessToken!);
             if (principal is null)
             {
-                return new UserResponse
-                {
-                    Error = true,
-                    StatusCode = 200,
-                    Message = "Không tìm thấy",
-                };
+                return null!;
             }
             string id = principal!.Identity!.Name!;
             var user = await _authenRepo.ReadUserAsync(id);
-            UserResponse res =  new UserResponse
-            { 
-                Error = false,
-                StatusCode = 200,
-                Message = "Hoàn thành"
-            };
-            res.User.Add(user);
-            return res;
+            
+            return user;
         }
 
+        public async Task<IList<string>> GetRolesByUser(User user)
+        {
+            return await _authenRepo.GetRolesByUser(user);
+        }
+        public bool IsPermission(IList<string> userRoles, IList<string> roles)
+        {
+            for (int i = 0; i < userRoles.Count; i++)
+            {
+                if (roles.Any(x => x.ToLower() == userRoles[i].ToLower()))
+                {
+                    return true;
+                }
+                
+            }
+            return false;
+        }
     }
 }
