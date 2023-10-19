@@ -7,7 +7,7 @@ namespace Microsoft.Extensions
         public static IServiceCollection AddDataContext(this IServiceCollection services)
         {
             services.AddDbContext<DataContext>();
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
             return services;

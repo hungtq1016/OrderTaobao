@@ -569,6 +569,77 @@ namespace BaseSource.Migrations
                     b.ToTable("PROVINCES");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("ROLE", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "fb4af28a-2007-4fe0-9ca1-401f3ddcf4eb",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "3c697302-a6b9-42e2-96cb-112c674bf347",
+                            Name = "Staff",
+                            NormalizedName = "STAFF"
+                        },
+                        new
+                        {
+                            Id = "5657c1bf-61e6-4d6d-8ee5-7d1bec862119",
+                            Name = "Collaborator",
+                            NormalizedName = "COLLABORATOR"
+                        },
+                        new
+                        {
+                            Id = "b4ecad39-036c-4989-a586-1e09bb6dddd3",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "bc4c3c48-d1b7-4377-bb86-120e97130ff8",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "60cd38f7-5059-4e16-86e7-49b79310bc7c",
+                            Name = "Super Admin",
+                            NormalizedName = "SUPER ADMIN"
+                        },
+                        new
+                        {
+                            Id = "f31cce57-acfc-44a9-a67a-94efdcce8b73",
+                            Name = "Visitor",
+                            NormalizedName = "VISITOR"
+                        });
+                });
+
             modelBuilder.Entity("BaseSource.Model.User", b =>
                 {
                     b.Property<string>("Id")
@@ -759,33 +830,6 @@ namespace BaseSource.Migrations
                     b.ToTable("WARDS");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("ROLE", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -866,11 +910,17 @@ namespace BaseSource.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
+                    b.ToTable("AspNetUserRoles", (string)null);
 
-                    b.ToTable("USER_ROLE", (string)null);
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<string>");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -890,6 +940,15 @@ namespace BaseSource.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("USER_TOKEN", (string)null);
+                });
+
+            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<string>");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasDiscriminator().HasValue("UserRole");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Address", b =>
@@ -1030,7 +1089,7 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("BaseSource.Model.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1055,21 +1114,6 @@ namespace BaseSource.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BaseSource.Model.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("BaseSource.Model.User", null)
@@ -1077,6 +1121,25 @@ namespace BaseSource.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
+                {
+                    b.HasOne("BaseSource.Model.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Category", b =>
@@ -1106,6 +1169,11 @@ namespace BaseSource.Migrations
                     b.Navigation("Districts");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.Role", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("BaseSource.Model.User", b =>
                 {
                     b.Navigation("AuthHistory");
@@ -1115,6 +1183,8 @@ namespace BaseSource.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("ResetPassword");
+
+                    b.Navigation("Roles");
 
                     b.Navigation("UserHistory");
                 });

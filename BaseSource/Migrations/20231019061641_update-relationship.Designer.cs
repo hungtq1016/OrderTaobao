@@ -12,23 +12,22 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseSource.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231010154905_init")]
-    partial class init
+    [Migration("20231019061641_update-relationship")]
+    partial class updaterelationship
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BaseSource.Model.AccessToken", b =>
+            modelBuilder.Entity("BaseSource.Model.Address", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
@@ -42,28 +41,66 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
 
-                    b.Property<string>("CustomerId")
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("STREET");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.Property<string>("WardId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
-                        .HasColumnName("CUSTOMER_ID");
+                        .HasColumnName("WARD_ID");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WardId");
+
+                    b.ToTable("ADDRESS");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Auth.ResetPassword", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("EMAIL");
 
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
 
-                    b.Property<DateTime>("ExpireAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("EXPIRE_AT");
-
-                    b.Property<DateTime>("LastUsedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LAST_USED_AT");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("TOKEN");
+                    b.Property<bool>("IsVerify")
+                        .HasColumnType("bit")
+                        .HasColumnName("IS_VERIFY");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -76,16 +113,14 @@ namespace BaseSource.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId")
-                        .IsUnique();
+                    b.HasIndex("Email");
 
-                    b.ToTable("ACCESS_TOKEN");
+                    b.ToTable("RESET_PASSWORD");
                 });
 
             modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
@@ -105,12 +140,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CUSTOMER_ID");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -124,9 +153,15 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("UPDATED_BY");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AUTH_HISTORY");
                 });
@@ -134,7 +169,6 @@ namespace BaseSource.Migrations
             modelBuilder.Entity("BaseSource.Model.Category", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
@@ -189,136 +223,16 @@ namespace BaseSource.Migrations
                     b.ToTable("CATEGORIES");
                 });
 
-            modelBuilder.Entity("BaseSource.Model.Customer", b =>
+            modelBuilder.Entity("BaseSource.Model.District", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("bit")
-                        .HasColumnName("ENABLE");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("FIRST_NAME");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("LAST_NAME");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("RememberToken")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("REMEMBER_TOKEN");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email", "UserName");
-
-                    b.ToTable("CUSTOMERS");
-                });
-
-            modelBuilder.Entity("BaseSource.Model.CustomerHistory", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("ID");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CUSTOMER_ID");
-
-                    b.Property<string>("Field")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("FIELD");
-
-                    b.Property<string>("OldValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("OLD_VALUE");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("UPDATED_AT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("CUSTOMER_HISTORY");
-                });
-
-            modelBuilder.Entity("BaseSource.Model.EmailVerify", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("ID");
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("CODE");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -329,19 +243,39 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CUSTOMER_ID");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
 
-                    b.Property<bool>("IsVerify")
-                        .HasColumnType("bit")
-                        .HasColumnName("IS_VERIFY");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME");
+
+                    b.Property<string>("ProvinceId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("PROVINCE_ID");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("SLUG");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("TYPE");
+
+                    b.Property<string>("TypeSlug")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("TYPE_SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -352,22 +286,16 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("UPDATED_BY");
 
-                    b.Property<DateTime>("VerifyAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("VERIFY_AT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId")
-                        .IsUnique();
+                    b.HasIndex("ProvinceId");
 
-                    b.ToTable("EMAIL_VERIFY");
+                    b.ToTable("DISTRICTS");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Notification", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
@@ -386,12 +314,6 @@ namespace BaseSource.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CUSTOMER_ID");
 
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
@@ -416,13 +338,18 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("UPDATED_BY");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
 
-                    b.HasIndex("CustomerId")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderID")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("NOTIFICATIONS");
                 });
@@ -430,7 +357,6 @@ namespace BaseSource.Migrations
             modelBuilder.Entity("BaseSource.Model.Order", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
@@ -443,12 +369,6 @@ namespace BaseSource.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CUSTOMER_ID");
 
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
@@ -467,9 +387,15 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("UPDATED_BY");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ORDERS");
                 });
@@ -514,7 +440,6 @@ namespace BaseSource.Migrations
             modelBuilder.Entity("BaseSource.Model.Product", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
@@ -585,7 +510,69 @@ namespace BaseSource.Migrations
                     b.ToTable("PRODUCTS");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("BaseSource.Model.Province", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("CODE");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("SLUG");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("TYPE");
+
+                    b.Property<string>("TypeSlug")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("TYPE_SLUG");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PROVINCES");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Role", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -609,35 +596,54 @@ namespace BaseSource.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("ROLE", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a983a6a8-74fb-488a-bf04-3ea10437c3fb",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "21ab45c9-7eb9-4cfd-9f65-71f7fb2884c0",
+                            Name = "Staff",
+                            NormalizedName = "STAFF"
+                        },
+                        new
+                        {
+                            Id = "7262c661-bd9a-444c-a210-4f4989f2a2c4",
+                            Name = "Collaborator",
+                            NormalizedName = "COLLABORATOR"
+                        },
+                        new
+                        {
+                            Id = "dff84144-4c22-46b8-9d2b-a6d6a43febad",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "3634262c-12fc-4fcb-99b7-ea432794e81d",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "0e51a4d1-7599-4fee-878f-3d17148f422a",
+                            Name = "Super Admin",
+                            NormalizedName = "SUPER ADMIN"
+                        },
+                        new
+                        {
+                            Id = "6bc52709-a3ec-4ed4-bfdd-5aa6b2ed717d",
+                            Name = "Visitor",
+                            NormalizedName = "VISITOR"
+                        });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+            modelBuilder.Entity("BaseSource.Model.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -655,6 +661,14 @@ namespace BaseSource.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -679,6 +693,12 @@ namespace BaseSource.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -699,7 +719,143 @@ namespace BaseSource.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("USER", (string)null);
+                });
+
+            modelBuilder.Entity("BaseSource.Model.UserHistory", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<string>("Field")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("FIELD");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("MODIFIED_AT");
+
+                    b.Property<string>("NewValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NEW_VALUE");
+
+                    b.Property<string>("OldValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("OLD_VALUE");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CUSTOMER_HISTORY");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Ward", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("CODE");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<string>("DistrictId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("DISTRICT_ID");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("SLUG");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("TYPE");
+
+                    b.Property<string>("TypeSlug")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("TYPE_SLUG");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
+
+                    b.ToTable("WARDS");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("ROLE_CLAIM", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -724,7 +880,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("USER_CLAIM", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -746,7 +902,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("USER_LOGIN", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -757,11 +913,17 @@ namespace BaseSource.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<string>");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -780,29 +942,59 @@ namespace BaseSource.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("USER_TOKEN", (string)null);
                 });
 
-            modelBuilder.Entity("BaseSource.Model.AccessToken", b =>
+            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
                 {
-                    b.HasOne("BaseSource.Model.Customer", "Customer")
-                        .WithOne("AccessToken")
-                        .HasForeignKey("BaseSource.Model.AccessToken", "CustomerId")
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<string>");
+
+                    b.Property<string>("RoleId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("RoleId1");
+
+                    b.HasIndex("UserId1");
+
+                    b.HasDiscriminator().HasValue("UserRole");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Address", b =>
+                {
+                    b.HasOne("BaseSource.Model.Ward", "Ward")
+                        .WithMany("Address")
+                        .HasForeignKey("WardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("Ward");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Auth.ResetPassword", b =>
+                {
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("ResetPassword")
+                        .HasForeignKey("Email")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
                 {
-                    b.HasOne("BaseSource.Model.Customer", "Customer")
-                        .WithMany("AuthHistories")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("AuthHistory")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Category", b =>
@@ -815,56 +1007,45 @@ namespace BaseSource.Migrations
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("BaseSource.Model.CustomerHistory", b =>
+            modelBuilder.Entity("BaseSource.Model.District", b =>
                 {
-                    b.HasOne("BaseSource.Model.Customer", "Customer")
-                        .WithMany("CustomerHistories")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("BaseSource.Model.Province", "Province")
+                        .WithMany("Districts")
+                        .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("BaseSource.Model.EmailVerify", b =>
-                {
-                    b.HasOne("BaseSource.Model.Customer", "Customer")
-                        .WithOne("EmailVerify")
-                        .HasForeignKey("BaseSource.Model.EmailVerify", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
+                    b.Navigation("Province");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Notification", b =>
                 {
-                    b.HasOne("BaseSource.Model.Customer", "Customer")
-                        .WithOne("Notification")
-                        .HasForeignKey("BaseSource.Model.Notification", "CustomerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
                     b.HasOne("BaseSource.Model.Order", "Order")
                         .WithOne("Notification")
                         .HasForeignKey("BaseSource.Model.Notification", "OrderID")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Order", b =>
                 {
-                    b.HasOne("BaseSource.Model.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BaseSource.Model.OrderDetail", b =>
@@ -897,9 +1078,31 @@ namespace BaseSource.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.UserHistory", b =>
+                {
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("UserHistory")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Ward", b =>
+                {
+                    b.HasOne("BaseSource.Model.District", "District")
+                        .WithMany("Wards")
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("District");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("BaseSource.Model.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -908,7 +1111,7 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("BaseSource.Model.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -917,22 +1120,7 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("BaseSource.Model.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -941,11 +1129,38 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("BaseSource.Model.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
+                {
+                    b.HasOne("BaseSource.Model.Role", "Role")
+                        .WithMany("UserRole")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BaseSource.Model.Role", null)
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId1");
+
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("UserRole")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BaseSource.Model.User", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Category", b =>
@@ -953,17 +1168,9 @@ namespace BaseSource.Migrations
                     b.Navigation("Children");
                 });
 
-            modelBuilder.Entity("BaseSource.Model.Customer", b =>
+            modelBuilder.Entity("BaseSource.Model.District", b =>
                 {
-                    b.Navigation("AccessToken");
-
-                    b.Navigation("AuthHistories");
-
-                    b.Navigation("CustomerHistories");
-
-                    b.Navigation("EmailVerify");
-
-                    b.Navigation("Notification");
+                    b.Navigation("Wards");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Order", b =>
@@ -976,6 +1183,40 @@ namespace BaseSource.Migrations
             modelBuilder.Entity("BaseSource.Model.Product", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Province", b =>
+                {
+                    b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Role", b =>
+                {
+                    b.Navigation("UserRole");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.User", b =>
+                {
+                    b.Navigation("AuthHistory");
+
+                    b.Navigation("Notifications");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("ResetPassword");
+
+                    b.Navigation("Roles");
+
+                    b.Navigation("UserHistory");
+
+                    b.Navigation("UserRole");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Ward", b =>
+                {
+                    b.Navigation("Address");
                 });
 #pragma warning restore 612, 618
         }

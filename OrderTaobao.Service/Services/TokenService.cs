@@ -157,6 +157,7 @@ namespace BaseSource.BackendAPI.Services
             return token;
         }
 
+
         private int ExpiredTime()
         {
             _ = int.TryParse(_configuration["JWT:AccessTokenValidityInMinutes"], out int accessTokenValidityInMinutes);

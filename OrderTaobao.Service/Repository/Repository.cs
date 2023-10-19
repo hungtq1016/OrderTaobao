@@ -6,13 +6,13 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        IEnumerable<T> GetAll();
-        T GetById(string id);
-        void Create(T entity, string user);
-        void Delete(T entity, string user);
-        void AbsoluteDelete(T entity);
-        void Update(T entity, string user);
-        void Save();
+        Task<IEnumerable<T>> GetAll();
+        Task<T> GetById(string id);
+        Task Create(T entity, string user);
+        Task Delete(T entity, string user);
+        Task AbsoluteDelete(T entity);
+        Task Update(T entity, string user);
+        Task Save();
     }
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
@@ -24,20 +24,20 @@ namespace BaseSource.BackendAPI.Services
             entities = _context.Set<T>();
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return entities.ToList();
+            return await entities.ToListAsync();
         }
-        public T GetById(string id)
+        public async Task<T> GetById(string id)
         {
-            var customer = entities.FirstOrDefault(t => t.Id == id && t.Enable);
+            var customer = await entities.FirstOrDefaultAsync(t => t.Id == id && t.Enable);
 
             if (customer == null)
                 return null!;
             return customer;
         }
 
-        public void Create(T entity, string user = "admin")
+        public async Task Create(T entity, string user = "admin")
         {
             if (entity == null)
             {
@@ -47,11 +47,11 @@ namespace BaseSource.BackendAPI.Services
             entity.CreatedBy = user;
             entity.UpdatedBy = user;
 
-            entities.Add(entity);
-            Save();
+            await entities.AddAsync(entity);
+            await Save();
         }
 
-        public void Delete(T entity, string user = "admin")
+        public async Task Delete(T entity, string user = "admin")
         {
             if (entity == null)
             {
@@ -62,10 +62,10 @@ namespace BaseSource.BackendAPI.Services
             entity.UpdatedBy = user;
             entity.Enable = false;
 
-            Save();
+            await Save();
         }
 
-        public void AbsoluteDelete(T entity)
+        public async Task AbsoluteDelete(T entity)
         {
             if (entity == null)
             {
@@ -73,10 +73,10 @@ namespace BaseSource.BackendAPI.Services
             }
             entities.Remove(entity);
 
-            Save();
+            await Save();
         }
 
-        public void Update(T entity, string user)
+        public async Task Update(T entity, string user)
         {
             if (entity == null)
             {
@@ -85,11 +85,12 @@ namespace BaseSource.BackendAPI.Services
             entity.UpdatedAt = DateTime.Now;
             entity.UpdatedBy = user;
 
-            Save();
+            await Save();
         }
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
+
     }
 }

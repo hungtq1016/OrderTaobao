@@ -7,7 +7,7 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+
     public class AuthorizeController : ControllerBase
     {
         private readonly IAuthenticateService _authenService;
@@ -20,88 +20,42 @@ namespace BaseSource.BackendAPI.Controllers
 
         // POST: api/<AuthorizeController>
         [HttpPost]
-        [Route("admin-permission")]
-        public async Task<IActionResult> AdminPermission(TokenRequest request)
-        {
-            if (request is null)
-            {
-                return Ok();
-            }
-            List<string> roles = new List<string> { "Admin", "SuperAdmin", "Manager" };
-
-            var user = await _authenService.GetUserByToken(request);
-            var user_roles = await _authenService.GetRolesByUser(user);
-
-            var permission = _authenService.IsPermission(user_roles, roles);
-            var tokenValidate = _tokenService._isEmptyOrInvalid(request.AccessToken!);
-            bool isPermission = permission && !tokenValidate;
-            if (!isPermission)
-            {
-                return Ok(new
-                {
-                    User = false,
-                    IsPermission = false,
-                    Error = true,
-                    Message = "Không có quyền"
-                });
-
-            }
-            return Ok(new
-            {
-                User = new
-                {
-                    user.Id,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    user.UserName,
-                },
-                IsPermission = true,
-                Error = false,
-                Message = "Thành Công"
-            });
-        }
-
-        [HttpPost]
-        [Route("user-permission")]
+        [Route("permission")]
         public async Task<IActionResult> UserPermission(TokenRequest request)
         {
             if (request is null)
             {
                 return Ok();
             }
-            List<string> roles = new List<string> { "Admin", "SuperAdmim", "Staff", "Manager", "Collaborator", "Visitor", "Customer" };
+            List<string> roles = new List<string> { "Admin", "Super Admin", "Manager" };
 
             var user = await _authenService.GetUserByToken(request);
             var user_roles = await _authenService.GetRolesByUser(user);
-
-            var permission = _authenService.IsPermission(user_roles, roles);
+            var admin = _authenService.IsPermission(user_roles, roles);
             var tokenValidate = _tokenService._isEmptyOrInvalid(request.AccessToken!);
-            bool isPermission = permission && !tokenValidate;
+            bool isPermission = !tokenValidate;
             if (!isPermission)
             {
-                return Ok(new
-                {
-                    User = false,
-                    IsPermission = false,
-                    Error = true,
-                    Message = "Không có quyền"
-                });
+                return Ok(new PermissionResponse<UserResponse>
+                    { Data = null,
+                    Message = "Không Có Quyền",
+                    IsAuthen = false,
+                    AdminPermission = false,
+                    Error = true,StatusCode=401});
 
             }
-            return Ok(new
+            var result = new UserResponse
             {
-                User = new
-                {
-                    user.Id,
-                    user.FirstName,
-                    user.LastName,
-                    user.Email,
-                    user.UserName,
-                },
-                IsPermission = true,
-                Error = false,
-                Message = "Thành Công"
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Phone = user.UserName,
+         
+            };
+
+            return Ok(new PermissionResponse<UserResponse> { Data = result, Message = "Thành Công",IsAuthen = true,
+                AdminPermission = admin,
             });
         }
 

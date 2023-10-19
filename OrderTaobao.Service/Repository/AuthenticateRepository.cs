@@ -19,10 +19,10 @@ namespace BaseSource.BackendAPI.Services
     public class AuthenticateRepository : IAuthenticateRepository
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AuthenticateRepository(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
+        public AuthenticateRepository(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;

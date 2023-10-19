@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BaseScource.Data
 {
-    public class DataContext : IdentityDbContext<User, IdentityRole, string>
+    public class DataContext : IdentityDbContext<User, Role, string>
     {
         public DataContext() { }
 
@@ -29,24 +29,26 @@ namespace BaseScource.Data
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
             modelBuilder.Entity<User>().ToTable("USER");
-            modelBuilder.Entity<IdentityRole>().ToTable("ROLE");
-            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("USER_ROLE");
+            modelBuilder.Entity<Role>().ToTable("ROLE");
+            modelBuilder.Entity<UserRole>();
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("USER_CLAIM");
             modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("ROLE_CLAIM");
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("USER_TOKEN");
             modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("USER_LOGIN");
 
-/*            modelBuilder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Customer", NormalizedName = "CUSTOMER" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Staff", NormalizedName = "STAFF" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Collaborator", NormalizedName = "COLLABORATOR" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Manager", NormalizedName = "MANAGER" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Super Admin", NormalizedName = "SUPER ADMIN" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Visitor", NormalizedName = "VISITOR" }
-            );*/
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = Guid.NewGuid().ToString(), Name = "Customer", NormalizedName = "CUSTOMER" },
+                new Role { Id = Guid.NewGuid().ToString(), Name = "Staff", NormalizedName = "STAFF" },
+                new Role { Id = Guid.NewGuid().ToString(), Name = "Collaborator", NormalizedName = "COLLABORATOR" },
+                new Role { Id = Guid.NewGuid().ToString(), Name = "Manager", NormalizedName = "MANAGER" },
+                new Role { Id = Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" },
+                new Role { Id = Guid.NewGuid().ToString(), Name = "Super Admin", NormalizedName = "SUPER ADMIN" },
+                new Role { Id = Guid.NewGuid().ToString(), Name = "Visitor", NormalizedName = "VISITOR" }
+            );
 
         }
         public DbSet<Category> Categories => Set<Category>();

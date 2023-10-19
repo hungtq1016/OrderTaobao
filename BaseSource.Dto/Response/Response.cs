@@ -1,11 +1,21 @@
 ﻿
 namespace BaseSource.Dto
 {
-    public class Response
+    public class Response<T>
     {
-        public int StatusCode { get; set; }
-        public string? Message { get; set; } = string.Empty;
+        public Response()
+        {
+        }
+        public Response(T data)
+        {
+            Message = string.Empty;
+            Error = false;
+            Data = data;
+            StatusCode = 200;
+        }
+        public T Data { get; set; }
         public bool Error { get; set; }
-        public string? Data { get; set; } = string.Empty;
+        public string Message { get; set; }
+        public int StatusCode { get; set; }
     }
 }

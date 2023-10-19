@@ -14,5 +14,8 @@ namespace BaseSource.Model
         public ICollection<ResetPassword> ResetPassword { get; } = new List<ResetPassword>();
         public ICollection<Notification> Notifications { get; } = new List<Notification>();
         public ICollection<Order> Orders { get; } = new List<Order>();
+        //public virtual ICollection<UserRole> UserRole { get; set; }
+        public List<UserRole> Roles { get; } = new();
+
     }
 }

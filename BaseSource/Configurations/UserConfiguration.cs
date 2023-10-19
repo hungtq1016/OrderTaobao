@@ -13,15 +13,12 @@ namespace BaseSource.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
- /*           builder.HasMany(u => u.Notifications)
-       
-             .Use
-             .OnDelete(DeleteBehavior.ClientCascade);
+            // Each User can have many entries in the UserRole join table
+            builder.HasMany(e => e.Roles)
+                .WithOne(e => e.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
 
-            builder.HasOne(n => n.Order)
-            .WithOne(o => o.Notification)
-             .HasForeignKey<Notification>(n => n.OrderID)
-             .OnDelete(DeleteBehavior.ClientCascade);*/
         }
     }
    

@@ -1,6 +1,6 @@
 ﻿namespace BaseSource.Model
 {
-    public class UserRoles
+    public class RolePermission
     {
         public const string Admin = "Admin";
         public const string Manager = "Manager";

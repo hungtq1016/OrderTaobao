@@ -8,16 +8,18 @@ namespace BaseSource.BackendAPI.Controllers
     public class AuthenticateController : ControllerBase
     {
         private readonly IAuthenticateService _authenService;
-        
-        public AuthenticateController(IAuthenticateService authenService)
+        private readonly IAuthHistoryService _historyService;
+
+        public AuthenticateController(IAuthenticateService authenService, IAuthHistoryService historyService)
         {
             _authenService = authenService;
+            _historyService = historyService;
         }
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            AuthenResponse result = await _authenService.Login(request);
+            var result = await _authenService.Login(request);
             
             if (result.Error)
             {
@@ -33,7 +35,7 @@ namespace BaseSource.BackendAPI.Controllers
         [Route("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            AuthenResponse result = await _authenService.Register(request, UserRoles.Customer);
+            var result = await _authenService.Register(request, RolePermission.Customer);
             if (result.Error)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, result);
@@ -42,6 +44,14 @@ namespace BaseSource.BackendAPI.Controllers
             {
                 return Ok(result);
             }
+        }
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> LogOut(TokenRequest request)
+        {
+            var user = await _authenService.GetUserByToken(request);
+            await _historyService.CreateAuthHistory(user,"Đã đăng xuất");
+            return Ok();
         }
 
         [HttpPost]

@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BaseSource.Helper\BaseSource.Helper.csproj" />
     <ProjectReference Include="..\BaseSource.Infrastructure\BaseSource.Infrastructure.csproj" />
     <ProjectReference Include="..\OrderTaobao.Service\BaseSource.BackendAPI.Services.csproj" />
   </ItemGroup>

@@ -6,7 +6,7 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IAuthHistoryService
     {
-        void CreateAuthHistory(User user, string content);
+        Task CreateAuthHistory(User user, string content);
     }
     public class AuthHistoryService : IAuthHistoryService
     {
@@ -17,12 +17,12 @@ namespace BaseSource.BackendAPI.Services
             _configuration = configuration;
             _rootRepo = rootRepo;
         }
-        public void CreateAuthHistory(User user,string content)
+        public async Task CreateAuthHistory(User user,string content)
         {
             AuthHistory history = new AuthHistory();
             history.UserId = user.Id;
             history.Content = content;
-            _rootRepo.Create(history,user.UserName!);
+            await _rootRepo.Create(history,user.UserName!);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+
 using BaseSource.Dto;
 using BaseSource.Model;
 using Microsoft.Extensions.Configuration;
@@ -7,9 +8,9 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IAuthenticateService
     {
-        Task<AuthenResponse> Register(RegisterRequest request, string role);
-        Task<AuthenResponse> Login(LoginRequest request);
-        Task<TokenResponse> RefreshToken(TokenRequest request);
+        Task<Response<TokenResponse>> Login(LoginRequest request);
+        Task<Response<TokenResponse>> Register(RegisterRequest request, string role);
+        Task<Response<TokenResponse>> RefreshToken(TokenRequest request);
         Task<User> GetUserByToken(TokenRequest request);
         Task<IList<string>> GetRolesByUser(User user);
         bool IsPermission(IList<string> userRoles, IList<string> roles);
@@ -28,7 +29,7 @@ namespace BaseSource.BackendAPI.Services
             _tokenService = tokenService;
             _historyService = historyService;
         }
-        public async Task<AuthenResponse> Login(LoginRequest request)
+        public async Task<Response<TokenResponse>> Login(LoginRequest request)
         {
             //Check if username exists
             var user = await _authenRepo.UserExists(request.UserName);
@@ -40,24 +41,24 @@ namespace BaseSource.BackendAPI.Services
 
                 //Generate token and add claims user info and role
                 TokenResponse token = _tokenService.CreateAccessToken(user, roles);
-                _historyService.CreateAuthHistory(user,"Đã đăng nhập");
+                await _historyService.CreateAuthHistory(user, "Đã đăng nhập");
 
-                return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng nhập thành công", Token = token };
+                return new Response<TokenResponse>{Data = token, Message= "Đăng Nhập Thành Công" }; ;
             }
 
             //If null return error
-            return new AuthenResponse { Error = true, StatusCode = 500, Message = "Tài khoản hoặc mật khẩu không chính xác!", Data = null! };
+            return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Có Lỗi Xảy Ra", Data = null! };
         }
 
-        public async Task<AuthenResponse> Register(RegisterRequest request, string role = UserRoles.Customer)
+        public async Task<Response<TokenResponse>> Register(RegisterRequest request, string role = RolePermission.Customer)
         {
             // Check if email or username exists
             var user = await _authenRepo.UserExists(request.UserName);
             var email = await _authenRepo.EmailExists(request.Email);
             if (user != null)
-                return new AuthenResponse { Error = true, StatusCode = 500, Message = "Tài khoản đã tồn tại!", Data = null! };
+                return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Tài khoản đã tồn tại!", Data = null! };
             if (email != null)
-                return new AuthenResponse { Error = true, StatusCode = 500, Message = "Email đã tồn tại!", Data = null! };
+                return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Email đã tồn tại!", Data = null! };
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
@@ -66,9 +67,13 @@ namespace BaseSource.BackendAPI.Services
             //If all pass then create new user
             User newUser = new()
             {
+                Id = Guid.NewGuid().ToString()  ,
                 Email = request.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = request.UserName,
+                FirstName = request.FirstName,
+                PhoneNumber = request.Phone,
+                LastName = request.LastName,
                 RefreshToken = refreshToken,
                 RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
             };
@@ -76,30 +81,32 @@ namespace BaseSource.BackendAPI.Services
 
             //Return any errors if have when create like (password incorrect, phone,....) 
             if (!result.Succeeded)
-                return new AuthenResponse { Error = true, StatusCode = 500, Message = "Có lỗi xảy ra! Thử lại sao ít phút", Data = result.ToString() };
+                return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Có Lỗi Xảy Ra", Data = null! };
 
             //Get all roles and permission by user
             var roles = await _authenRepo.GetRolesByUser(newUser);
 
             //Generate token and add claims user info and role
             TokenResponse token = _tokenService.CreateAccessToken(newUser, roles);
-            _historyService.CreateAuthHistory(newUser, "Đã đăng ký");
-            return new AuthenResponse { Error = false, StatusCode = 200, Message = "Đăng ký thành công", Token = token };
+            await _historyService.CreateAuthHistory(newUser, "Đã đăng ký");
+            return new Response<TokenResponse> { Message = "Đăng ký thành công", Data = token };
         }
-        public async Task<TokenResponse> RefreshToken(TokenRequest request)
+        public async Task<Response<TokenResponse>> RefreshToken(TokenRequest request)
         {
             if (_tokenService._isEmptyOrInvalid(request.AccessToken!))
             {
-                return  await _tokenService.CreateNewAccessToken(request!);
+                var result =  await _tokenService.CreateNewAccessToken(request!);
+                return new Response<TokenResponse> { Message = "Thành công", Data = result };
             }
 
-            return new TokenResponse
+            TokenResponse token =  new TokenResponse
             {
                 AccessToken = request.AccessToken!,
                 RefreshToken = request.RefreshToken!,
                 ExpiredAt = DateTime.Now,
                 TokenType = "Bearer"
             };
+            return new Response<TokenResponse> { Message = "Còn hạn sử dụng", Data = token };
 
         }
         public async Task<User> GetUserByToken(TokenRequest request)
