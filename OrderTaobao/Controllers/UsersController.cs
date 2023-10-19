@@ -32,6 +32,7 @@ namespace BaseSource.BackendAPI.Controllers
             var totalRecords = await _context.Users.CountAsync();
             var users = await _context.Users.Select(u=>new UserResponse
             {
+                Id = u.Id,  
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
@@ -60,7 +61,7 @@ namespace BaseSource.BackendAPI.Controllers
  
             return Ok(new
             {
-                user.FirstName,
+                user,
                 Roles = _userManager.GetRolesAsync(user).Result,
             }); ;
         }

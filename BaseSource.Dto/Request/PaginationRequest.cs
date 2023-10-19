@@ -13,7 +13,7 @@ namespace BaseSource.Dto
         public PaginationRequest(int pageNumber, int pageSize)
         {
             PageNumber = pageNumber < 1 ? 1 : pageNumber;
-            PageSize = pageSize > 10 ? 10 : pageSize;
+            PageSize = pageSize > 100 ? 100 : pageSize;
         }
     }
 }
