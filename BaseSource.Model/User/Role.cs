@@ -7,6 +7,6 @@ namespace BaseSource.Model
     {
         //public virtual ICollection<UserRole> UserRole { get; set; }
 
-        public List<UserRole> Users { get; } = new();
+        public List<AspNetUserRoles> Users { get; } = new();
     }
 }

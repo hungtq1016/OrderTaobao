@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BaseSource.Model;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace BaseSource.Configurations
 {
@@ -18,7 +19,10 @@ namespace BaseSource.Configurations
                 .WithOne(e => e.User)
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
-
+            builder.HasMany(u => u.Orders)
+                .WithOne(o => o.User)
+                .HasForeignKey(u => u.UserId)
+                .IsRequired();
         }
     }
    

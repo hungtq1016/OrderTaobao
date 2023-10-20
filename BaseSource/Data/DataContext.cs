@@ -34,7 +34,7 @@ namespace BaseScource.Data
 
             modelBuilder.Entity<User>().ToTable("USER");
             modelBuilder.Entity<Role>().ToTable("ROLE");
-            modelBuilder.Entity<UserRole>();
+            modelBuilder.Entity<AspNetUserRoles>();
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("USER_CLAIM");
             modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("ROLE_CLAIM");
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("USER_TOKEN");

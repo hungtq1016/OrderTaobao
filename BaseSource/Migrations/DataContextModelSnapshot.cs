@@ -598,43 +598,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fb4af28a-2007-4fe0-9ca1-401f3ddcf4eb",
+                            Id = "2e487a96-4fbd-4b84-8875-b80b9175c77e",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "3c697302-a6b9-42e2-96cb-112c674bf347",
+                            Id = "518790cd-7bca-4d18-8880-f0d5a00744d9",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "5657c1bf-61e6-4d6d-8ee5-7d1bec862119",
+                            Id = "69d40ab8-cae5-4ff8-9cf5-3639bd69a0d3",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "b4ecad39-036c-4989-a586-1e09bb6dddd3",
+                            Id = "bcdc8f64-d5de-4e41-9e8e-856615c03757",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "bc4c3c48-d1b7-4377-bb86-120e97130ff8",
+                            Id = "98354782-8c02-47cb-8b4c-c12749e2e462",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "60cd38f7-5059-4e16-86e7-49b79310bc7c",
+                            Id = "6001b42e-8c5e-4ff5-ab8b-ca948db4b3c3",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "f31cce57-acfc-44a9-a67a-94efdcce8b73",
+                            Id = "5499e708-365b-4642-b215-69d9ff43c6d0",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });
@@ -657,6 +657,9 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Enable")
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
@@ -942,13 +945,13 @@ namespace BaseSource.Migrations
                     b.ToTable("USER_TOKEN", (string)null);
                 });
 
-            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
+            modelBuilder.Entity("BaseSource.Model.AspNetUserRoles", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<string>");
 
                     b.HasIndex("RoleId");
 
-                    b.HasDiscriminator().HasValue("UserRole");
+                    b.HasDiscriminator().HasValue("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Address", b =>
@@ -1123,7 +1126,7 @@ namespace BaseSource.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
+            modelBuilder.Entity("BaseSource.Model.AspNetUserRoles", b =>
                 {
                     b.HasOne("BaseSource.Model.Role", "Role")
                         .WithMany("Users")

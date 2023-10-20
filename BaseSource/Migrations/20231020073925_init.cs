@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BaseSource.Migrations
 {
     /// <inheritdoc />
-    public partial class INIT : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -81,6 +81,7 @@ namespace BaseSource.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Enable = table.Column<bool>(type: "bit", nullable: false,defaultValue:true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -471,13 +472,13 @@ namespace BaseSource.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "030b47f8-c474-4800-9962-78d57afaeff8", null, "Visitor", "VISITOR" },
-                    { "1416ad8d-5c17-4fa0-818d-27e2ad2a0469", null, "Super Admin", "SUPER ADMIN" },
-                    { "47bea134-c5fc-4815-8db6-426614ef36ab", null, "Staff", "STAFF" },
-                    { "79fc02d3-bd5a-493a-a084-294e34677184", null, "Manager", "MANAGER" },
-                    { "a28825ba-35c7-4ebd-a771-7bd295aa884b", null, "Admin", "ADMIN" },
-                    { "b8b8dee8-1939-4ed8-9eda-4500d4b566fc", null, "Customer", "CUSTOMER" },
-                    { "ec203b2e-7fba-4a7b-a30b-82527b0c0deb", null, "Collaborator", "COLLABORATOR" }
+                    { "2e487a96-4fbd-4b84-8875-b80b9175c77e", null, "Customer", "CUSTOMER" },
+                    { "518790cd-7bca-4d18-8880-f0d5a00744d9", null, "Staff", "STAFF" },
+                    { "5499e708-365b-4642-b215-69d9ff43c6d0", null, "Visitor", "VISITOR" },
+                    { "6001b42e-8c5e-4ff5-ab8b-ca948db4b3c3", null, "Super Admin", "SUPER ADMIN" },
+                    { "69d40ab8-cae5-4ff8-9cf5-3639bd69a0d3", null, "Collaborator", "COLLABORATOR" },
+                    { "98354782-8c02-47cb-8b4c-c12749e2e462", null, "Admin", "ADMIN" },
+                    { "bcdc8f64-d5de-4e41-9e8e-856615c03757", null, "Manager", "MANAGER" }
                 });
 
             migrationBuilder.CreateIndex(

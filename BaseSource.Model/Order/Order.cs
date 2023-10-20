@@ -13,7 +13,7 @@ namespace BaseSource.Model
         [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
         [ForeignKey("User")]
         public string UserId { get; set; }
-        public User User { get; set; } = null!;
+        public User User { get; set; } 
 
         public Notification? Notification { get; set; }
 

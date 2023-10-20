@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using BaseSource.Helper;
-
+using BaseSource.Dto;
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -52,30 +52,60 @@ namespace BaseSource.BackendAPI.Controllers
           {
               return NotFound();
           }
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Where(u=>u.Id==id).Include(u=>u.Orders).ThenInclude(o=>o.Details).Include(u => u.Notifications).FirstOrDefaultAsync();
             if (user == null)
-            {
                 return NotFound();
-            }
-            
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var orders = await _context.Orders.Where(o => o.UserId == id).ToListAsync();
+            var notifications = await _context.Notifications.Where(o => o.UserId == id).ToListAsync();
+
+            UserDetailResponse u = new UserDetailResponse {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                Phone = user.PhoneNumber,  
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Enable = user.Enable,
+                EmailConfirmed = user.EmailConfirmed,         
+                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                TwoFactorEnabled = user.TwoFactorEnabled,             
+            };
  
-            return Ok(new
+            return Ok(new Response<UserShowResponse>
             {
-                user,
-                Roles = _userManager.GetRolesAsync(user).Result,
-            }); ;
+                Data = new UserShowResponse
+                {
+                    User = u,
+                    Notifications = notifications,
+                    Orders = orders,
+                    Roles = roles
+                },
+                Message  = "Thành Công", 
+                StatusCode = 200
+            });
         }
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(string id, User user)
+        public async Task<IActionResult> PutUser(string id, UserResponse request)
         {
-            if (id != user.Id)
+            if (id != request.Id)
             {
                 return BadRequest();
             }
 
+            var user = await _context.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                user.UserName =  request.UserName;
+                user.PhoneNumber = request.Phone;
+                user.FirstName = request.FirstName;
+                user.LastName = request.LastName;
+                user.Email = request.Email;
+            }
             _context.Entry(user).State = EntityState.Modified;
 
             try
@@ -100,12 +130,24 @@ namespace BaseSource.BackendAPI.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(RegisterRequest request)
         {
           if (_context.Users == null)
           {
               return Problem("Entity set 'DataContext.Users'  is null.");
           }
+            User user = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = request.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = request.UserName,
+                FirstName = request.FirstName,
+                PhoneNumber = request.Phone,
+                LastName = request.LastName,
+                RefreshToken = Guid.NewGuid().ToString(),
+                RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+            };
             _context.Users.Add(user);
             try
             {

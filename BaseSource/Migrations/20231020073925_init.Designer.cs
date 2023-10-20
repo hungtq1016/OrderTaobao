@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseSource.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231018175524_INIT")]
-    partial class INIT
+    [Migration("20231020073925_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -601,43 +601,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b8b8dee8-1939-4ed8-9eda-4500d4b566fc",
+                            Id = "2e487a96-4fbd-4b84-8875-b80b9175c77e",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "47bea134-c5fc-4815-8db6-426614ef36ab",
+                            Id = "518790cd-7bca-4d18-8880-f0d5a00744d9",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "ec203b2e-7fba-4a7b-a30b-82527b0c0deb",
+                            Id = "69d40ab8-cae5-4ff8-9cf5-3639bd69a0d3",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "79fc02d3-bd5a-493a-a084-294e34677184",
+                            Id = "bcdc8f64-d5de-4e41-9e8e-856615c03757",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "a28825ba-35c7-4ebd-a771-7bd295aa884b",
+                            Id = "98354782-8c02-47cb-8b4c-c12749e2e462",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1416ad8d-5c17-4fa0-818d-27e2ad2a0469",
+                            Id = "6001b42e-8c5e-4ff5-ab8b-ca948db4b3c3",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "030b47f8-c474-4800-9962-78d57afaeff8",
+                            Id = "5499e708-365b-4642-b215-69d9ff43c6d0",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });
@@ -660,6 +660,9 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Enable")
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
@@ -945,13 +948,13 @@ namespace BaseSource.Migrations
                     b.ToTable("USER_TOKEN", (string)null);
                 });
 
-            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
+            modelBuilder.Entity("BaseSource.Model.AspNetUserRoles", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<string>");
 
                     b.HasIndex("RoleId");
 
-                    b.HasDiscriminator().HasValue("UserRole");
+                    b.HasDiscriminator().HasValue("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Address", b =>
@@ -1126,7 +1129,7 @@ namespace BaseSource.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BaseSource.Model.UserRole", b =>
+            modelBuilder.Entity("BaseSource.Model.AspNetUserRoles", b =>
                 {
                     b.HasOne("BaseSource.Model.Role", "Role")
                         .WithMany("Users")
