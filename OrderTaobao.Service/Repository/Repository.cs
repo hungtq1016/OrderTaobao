@@ -46,6 +46,9 @@ namespace BaseSource.BackendAPI.Services
 
             entity.CreatedBy = user;
             entity.UpdatedBy = user;
+            entity.CreatedAt = DateTime.Now;
+            entity.UpdatedAt = DateTime.Now;
+            entity.Enable = true;
 
             await entities.AddAsync(entity);
             await Save();

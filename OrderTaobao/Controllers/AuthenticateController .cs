@@ -9,11 +9,13 @@ namespace BaseSource.BackendAPI.Controllers
     {
         private readonly IAuthenticateService _authenService;
         private readonly IAuthHistoryService _historyService;
+        private readonly IUserService _userService;
 
-        public AuthenticateController(IAuthenticateService authenService, IAuthHistoryService historyService)
+        public AuthenticateController(IAuthenticateService authenService, IAuthHistoryService historyService, IUserService userService)
         {
             _authenService = authenService;
             _historyService = historyService;
+            _userService = userService;
         }
         [HttpPost]
         [Route("login")]
@@ -67,7 +69,21 @@ namespace BaseSource.BackendAPI.Controllers
             return Ok(result);
         }
 
-        
+        [HttpPost]
+        [Route("reset-password")]
+        public async Task<ActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            var result = await _userService.UpdatePassword(request);
+            if (result)
+            {
+                return Ok(new Response<bool>(true));
+            }
+            else
+            {
+                return Ok(new Response<bool> { Data = false, Error = true, Message = "Có lỗi xảy ra", StatusCode = 200 });
+            }
+
+        }
 
     }
 }

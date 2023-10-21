@@ -1,5 +1,4 @@
-﻿using BaseSource.Model.Auth;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace BaseSource.Model
 {

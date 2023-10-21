@@ -2,7 +2,6 @@
 
 using BaseSource.Configurations;
 using BaseSource.Model;
-using BaseSource.Model.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

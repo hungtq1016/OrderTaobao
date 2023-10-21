@@ -8,7 +8,7 @@ namespace BaseSource.Dto
         }
         public Response(T data)
         {
-            Message = string.Empty;
+            Message = "Thành Công!";
             Error = false;
             Data = data;
             StatusCode = 200;

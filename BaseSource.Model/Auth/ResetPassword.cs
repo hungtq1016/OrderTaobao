@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BaseSource.Model.Auth
+namespace BaseSource.Model
 {
     [Table("RESET_PASSWORD")]
     public class ResetPassword : BaseEntity
