@@ -1,5 +1,7 @@
 ﻿
 
+using Basesource.Constants;
+using BaseSource.Builder;
 using BaseSource.Dto;
 using BaseSource.Model;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,7 @@ namespace BaseSource.BackendAPI.Services
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
         private readonly IAuthHistoryService _historyService;
+
         public AuthenticateService(IAuthenticateRepository authenRepo, IConfiguration configuration, ITokenService tokenService, IAuthHistoryService historyService)
         {
             _authenRepo = authenRepo;
@@ -29,74 +32,73 @@ namespace BaseSource.BackendAPI.Services
             _tokenService = tokenService;
             _historyService = historyService;
         }
+
         public async Task<Response<TokenResponse>> Login(LoginRequest request)
         {
-            //Check if username exists
-            var user = await _authenRepo.UserExists(request.UserName);
+            User isUserNameExists = await _authenRepo.UserExists(request.UserName);
+            bool isPasswordCorrect = await _authenRepo.IsPasswordValid(isUserNameExists, request.Password);
 
-            if (user != null && await _authenRepo.IsPasswordValid(user, request.Password))
+            if (isUserNameExists is not null && isPasswordCorrect)
             {
-                //Get all roles and permission by user
-                var roles = await _authenRepo.GetRolesByUser(user);
+                IList<string> roles = await _authenRepo.GetRolesByUser(isUserNameExists);
 
-                //Generate token and add claims user info and role
-                TokenResponse token = _tokenService.CreateAccessToken(user, roles);
-                await _historyService.CreateAuthHistory(user, "Đã đăng nhập");
+                TokenResponse token = _tokenService.CreateAccessToken(isUserNameExists, roles);
 
-                return new Response<TokenResponse>{Data = token, Message= "Đăng Nhập Thành Công" }; ;
+                await _historyService.CreateAuthHistory(isUserNameExists, UserConstant.Login);
+
+                return ResponseHelper.CreateSuccessResponse<TokenResponse>(token);
             }
 
-            //If null return error
-            return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Có Lỗi Xảy Ra", Data = null! };
+            return ResponseHelper.CreateErrorResponse<TokenResponse>(404, "Username or password is invalid");
         }
 
         public async Task<Response<TokenResponse>> Register(RegisterRequest request, string role = RolePermission.Customer)
         {
-            // Check if email or username exists
-            var user = await _authenRepo.UserExists(request.UserName);
-            var email = await _authenRepo.EmailExists(request.Email);
-            if (user != null)
-                return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Tài khoản đã tồn tại!", Data = null! };
-            if (email != null)
-                return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Email đã tồn tại!", Data = null! };
-            var refreshToken = _tokenService.GenerateRefreshToken();
+         
+            User isUserNameExists = await _authenRepo.UserExists(request.UserName);
+            User isEmailExists = await _authenRepo.EmailExists(request.Email);
 
-            _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+            if (isUserNameExists is not null)
+                return ResponseHelper.CreateErrorResponse<TokenResponse>(409, "Username is already exists");
 
+            if (isEmailExists is not null)
+                return ResponseHelper.CreateErrorResponse<TokenResponse>(409, "Email is already exists");
 
-            //If all pass then create new user
-            User newUser = new()
-            {
-                Id = Guid.NewGuid().ToString()  ,
-                Email = request.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = request.UserName,
-                FirstName = request.FirstName,
-                PhoneNumber = request.Phone,
-                LastName = request.LastName,
-                RefreshToken = refreshToken,
-                RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays)
-            };
-            var result = await _authenRepo.CreateUserAsync(newUser, request.Password, role);
+            string refreshToken = _tokenService.GenerateRefreshToken();
 
-            //Return any errors if have when create like (password incorrect, phone,....) 
+            User user = new UserBuilder(_configuration)
+                .WithId()
+                .WithUserName(request.UserName)
+                .WithEmail(request.Email)
+                .WithFirstName(request.FirstName)
+                .WithLastName(request.LastName)
+                .WithPhone(request.Phone)
+                .WithRefreshToken(refreshToken)
+                .WithSecurityStamp()
+                .Build();
+
+            var result = await _authenRepo.CreateUserAsync(user, request.Password, role);
+
             if (!result.Succeeded)
-                return new Response<TokenResponse> { Error = true, StatusCode = 500, Message = "Có Lỗi Xảy Ra", Data = null! };
+                return ResponseHelper.CreateErrorResponse<TokenResponse>(500, "The server cannot process the request for an unknown reason");
 
-            //Get all roles and permission by user
-            var roles = await _authenRepo.GetRolesByUser(newUser);
+            var roles = await _authenRepo.GetRolesByUser(user);
 
-            //Generate token and add claims user info and role
-            TokenResponse token = _tokenService.CreateAccessToken(newUser, roles);
-            await _historyService.CreateAuthHistory(newUser, "Đã đăng ký");
-            return new Response<TokenResponse> { Message = "Đăng ký thành công", Data = token };
+            TokenResponse token = _tokenService.CreateAccessToken(user, roles);
+
+            await _historyService.CreateAuthHistory(user, UserConstant.Register);
+
+            return ResponseHelper.CreateCreatedResponse<TokenResponse>(token);
         }
+
         public async Task<Response<TokenResponse>> RefreshToken(TokenRequest request)
         {
-            if (_tokenService._isEmptyOrInvalid(request.AccessToken!))
+            bool isValidToken = _tokenService._isEmptyOrInvalid(request.AccessToken!);
+
+            if (isValidToken)
             {
-                var result =  await _tokenService.CreateNewAccessToken(request!);
-                return new Response<TokenResponse> { Message = "Thành công", Data = result };
+                TokenResponse tokenResponse =  await _tokenService.CreateNewAccessToken(request!);
+                return ResponseHelper.CreateCreatedResponse<TokenResponse>(tokenResponse);
             }
 
             TokenResponse token =  new TokenResponse
@@ -106,9 +108,11 @@ namespace BaseSource.BackendAPI.Services
                 ExpiredAt = DateTime.Now,
                 TokenType = "Bearer"
             };
-            return new Response<TokenResponse> { Message = "Còn hạn sử dụng", Data = token };
+
+            return ResponseHelper.CreateSuccessResponse<TokenResponse>(token);
 
         }
+
         public async Task<User> GetUserByToken(TokenRequest request)
         {
             var principal = _tokenService.GetPrincipalFromExpiredToken(request.AccessToken!);
@@ -126,6 +130,7 @@ namespace BaseSource.BackendAPI.Services
         {
             return await _authenRepo.GetRolesByUser(user);
         }
+
         public bool IsPermission(IList<string> userRoles, IList<string> roles)
         {
             for (int i = 0; i < userRoles.Count; i++)

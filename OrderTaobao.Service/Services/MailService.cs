@@ -4,44 +4,51 @@ using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using MimeKit;
 using BaseSource.Model;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Services
 {
     public interface IMailService
     {
-        Task<bool> SendMail(MailRequest request);
-
+        Task<Response<bool>> SendMail(string request);
     }
 
     public class MailService : IMailService
     {
         private readonly UserManager<User> _userManager;
         private readonly IRepository<ResetPassword> _repository;
+
         public MailService(UserManager<User> userManager,IRepository<ResetPassword> repository)
         {
             _userManager = userManager;
             _repository = repository;
         }
-        public async Task<bool> SendMail(MailRequest request)
+
+        public async Task<Response<bool>> SendMail(string request)
         {
-           
+            MailRequest mailRequest = new MailRequest
+            {
+                From = "hungtq1016@gmail.com",
+                To = request,
+                Subject = "Change your password",
+                Body = "We have processed your password change request. If you are the one who submitted this request, please click on the link below to change your password."
+            };
+
             try
             {
-                var id = await CreateEmailConfirm(request.To);
+                var id = await CreateEmailConfirm(mailRequest.To);
+
                 if (id is null)
-                {
-                    return false;
-                }
+                    return ResponseHelper.CreateErrorResponse<bool>(404, "Email not found");
+
                 var email = new MimeMessage();
 
-                email.From.Add(new MailboxAddress("OrderTaobao Website", request.From));
-                email.To.Add(new MailboxAddress("Receiver Name", request.To));
+                email.From.Add(new MailboxAddress("OrderTaobao Website", mailRequest.From));
+                email.To.Add(new MailboxAddress("Gửi", mailRequest.To));
 
-                email.Subject = request.Subject;
+                email.Subject = mailRequest.Subject;
                 var bodyBuilder = new BodyBuilder();
 
-                bodyBuilder.HtmlBody = TemplateMail(request, id);
+                bodyBuilder.HtmlBody = TemplateMail(mailRequest, id);
                 email.Body = bodyBuilder.ToMessageBody();
 
                 using (var smtp = new SmtpClient())
@@ -53,28 +60,28 @@ namespace BaseSource.BackendAPI.Services
                     smtp.Send(email);
                     smtp.Disconnect(true);
                 }
-                
-
             }
             catch (Exception ex)
             {
                 //Error
                 Console.WriteLine(ex.Message);
-               
+                ResponseHelper.CreateErrorResponse<bool>(500, "The server cannot process the request for an unknown reason");
             }
-            return true;
+            return ResponseHelper.CreateCreatedResponse<bool>(true);
         }
+
         private async Task<string> CreateEmailConfirm(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            if (user == null)
+            if (user is null)
                 return null;
             ResetPassword resetPassword = new ResetPassword
             {
                 Id = Guid.NewGuid().ToString(),
                 Email = email,
                 IsVerify = false,
+                ExpiredTime = DateTime.Now.AddMinutes(30),
                 User = user,
 
             };

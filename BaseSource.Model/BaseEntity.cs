@@ -5,16 +5,11 @@ namespace BaseSource.Model
 {
     public abstract class BaseEntity
     {
-        public BaseEntity()
-        {
-            Id = Guid.NewGuid().ToString();
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-            Enable = true;
-        }
+
         [Key]
         [Column("ID", TypeName = "varchar"), MaxLength(36)]
         public string Id { get; set; }
+
         [Column("CREATED_AT")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

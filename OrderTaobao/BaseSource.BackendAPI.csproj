@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BaseSource.Builder\BaseSource.Builder.csproj" />
     <ProjectReference Include="..\BaseSource.Dto\BaseSource.Dto.csproj" />
     <ProjectReference Include="..\BaseSource.Helper\BaseSource.Helper.csproj" />
     <ProjectReference Include="..\BaseSource.Infrastructure\BaseSource.Infrastructure.csproj" />

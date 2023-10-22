@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BaseSource.Builder\BaseSource.Builder.csproj" />
+    <ProjectReference Include="..\Basesource.Constants\Basesource.Constants.csproj" />
     <ProjectReference Include="..\BaseSource.Infrastructure\BaseSource.Infrastructure.csproj" />
     <ProjectReference Include="..\BaseSource\BaseSource.csproj" />
   </ItemGroup>

@@ -7,17 +7,24 @@ namespace BaseSource.BackendAPI.Services
     public interface IRepository<T> where T : BaseEntity
     {
         Task<IEnumerable<T>> GetAll();
+
         Task<T> GetById(string id);
+
         Task Create(T entity, string user);
+
         Task Delete(T entity, string user);
+
         Task AbsoluteDelete(T entity);
+
         Task Update(T entity, string user);
+
         Task Save();
     }
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly DataContext _context;
         private DbSet<T> entities;
+
         public Repository(DataContext context)
         {
             _context = context;
@@ -28,6 +35,7 @@ namespace BaseSource.BackendAPI.Services
         {
             return await entities.ToListAsync();
         }
+
         public async Task<T> GetById(string id)
         {
             var customer = await entities.FirstOrDefaultAsync(t => t.Id == id && t.Enable);
@@ -44,11 +52,9 @@ namespace BaseSource.BackendAPI.Services
                 throw new ArgumentNullException("entity");
             }
 
-            entity.CreatedBy = user;
-            entity.UpdatedBy = user;
-            entity.CreatedAt = DateTime.Now;
-            entity.UpdatedAt = DateTime.Now;
-            entity.Enable = true;
+            Created(entity, user);
+            Updated(entity, user);
+            Enable(entity);
 
             await entities.AddAsync(entity);
             await Save();
@@ -61,9 +67,8 @@ namespace BaseSource.BackendAPI.Services
                 throw new ArgumentNullException("entity");
             }
 
-            entity.UpdatedAt = DateTime.Now;
-            entity.UpdatedBy = user;
-            entity.Enable = false;
+            Updated(entity, user);
+            Disable(entity);
 
             await Save();
         }
@@ -85,15 +90,37 @@ namespace BaseSource.BackendAPI.Services
             {
                 throw new ArgumentNullException("entity");
             }
-            entity.UpdatedAt = DateTime.Now;
-            entity.UpdatedBy = user;
+
+            Updated(entity, user);
 
             await Save();
         }
+
         public async Task Save()
         {
             await _context.SaveChangesAsync();
         }
 
+        private void Created(T entity, string user)
+        {
+            entity.CreatedBy = user;
+            entity.CreatedAt = DateTime.Now;
+        }
+
+        private void Updated(T entity, string user)
+        {
+            entity.UpdatedBy = user;
+            entity.UpdatedAt = DateTime.Now;
+        }
+
+        private void Enable(T entity)
+        {
+            entity.Enable = true;
+        }
+
+        private void Disable(T entity)
+        {
+            entity.Enable = false;
+        }
     }
 }

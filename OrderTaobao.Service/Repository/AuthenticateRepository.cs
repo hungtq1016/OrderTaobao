@@ -9,7 +9,7 @@ namespace BaseSource.BackendAPI.Services
         Task<IdentityResult> UpdateUserAsync(User user);
         Task<User> ReadUserAsync(string id);
         Task<User> UserExists(string username);
-        Task<User?> EmailExists(string email);
+        Task<User> EmailExists(string email);
         Task<bool> IsPasswordValid(User user, string password);
         Task<IList<string>> GetRolesByUser(User user);
         Task<IdentityResult> CreateUserRoleAsync(User user, string role);
@@ -66,7 +66,7 @@ namespace BaseSource.BackendAPI.Services
             return userExists;
 
         }
-        public async Task<User?> EmailExists(string email)
+        public async Task<User> EmailExists(string email)
         {
             //Find user by email
             var emailExists = await _userManager.FindByEmailAsync(email);

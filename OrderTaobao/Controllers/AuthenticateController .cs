@@ -5,7 +5,7 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticateController : ControllerBase
+    public class AuthenticateController : StatusController
     {
         private readonly IAuthenticateService _authenService;
         private readonly IAuthHistoryService _historyService;
@@ -17,6 +17,7 @@ namespace BaseSource.BackendAPI.Controllers
             _historyService = historyService;
             _userService = userService;
         }
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(LoginRequest request)
@@ -47,6 +48,7 @@ namespace BaseSource.BackendAPI.Controllers
                 return Ok(result);
             }
         }
+
         [HttpPost]
         [Route("logout")]
         public async Task<IActionResult> LogOut(TokenRequest request)
@@ -58,31 +60,17 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("refresh-token")]
-        
         public async Task<IActionResult> RefreshToken(TokenRequest request)
         {
-            if (request is null)
-            {
-                return Ok();
-            }
-            var result = await _authenService.RefreshToken(request);
-            return Ok(result);
+            return await PerformAction(request, _authenService.RefreshToken);
         }
+
 
         [HttpPost]
         [Route("reset-password")]
-        public async Task<ActionResult> ResetPassword(ResetPasswordRequest request)
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
-            var result = await _userService.UpdatePassword(request);
-            if (result)
-            {
-                return Ok(new Response<bool>(true));
-            }
-            else
-            {
-                return Ok(new Response<bool> { Data = false, Error = true, Message = "Có lỗi xảy ra", StatusCode = 200 });
-            }
-
+            return await PerformAction(request, _userService.UpdatePassword);
         }
 
     }
