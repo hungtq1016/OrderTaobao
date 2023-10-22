@@ -1,4 +1,6 @@
 ﻿using BaseScource.Data;
+using BaseSource.Dto;
+using BaseSource.Helper;
 using BaseSource.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +8,7 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<IEnumerable<T>> GetAll();
+        Task<PageResponse<List<T>>> GetAll(PaginationRequest request, string route, IUriService uriService);
 
         Task<T> GetById(string id);
 
@@ -20,7 +22,7 @@ namespace BaseSource.BackendAPI.Services
 
         Task Save();
     }
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<T> : IRepository<T> where T : BaseEntity 
     {
         private readonly DataContext _context;
         private DbSet<T> entities;
@@ -31,9 +33,19 @@ namespace BaseSource.BackendAPI.Services
             entities = _context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<PageResponse<List<T>>> GetAll(PaginationRequest request,string route, IUriService uriService)
         {
-            return await entities.ToListAsync();
+            var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
+
+            var totalRecords = await entities.CountAsync();
+
+            var lists = await entities
+               .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+               .Take(validFilter.PageSize).ToListAsync();
+
+            var pagedReponse = PaginationHelper.CreatePagedReponse<T>(lists, validFilter, totalRecords, uriService, route);
+
+            return pagedReponse;
         }
 
         public async Task<T> GetById(string id)

@@ -1,11 +1,13 @@
 ﻿
+using BaseSource.Model;
+
 namespace BaseSource.Dto
 {
-    public class UserDetailResponse : UserResponse
+    public class UserDetailResponse
     {
-        public bool PhoneNumberConfirmed { get; set; }
-        public bool TwoFactorEnabled { get; set; }
-        public bool Enable { get; set; }
-        public bool EmailConfirmed { get; set; }
+        public UserResponse User { get; set; }
+        public IList<string> Roles { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

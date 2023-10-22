@@ -67,7 +67,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("WardId");
 
-                    b.ToTable("ADDRESS");
+                    b.ToTable("ADDRESS", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
@@ -115,7 +115,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AUTH_HISTORY");
+                    b.ToTable("AUTH_HISTORY", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.Category", b =>
@@ -172,7 +172,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("CATEGORIES");
+                    b.ToTable("CATEGORIES", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.District", b =>
@@ -242,7 +242,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("DISTRICTS");
+                    b.ToTable("DISTRICTS", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.Notification", b =>
@@ -303,7 +303,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NOTIFICATIONS");
+                    b.ToTable("NOTIFICATIONS", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.Order", b =>
@@ -349,7 +349,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ORDERS");
+                    b.ToTable("ORDERS", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.OrderDetail", b =>
@@ -386,7 +386,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ORDER_DETAILS");
+                    b.ToTable("ORDER_DETAILS", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.Product", b =>
@@ -459,7 +459,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("PRODUCTS");
+                    b.ToTable("PRODUCTS", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.Province", b =>
@@ -521,7 +521,7 @@ namespace BaseSource.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PROVINCES");
+                    b.ToTable("PROVINCES", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.ResetPassword", b =>
@@ -569,7 +569,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("Email");
 
-                    b.ToTable("RESET_PASSWORD");
+                    b.ToTable("RESET_PASSWORD", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.Role", b =>
@@ -763,7 +763,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CUSTOMER_HISTORY");
+                    b.ToTable("CUSTOMER_HISTORY", (string)null);
                 });
 
             modelBuilder.Entity("BaseSource.Model.Ward", b =>
@@ -833,7 +833,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("DistrictId");
 
-                    b.ToTable("WARDS");
+                    b.ToTable("WARDS", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

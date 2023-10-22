@@ -9,5 +9,9 @@ namespace BaseSource.Dto
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
+        public bool PhoneNumberConfirmed { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public bool Enable { get; set; }
+        public bool EmailConfirmed { get; set; }
     }
 }

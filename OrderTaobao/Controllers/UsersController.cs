@@ -1,89 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using BaseSource.Helper;
+
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  /*  [Authorize]*/
-    public class UsersController : ControllerBase
+    /*  [Authorize]*/
+    public class UsersController : StatusController
     {
         private readonly DataContext _context;
-        private readonly UserManager<User> _userManager;
-        private readonly IUriService _uriService;
-        public UsersController(DataContext context, UserManager<User> userManager, IUriService uriService)
+        private readonly IUserService _userService;
+        public UsersController(DataContext context, IUserService userService)
         {
             _context = context;
-            _userManager = userManager;
-            _uriService = uriService;
+            _userService = userService;
         }
 
         // GET: api/Users
         [HttpGet]
-        public  async Task<ActionResult> GetUsers([FromQuery] PaginationRequest request)
+        public async Task<IActionResult> GetUsers([FromQuery] PaginationRequest request)
         {
-            var route = Request.Path.Value;
-            if (_context.Users == null)
-              {
-                  return NotFound();
-              }
-            var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
-            var totalRecords = await _context.Users.CountAsync();
-            var users = await _context.Users.Select(u=>new UserResponse
-            {
-                Id = u.Id,  
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                Email = u.Email,
-                Phone = u.PhoneNumber,
-                UserName = u.UserName
-            }).Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-               .Take(validFilter.PageSize).ToListAsync();
-            var pagedReponse = PaginationHelper.CreatePagedReponse<UserResponse>(users, validFilter, totalRecords, _uriService, route);
-            return Ok(pagedReponse);
+            var result = await _userService.GetAllWithPagination(request, Request.Path.Value!);
+            return StatusCode(result.StatusCode,result);
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetUser(string id)
+        public async Task<IActionResult> GetUserById(string id)
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
-            var user = await _context.Users.Where(u=>u.Id==id).Include(u=>u.Orders).ThenInclude(o=>o.Details).Include(u => u.Notifications).FirstOrDefaultAsync();
-            if (user == null)
-                return NotFound();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var orders = await _context.Orders.Where(o => o.UserId == id).ToListAsync();
-            var notifications = await _context.Notifications.Where(o => o.UserId == id).ToListAsync();
-
-            UserDetailResponse u = new UserDetailResponse {
-                Id = user.Id,
-                Email = user.Email,
-                UserName = user.UserName,
-                Phone = user.PhoneNumber,  
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Enable = user.Enable,
-                EmailConfirmed = user.EmailConfirmed,         
-                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
-                TwoFactorEnabled = user.TwoFactorEnabled,             
-            };
- 
-            return Ok(new Response<UserShowResponse>
-            {
-                Data = new UserShowResponse
-                {
-                    User = u,
-                    Notifications = notifications,
-                    Orders = orders,
-                    Roles = roles
-                },
-                Message  = "Thành Công", 
-                StatusCode = 200
-            });
+            return await PerformAction(id, _userService.GetUserDetailById);
         }
 
         // PUT: api/Users/5
@@ -99,7 +43,7 @@ namespace BaseSource.BackendAPI.Controllers
             var user = await _context.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
             if (user != null)
             {
-                user.UserName =  request.UserName;
+                user.UserName = request.UserName;
                 user.PhoneNumber = request.Phone;
                 user.FirstName = request.FirstName;
                 user.LastName = request.LastName;
@@ -131,10 +75,10 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(RegisterRequest request)
         {
-          if (_context.Users == null)
-          {
-              return Problem("Entity set 'DataContext.Users'  is null.");
-          }
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'DataContext.Users'  is null.");
+            }
             User user = new()
             {
                 Id = Guid.NewGuid().ToString(),

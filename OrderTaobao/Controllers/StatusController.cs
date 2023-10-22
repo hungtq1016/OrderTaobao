@@ -12,7 +12,7 @@ namespace BaseSource.BackendAPI.Controllers
                 return BadRequest();
             }
 
-            var result = action(request).Result;
+            var result = await action(request);
             return StatusCode(result.StatusCode, result);
         }
     }

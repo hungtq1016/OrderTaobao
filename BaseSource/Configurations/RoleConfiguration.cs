@@ -13,9 +13,9 @@ namespace BaseSource.Configurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.HasMany(e => e.Users)
-                 .WithOne(e => e.Role)
-                 .HasForeignKey(ur => ur.RoleId)
+            builder.HasMany(role => role.Users)
+                 .WithOne(userrole => userrole.Role)
+                 .HasForeignKey(userrole => userrole.RoleId)
                  .IsRequired();
         }
     }

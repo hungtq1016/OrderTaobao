@@ -10,6 +10,7 @@
     <ProjectReference Include="..\Basesource.Constants\Basesource.Constants.csproj" />
     <ProjectReference Include="..\BaseSource.Dto\BaseSource.Dto.csproj" />
     <ProjectReference Include="..\BaseSource.Model\BaseSource.Model.csproj" />
+    <ProjectReference Include="..\BaseSource\BaseSource.csproj" />
   </ItemGroup>
 
 </Project>
