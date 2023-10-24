@@ -64,6 +64,7 @@ namespace BaseSource.BackendAPI.Services
                 throw new ArgumentNullException("entity");
             }
 
+            Id(entity);
             Created(entity, user);
             Updated(entity, user);
             Enable(entity);
@@ -111,6 +112,11 @@ namespace BaseSource.BackendAPI.Services
         public async Task Save()
         {
             await _context.SaveChangesAsync();
+        }
+
+        private void Id(T entity)
+        {
+            entity.Id = Guid.NewGuid().ToString();
         }
 
         private void Created(T entity, string user)

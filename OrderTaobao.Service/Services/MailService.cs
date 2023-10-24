@@ -35,10 +35,7 @@ namespace BaseSource.BackendAPI.Services
 
             try
             {
-                var id = await CreateEmailConfirm(mailRequest.To);
-
-                if (id is null)
-                    return ResponseHelper.CreateErrorResponse<bool>(404, "Email not found");
+                string id = await CreateEmailConfirm(mailRequest.To);
 
                 var email = new MimeMessage();
 
@@ -72,10 +69,11 @@ namespace BaseSource.BackendAPI.Services
 
         private async Task<string> CreateEmailConfirm(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            User? user = await _userManager.FindByEmailAsync(email);
 
             if (user is null)
                 return null;
+
             ResetPassword resetPassword = new ResetPassword
             {
                 Id = Guid.NewGuid().ToString(),

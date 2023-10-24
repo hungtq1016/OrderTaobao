@@ -11,10 +11,8 @@ namespace BaseSource.BackendAPI.Services
     public class AuthHistoryService : IAuthHistoryService
     {
         IRepository<AuthHistory> _rootRepo;
-        IConfiguration _configuration;
-        public AuthHistoryService(IRepository<AuthHistory> rootRepo, IConfiguration configuration) 
+        public AuthHistoryService(IRepository<AuthHistory> rootRepo) 
         {
-            _configuration = configuration;
             _rootRepo = rootRepo;
         }
         public async Task CreateAuthHistory(User user,string content)

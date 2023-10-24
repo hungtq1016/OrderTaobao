@@ -4,17 +4,26 @@ using Basesource.Constants;
 using BaseSource.Builder;
 using BaseSource.Dto;
 using BaseSource.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace BaseSource.BackendAPI.Services
 {
     public interface IAuthenticateService
     {
         Task<Response<TokenResponse>> Login(LoginRequest request);
-        Task<Response<TokenResponse>> Register(RegisterRequest request, string role);
+
+        Task<Response<TokenResponse>> Register(RegisterRequest request);
+
+        Task<Response<bool>> Logout(TokenRequest request);
+
         Task<Response<TokenResponse>> RefreshToken(TokenRequest request);
+
         Task<User> GetUserByToken(TokenRequest request);
+
         Task<IList<string>> GetRolesByUser(User user);
+
         bool IsPermission(IList<string> userRoles, IList<string> roles);
     }
 
@@ -24,27 +33,31 @@ namespace BaseSource.BackendAPI.Services
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
         private readonly IAuthHistoryService _historyService;
+        private readonly UserManager<User> _userManager;
 
-        public AuthenticateService(IAuthenticateRepository authenRepo, IConfiguration configuration, ITokenService tokenService, IAuthHistoryService historyService)
+        public AuthenticateService(IAuthenticateRepository authenRepo, IConfiguration configuration, 
+            ITokenService tokenService, IAuthHistoryService historyService, UserManager<User> userManager)
         {
             _authenRepo = authenRepo;
             _configuration = configuration;
             _tokenService = tokenService;
             _historyService = historyService;
+            _userManager = userManager;
         }
 
         public async Task<Response<TokenResponse>> Login(LoginRequest request)
         {
-            User isUserNameExists = await _authenRepo.UserExists(request.UserName);
-            bool isPasswordCorrect = await _authenRepo.IsPasswordValid(isUserNameExists, request.Password);
+            User? user = await _userManager.FindByNameAsync(request.UserName);
+            if (user is null)
+                return ResponseHelper.CreateErrorResponse<TokenResponse>(404, "Username or password is invalid");
 
-            if (isUserNameExists is not null && isPasswordCorrect)
+            if (await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                IList<string> roles = await _authenRepo.GetRolesByUser(isUserNameExists);
+                IList<string> roles = await _userManager.GetRolesAsync(user);
 
-                TokenResponse token = _tokenService.CreateAccessToken(isUserNameExists, roles);
+                TokenResponse token = _tokenService.CreateAccessToken(user, roles);
 
-                await _historyService.CreateAuthHistory(isUserNameExists, UserConstant.Login);
+                await _historyService.CreateAuthHistory(user, UserConstant.Login);
 
                 return ResponseHelper.CreateSuccessResponse<TokenResponse>(token);
             }
@@ -52,7 +65,7 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateErrorResponse<TokenResponse>(404, "Username or password is invalid");
         }
 
-        public async Task<Response<TokenResponse>> Register(RegisterRequest request, string role = RolePermission.Customer)
+        public async Task<Response<TokenResponse>> Register(RegisterRequest request)
         {
          
             User isUserNameExists = await _authenRepo.UserExists(request.UserName);
@@ -64,8 +77,6 @@ namespace BaseSource.BackendAPI.Services
             if (isEmailExists is not null)
                 return ResponseHelper.CreateErrorResponse<TokenResponse>(409, "Email is already exists");
 
-            string refreshToken = _tokenService.GenerateRefreshToken();
-
             User user = new UserBuilder(_configuration)
                 .WithId()
                 .WithUserName(request.UserName)
@@ -73,11 +84,12 @@ namespace BaseSource.BackendAPI.Services
                 .WithFirstName(request.FirstName)
                 .WithLastName(request.LastName)
                 .WithPhone(request.Phone)
-                .WithRefreshToken(refreshToken)
+                .WithRefreshToken(TokenHelper.GenerateRefreshToken())
                 .WithSecurityStamp()
+                .WithEnable()
                 .Build();
 
-            var result = await _authenRepo.CreateUserAsync(user, request.Password, role);
+            var result = await _authenRepo.CreateUserAsync(user, request.Password, RolePermission.Customer);
 
             if (!result.Succeeded)
                 return ResponseHelper.CreateErrorResponse<TokenResponse>(500, "The server cannot process the request for an unknown reason");
@@ -89,6 +101,13 @@ namespace BaseSource.BackendAPI.Services
             await _historyService.CreateAuthHistory(user, UserConstant.Register);
 
             return ResponseHelper.CreateCreatedResponse<TokenResponse>(token);
+        }
+
+        public async Task<Response<bool>> Logout(TokenRequest request)
+        {
+            User? user = await GetUserByToken(request);
+            await _historyService.CreateAuthHistory(user, UserConstant.Logout);
+            return ResponseHelper.CreateCreatedResponse<bool>(true);
         }
 
         public async Task<Response<TokenResponse>> RefreshToken(TokenRequest request)

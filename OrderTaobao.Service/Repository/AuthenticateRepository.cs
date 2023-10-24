@@ -19,14 +19,10 @@ namespace BaseSource.BackendAPI.Services
     public class AuthenticateRepository : IAuthenticateRepository
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
-        private readonly SignInManager<User> _signInManager;
 
-        public AuthenticateRepository(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager)
+        public AuthenticateRepository(UserManager<User> userManager)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
         }
 
         public async Task<IdentityResult> UpdateUserAsync(User user)

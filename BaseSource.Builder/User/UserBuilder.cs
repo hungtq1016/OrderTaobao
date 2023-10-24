@@ -62,6 +62,18 @@ namespace BaseSource.Builder
             return this;
         }
 
+        public UserBuilder WithEnable()
+        {
+            user.Enable = true;
+            return this;
+        }
+
+        public UserBuilder WithDisable()
+        {
+            user.Enable = false;
+            return this;
+        }
+
         public UserBuilder WithSecurityStamp()
         {
             user.SecurityStamp = Guid.NewGuid().ToString();

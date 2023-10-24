@@ -133,7 +133,7 @@ namespace BaseSource.BackendAPI.Services
 
             foreach (var role in roles)
             {
-                authClaims.Add(new Claim("Role", role));
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
             //Transform claim to token
             var token = GenerateAccessToken(authClaims);
