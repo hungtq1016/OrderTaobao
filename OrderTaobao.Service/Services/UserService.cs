@@ -14,6 +14,8 @@ namespace BaseSource.BackendAPI.Services
     {
         Task<Response<PageResponse<List<UserResponse>>>> GetAllWithPagination(PaginationRequest request, string route, bool enable);
 
+        Task<List<UserResponse>> GetAll();
+
         Task<Response<UserDetailResponse>> GetUserDetailById(string id);
 
         Task<Response<bool>> StoreUser(UserRequest request);
@@ -80,6 +82,27 @@ namespace BaseSource.BackendAPI.Services
             var pagedResponse = PaginationHelper.CreatePagedReponse<UserResponse>(users, validFilter, totalRecords, _uriService, route);
 
             return ResponseHelper.CreateSuccessResponse<PageResponse<List<UserResponse>>>(pagedResponse);
+        }
+
+        public async Task<List<UserResponse>> GetAll()
+        {
+  
+            List<UserResponse> users = _userManager.Users
+                .Select(user => new UserResponse
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Phone = user.PhoneNumber,
+                    EmailConfirmed = user.EmailConfirmed,
+                    PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                    TwoFactorEnabled = user.TwoFactorEnabled,
+                    Enable = user.Enable
+                }).ToList();
+
+            return users;
         }
 
         public async Task<Response<UserDetailResponse>> GetUserDetailById(string id)

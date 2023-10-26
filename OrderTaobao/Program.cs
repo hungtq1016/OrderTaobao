@@ -2,8 +2,6 @@ global using BaseScource.Data;
 global using BaseSource.BackendAPI.Services;
 global using BaseSource.Dto;
 global using BaseSource.Model;
-global using Microsoft.EntityFrameworkCore;
-global using BaseSource.Builder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.Extensions;

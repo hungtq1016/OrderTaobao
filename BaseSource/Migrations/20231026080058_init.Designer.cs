@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseSource.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231022083914_update-resetpassword")]
-    partial class updateresetpassword
+    [Migration("20231026080058_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -246,6 +246,106 @@ namespace BaseSource.Migrations
                     b.HasIndex("ProvinceId");
 
                     b.ToTable("DISTRICTS");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.Image", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("Field")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lable")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.ImageUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("ImageId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("IMAGE_ID");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImageId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ImageUser");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Notification", b =>
@@ -604,43 +704,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5b8f3b23-9f88-4d25-b83d-052b71dbbf34",
+                            Id = "84934029-e440-4507-b07b-329ff18543dd",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "e4df13b9-4440-4a57-8532-c9d0bff9a665",
+                            Id = "ce507408-f72d-483e-b379-f2af7ecd10c5",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "9769ce7a-ad7f-4757-9341-abd6f58c304a",
+                            Id = "b5a92988-34da-44a4-835c-fe8094125777",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "6a3ae2d1-2832-45c0-99c0-882330147f3e",
+                            Id = "edf9e262-0534-4525-9be7-1038032c9a20",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "18f3e12e-ec89-477b-8165-6ccdbebd5af2",
+                            Id = "f6114db7-a545-4d48-9777-60e835a18825",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9c4af237-11a9-4c80-acf2-702f82df7c31",
+                            Id = "4fb386d8-35ea-4f74-b8fa-c508103b8e09",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "06433fdd-3af2-4e40-bd13-3dea1a5c6269",
+                            Id = "6a768c25-5c2d-4fce-a867-cec95aa16420",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });
@@ -700,6 +800,7 @@ namespace BaseSource.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RefreshToken")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
@@ -1003,6 +1104,25 @@ namespace BaseSource.Migrations
                     b.Navigation("Province");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.ImageUser", b =>
+                {
+                    b.HasOne("BaseSource.Model.Image", "Image")
+                        .WithMany("Users")
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("Images")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Image");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BaseSource.Model.Notification", b =>
                 {
                     b.HasOne("BaseSource.Model.Order", "Order")
@@ -1161,6 +1281,11 @@ namespace BaseSource.Migrations
                     b.Navigation("Wards");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.Image", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("BaseSource.Model.Order", b =>
                 {
                     b.Navigation("Details");
@@ -1186,6 +1311,8 @@ namespace BaseSource.Migrations
             modelBuilder.Entity("BaseSource.Model.User", b =>
                 {
                     b.Navigation("AuthHistory");
+
+                    b.Navigation("Images");
 
                     b.Navigation("Notifications");
 

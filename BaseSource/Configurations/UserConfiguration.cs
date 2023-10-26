@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BaseSource.Model;
+﻿using BaseSource.Model;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace BaseSource.Configurations
 {
@@ -20,9 +14,14 @@ namespace BaseSource.Configurations
                 .HasForeignKey(userrole => userrole.UserId)
                 .IsRequired();
 
-            builder.HasMany(u => u.Orders)
-                .WithOne(o => o.User)
-                .HasForeignKey(u => u.UserId)
+            builder.HasMany(user => user.Orders)
+                .WithOne(order => order.User)
+                .HasForeignKey(order => order.UserId)
+                .IsRequired();
+
+            builder.HasMany(user => user.Images)
+                .WithOne(imageuser => imageuser.User)
+                .HasForeignKey(imageuser => imageuser.UserId)
                 .IsRequired();
         }
     }

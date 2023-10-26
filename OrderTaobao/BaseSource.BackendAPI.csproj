@@ -21,4 +21,8 @@
     <ProjectReference Include="..\OrderTaobao.Service\BaseSource.BackendAPI.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Upload\" />
+  </ItemGroup>
+
 </Project>

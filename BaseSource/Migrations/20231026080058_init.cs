@@ -38,6 +38,26 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    Lable = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Field = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ENABLE = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PROVINCES",
                 columns: table => new
                 {
@@ -79,9 +99,9 @@ namespace BaseSource.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Enable = table.Column<bool>(type: "bit", nullable: false,defaultValue:true),
+                    Enable = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -252,6 +272,36 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImageUser",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    IMAGE_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ENABLE = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImageUser", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ImageUser_Images_IMAGE_ID",
+                        column: x => x.IMAGE_ID,
+                        principalTable: "Images",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ImageUser_USER_USER_ID",
+                        column: x => x.USER_ID,
+                        principalTable: "USER",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ORDERS",
                 columns: table => new
                 {
@@ -281,6 +331,7 @@ namespace BaseSource.Migrations
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     EMAIL = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IS_VERIFY = table.Column<bool>(type: "bit", nullable: false),
+                    ExpiredTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -472,13 +523,13 @@ namespace BaseSource.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2e487a96-4fbd-4b84-8875-b80b9175c77e", null, "Customer", "CUSTOMER" },
-                    { "518790cd-7bca-4d18-8880-f0d5a00744d9", null, "Staff", "STAFF" },
-                    { "5499e708-365b-4642-b215-69d9ff43c6d0", null, "Visitor", "VISITOR" },
-                    { "6001b42e-8c5e-4ff5-ab8b-ca948db4b3c3", null, "Super Admin", "SUPER ADMIN" },
-                    { "69d40ab8-cae5-4ff8-9cf5-3639bd69a0d3", null, "Collaborator", "COLLABORATOR" },
-                    { "98354782-8c02-47cb-8b4c-c12749e2e462", null, "Admin", "ADMIN" },
-                    { "bcdc8f64-d5de-4e41-9e8e-856615c03757", null, "Manager", "MANAGER" }
+                    { "4fb386d8-35ea-4f74-b8fa-c508103b8e09", null, "Super Admin", "SUPER ADMIN" },
+                    { "6a768c25-5c2d-4fce-a867-cec95aa16420", null, "Visitor", "VISITOR" },
+                    { "84934029-e440-4507-b07b-329ff18543dd", null, "Customer", "CUSTOMER" },
+                    { "b5a92988-34da-44a4-835c-fe8094125777", null, "Collaborator", "COLLABORATOR" },
+                    { "ce507408-f72d-483e-b379-f2af7ecd10c5", null, "Staff", "STAFF" },
+                    { "edf9e262-0534-4525-9be7-1038032c9a20", null, "Manager", "MANAGER" },
+                    { "f6114db7-a545-4d48-9777-60e835a18825", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -510,6 +561,16 @@ namespace BaseSource.Migrations
                 name: "IX_DISTRICTS_PROVINCE_ID",
                 table: "DISTRICTS",
                 column: "PROVINCE_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageUser_IMAGE_ID",
+                table: "ImageUser",
+                column: "IMAGE_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageUser_USER_ID",
+                table: "ImageUser",
+                column: "USER_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NOTIFICATIONS_ORDER_ID",
@@ -603,6 +664,9 @@ namespace BaseSource.Migrations
                 name: "CUSTOMER_HISTORY");
 
             migrationBuilder.DropTable(
+                name: "ImageUser");
+
+            migrationBuilder.DropTable(
                 name: "NOTIFICATIONS");
 
             migrationBuilder.DropTable(
@@ -625,6 +689,9 @@ namespace BaseSource.Migrations
 
             migrationBuilder.DropTable(
                 name: "WARDS");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "ORDERS");

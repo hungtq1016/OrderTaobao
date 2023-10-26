@@ -62,6 +62,8 @@ namespace BaseScource.Data
         public DbSet<ResetPassword> ResetPassword => Set<ResetPassword>();
         public DbSet<AuthHistory> AuthHistory => Set<AuthHistory>();
         public DbSet<UserHistory> UserHistory => Set<UserHistory>();
+        public DbSet<Image> Images => Set<Image>();
+        public DbSet<ImageUser> ImageUser => Set<ImageUser>();
 
     }
 }

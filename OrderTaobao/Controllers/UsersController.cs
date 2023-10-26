@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 
 namespace BaseSource.BackendAPI.Controllers
 {
@@ -9,9 +14,12 @@ namespace BaseSource.BackendAPI.Controllers
     public class UsersController : StatusController
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+        private readonly UserManager<User> _context;
+
+        public UsersController(IUserService userService, UserManager<User> context)
         {
             _userService = userService;
+            _context = context;
         }
 
         // GET: api/Users
@@ -69,5 +77,100 @@ namespace BaseSource.BackendAPI.Controllers
         {
             return await PerformAction(id, _userService.AbsoluteDeleteUser);
         }
+
+        [HttpGet("export-user")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExportUser()
+        {
+            string reportname = $"User_Sheet.xlsx";
+            var list = await _userService.GetAll();
+            if (list.Count > 0)
+            {
+                var exportbytes = ExportToExcel<UserResponse>(list, reportname);
+                return File(exportbytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", reportname);
+            }
+            return NotFound(list);
+        }
+
+        private byte[] ExportToExcel<T>(List<T> table, string filename)
+        {
+            using ExcelPackage pack = new ExcelPackage();
+            ExcelWorksheet ws = pack.Workbook.Worksheets.Add(filename);
+            ws.Cells["A1"].LoadFromCollection(table, true, TableStyles.Light1);
+            return pack.GetAsByteArray();
+        }
+
+
+        [HttpPost("ImportCustomer")]
+        [AllowAnonymous]
+        public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
+        {
+            var result = await WriteFile(files);
+            return Ok(result);
+        }
+        private async Task<List<UserRequest>> WriteFile(List<IFormFile> files)
+        {
+            List<string> filename = new List<string>();
+            List<UserRequest> customerList = new List<UserRequest>();
+
+            foreach (var file in files)
+            {
+
+                try
+                {
+                    var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                    string fileName = DateTime.Now.Ticks.ToString() + extension;
+
+                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Excel");
+
+                    if (!Directory.Exists(filepath))
+                    {
+                        Directory.CreateDirectory(filepath);
+                    }
+
+                    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Excel", fileName);
+                    using (var stream = new FileStream(exactpath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                        filename.Add(fileName);
+                    }
+                    FileInfo filee  = new FileInfo(exactpath);
+
+                    using (ExcelPackage package = new ExcelPackage(filee))
+                    {
+                        ExcelWorksheet workSheet = package.Workbook.Worksheets["User_Sheet"];
+                        int totalRows = workSheet.Dimension.Rows;
+
+
+                        for (int i = 2; i <= totalRows; i++)
+                        {
+                            var user = new UserRequest
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Email = workSheet.Cells[i, 2].Value.ToString() + "/"+ DateTime.Now.Ticks,
+                                UserName = workSheet.Cells[i, 3].Value.ToString() + "/" + DateTime.Now.Ticks,
+                                FirstName = workSheet.Cells[i, 4].Value.ToString(),
+                                LastName = workSheet.Cells[i, 5].Value.ToString(),
+                                Password = "H#ng123456",
+                                Phone = workSheet.Cells[i, 6].Value.ToString(),
+                            };
+                            await _userService.StoreUser(user);
+                            customerList.Add(user);
+                        }
+
+                
+
+                        return customerList;
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            return customerList;
+        }
+
+
     }
 }
