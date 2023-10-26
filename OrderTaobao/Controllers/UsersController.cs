@@ -101,7 +101,7 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
 
-        [HttpPost("ImportCustomer")]
+        [HttpPost("import-user")]
         [AllowAnonymous]
         public async Task<IActionResult> UserImport(IFormFile file)
         {
