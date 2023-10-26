@@ -82,7 +82,7 @@ namespace BaseSource.BackendAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ExportUser()
         {
-            string reportname = $"User_Sheet.xlsx";
+            string reportname = $"User_Sheet";
             var list = await _userService.GetAll();
             if (list.Count > 0)
             {
@@ -103,69 +103,67 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost("ImportCustomer")]
         [AllowAnonymous]
-        public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
+        public async Task<IActionResult> UserImport(IFormFile file)
         {
-            var result = await WriteFile(files);
+            var result = await WriteFile(file);
             return Ok(result);
         }
-        private async Task<List<UserRequest>> WriteFile(List<IFormFile> files)
+        private async Task<List<UserRequest>> WriteFile(IFormFile file)
         {
-            List<string> filename = new List<string>();
             List<UserRequest> customerList = new List<UserRequest>();
-
-            foreach (var file in files)
+            List<string> arr = new List<string> { ".xlsx", ".xls", ".csv", ".xml", ".html",".tsv",".ods" };
+            try
             {
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                if (!arr.Contains(extension))
+                    return null;
 
-                try
+                string fileName = DateTime.Now.Ticks.ToString() + extension;
+
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Excel");
+
+                if (!Directory.Exists(filepath))
                 {
-                    var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
-                    string fileName = DateTime.Now.Ticks.ToString() + extension;
+                    Directory.CreateDirectory(filepath);
+                }
 
-                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Excel");
+                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Excel", fileName);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                FileInfo excelFile = new FileInfo(exactpath);
 
-                    if (!Directory.Exists(filepath))
+                using (ExcelPackage package = new ExcelPackage(excelFile))
+                {
+                    ExcelWorksheet workSheet = package.Workbook.Worksheets["User_Sheet"];
+                    int totalRows = workSheet.Dimension.Rows;
+
+
+                    for (int i = 2; i <= totalRows; i++)
                     {
-                        Directory.CreateDirectory(filepath);
-                    }
-
-                    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Excel", fileName);
-                    using (var stream = new FileStream(exactpath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                        filename.Add(fileName);
-                    }
-                    FileInfo filee  = new FileInfo(exactpath);
-
-                    using (ExcelPackage package = new ExcelPackage(filee))
-                    {
-                        ExcelWorksheet workSheet = package.Workbook.Worksheets["User_Sheet"];
-                        int totalRows = workSheet.Dimension.Rows;
-
-
-                        for (int i = 2; i <= totalRows; i++)
+                        var user = new UserRequest
                         {
-                            var user = new UserRequest
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                Email = workSheet.Cells[i, 2].Value.ToString() + "/"+ DateTime.Now.Ticks,
-                                UserName = workSheet.Cells[i, 3].Value.ToString() + "/" + DateTime.Now.Ticks,
-                                FirstName = workSheet.Cells[i, 4].Value.ToString(),
-                                LastName = workSheet.Cells[i, 5].Value.ToString(),
-                                Password = "H#ng123456",
-                                Phone = workSheet.Cells[i, 6].Value.ToString(),
-                            };
-                            await _userService.StoreUser(user);
-                            customerList.Add(user);
-                        }
-
+                            Id = Guid.NewGuid().ToString(),
+                            Email = workSheet.Cells[i, 2].Value.ToString()  + DateTime.Now.Ticks,
+                            UserName = workSheet.Cells[i, 3].Value.ToString()  + DateTime.Now.Ticks,
+                            FirstName = workSheet.Cells[i, 4].Value.ToString(),
+                            LastName = workSheet.Cells[i, 5].Value.ToString(),
+                            Password = "H#ng123456",
+                            Phone = workSheet.Cells[i, 6].Value.ToString(),
+                        };
+                        await _userService.StoreUser(user);
                 
-
-                        return customerList;
+                        customerList.Add(user);
                     }
+                    Console.WriteLine(totalRows);
+
+                    return customerList;
                 }
-                catch (Exception ex)
-                {
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
             return customerList;
