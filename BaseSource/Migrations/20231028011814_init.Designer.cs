@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseSource.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231026080058_init")]
+    [Migration("20231028011814_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -268,17 +268,19 @@ namespace BaseSource.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
 
-                    b.Property<string>("Field")
+                    b.Property<string>("Label")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("LABEL");
 
-                    b.Property<string>("Lable")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Size")
+                        .HasColumnType("decimal(20,0)")
+                        .HasColumnName("SIZE");
 
-                    b.Property<string>("Size")
+                    b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("TYPE");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -291,11 +293,12 @@ namespace BaseSource.Migrations
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("URL");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("IMAGES");
                 });
 
             modelBuilder.Entity("BaseSource.Model.ImageUser", b =>
@@ -345,7 +348,7 @@ namespace BaseSource.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ImageUser");
+                    b.ToTable("IMAGE_USER");
                 });
 
             modelBuilder.Entity("BaseSource.Model.Notification", b =>
@@ -429,8 +432,8 @@ namespace BaseSource.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int")
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint")
                         .HasColumnName("STATUS");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -469,8 +472,8 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("ORDER_ID");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int")
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint")
                         .HasColumnName("PRICE");
 
                     b.Property<string>("ProductId")
@@ -704,43 +707,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "84934029-e440-4507-b07b-329ff18543dd",
+                            Id = "d8798e97-a75f-44c4-b2a5-276bd82127fa",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "ce507408-f72d-483e-b379-f2af7ecd10c5",
+                            Id = "9ef6316a-c114-4234-b05e-f5b4b70011e1",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "b5a92988-34da-44a4-835c-fe8094125777",
+                            Id = "79c61413-392e-42ae-8523-e9962dbc278a",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "edf9e262-0534-4525-9be7-1038032c9a20",
+                            Id = "44cc2cff-72c3-4771-98e6-f46a287cbf46",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "f6114db7-a545-4d48-9777-60e835a18825",
+                            Id = "d2e0cb34-55f9-4fc6-b9c3-90dfdc44cb3c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4fb386d8-35ea-4f74-b8fa-c508103b8e09",
+                            Id = "92b0a5cf-8b72-44c7-903f-d786228771ec",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "6a768c25-5c2d-4fce-a867-cec95aa16420",
+                            Id = "ef68f352-37a7-4b4a-8688-ceb8a5fe1dca",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });

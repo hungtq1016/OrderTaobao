@@ -38,14 +38,14 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Images",
+                name: "IMAGES",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
-                    Lable = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Field = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LABEL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TYPE = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SIZE = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -54,7 +54,7 @@ namespace BaseSource.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.ID);
+                    table.PrimaryKey("PK_IMAGES", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,7 +272,7 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImageUser",
+                name: "IMAGE_USER",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
@@ -286,15 +286,15 @@ namespace BaseSource.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImageUser", x => x.ID);
+                    table.PrimaryKey("PK_IMAGE_USER", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_ImageUser_Images_IMAGE_ID",
+                        name: "FK_IMAGE_USER_IMAGES_IMAGE_ID",
                         column: x => x.IMAGE_ID,
-                        principalTable: "Images",
+                        principalTable: "IMAGES",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ImageUser_USER_USER_ID",
+                        name: "FK_IMAGE_USER_USER_USER_ID",
                         column: x => x.USER_ID,
                         principalTable: "USER",
                         principalColumn: "Id",
@@ -306,7 +306,7 @@ namespace BaseSource.Migrations
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
-                    STATUS = table.Column<int>(type: "int", nullable: false),
+                    STATUS = table.Column<byte>(type: "tinyint", nullable: false),
                     USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -475,7 +475,7 @@ namespace BaseSource.Migrations
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     QUANTITY = table.Column<int>(type: "int", nullable: false),
-                    PRICE = table.Column<int>(type: "int", nullable: false),
+                    PRICE = table.Column<long>(type: "bigint", nullable: false),
                     PRODUCT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     ORDER_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
                 },
@@ -523,13 +523,13 @@ namespace BaseSource.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4fb386d8-35ea-4f74-b8fa-c508103b8e09", null, "Super Admin", "SUPER ADMIN" },
-                    { "6a768c25-5c2d-4fce-a867-cec95aa16420", null, "Visitor", "VISITOR" },
-                    { "84934029-e440-4507-b07b-329ff18543dd", null, "Customer", "CUSTOMER" },
-                    { "b5a92988-34da-44a4-835c-fe8094125777", null, "Collaborator", "COLLABORATOR" },
-                    { "ce507408-f72d-483e-b379-f2af7ecd10c5", null, "Staff", "STAFF" },
-                    { "edf9e262-0534-4525-9be7-1038032c9a20", null, "Manager", "MANAGER" },
-                    { "f6114db7-a545-4d48-9777-60e835a18825", null, "Admin", "ADMIN" }
+                    { "44cc2cff-72c3-4771-98e6-f46a287cbf46", null, "Manager", "MANAGER" },
+                    { "79c61413-392e-42ae-8523-e9962dbc278a", null, "Collaborator", "COLLABORATOR" },
+                    { "92b0a5cf-8b72-44c7-903f-d786228771ec", null, "Super Admin", "SUPER ADMIN" },
+                    { "9ef6316a-c114-4234-b05e-f5b4b70011e1", null, "Staff", "STAFF" },
+                    { "d2e0cb34-55f9-4fc6-b9c3-90dfdc44cb3c", null, "Admin", "ADMIN" },
+                    { "d8798e97-a75f-44c4-b2a5-276bd82127fa", null, "Customer", "CUSTOMER" },
+                    { "ef68f352-37a7-4b4a-8688-ceb8a5fe1dca", null, "Visitor", "VISITOR" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -563,13 +563,13 @@ namespace BaseSource.Migrations
                 column: "PROVINCE_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageUser_IMAGE_ID",
-                table: "ImageUser",
+                name: "IX_IMAGE_USER_IMAGE_ID",
+                table: "IMAGE_USER",
                 column: "IMAGE_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageUser_USER_ID",
-                table: "ImageUser",
+                name: "IX_IMAGE_USER_USER_ID",
+                table: "IMAGE_USER",
                 column: "USER_ID");
 
             migrationBuilder.CreateIndex(
@@ -664,7 +664,7 @@ namespace BaseSource.Migrations
                 name: "CUSTOMER_HISTORY");
 
             migrationBuilder.DropTable(
-                name: "ImageUser");
+                name: "IMAGE_USER");
 
             migrationBuilder.DropTable(
                 name: "NOTIFICATIONS");
@@ -691,7 +691,7 @@ namespace BaseSource.Migrations
                 name: "WARDS");
 
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "IMAGES");
 
             migrationBuilder.DropTable(
                 name: "ORDERS");

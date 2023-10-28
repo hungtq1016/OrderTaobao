@@ -9,6 +9,7 @@ namespace BaseSource.BackendAPI.Services
     public interface IRepository<T> where T : BaseEntity
     {
         Task<PageResponse<List<T>>> GetAll(PaginationRequest request, string route, IUriService uriService);
+        Task<List<T>> ReadAllAsync();
 
         Task<T> GetById(string id);
 
@@ -37,7 +38,7 @@ namespace BaseSource.BackendAPI.Services
         {
             var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
 
-            var totalRecords = await entities.CountAsync();
+            UInt16 totalRecords = Convert.ToUInt16(await entities.CountAsync());
 
             var lists = await entities
                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
@@ -46,6 +47,13 @@ namespace BaseSource.BackendAPI.Services
             var pagedReponse = PaginationHelper.CreatePagedReponse<T>(lists, validFilter, totalRecords, uriService, route);
 
             return pagedReponse;
+        }
+
+        public async Task<List<T>> ReadAllAsync()
+        {
+            List<T> records = await entities.ToListAsync();
+
+            return records;
         }
 
         public async Task<T> GetById(string id)

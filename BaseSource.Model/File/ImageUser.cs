@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace BaseSource.Model
 {
+    [Table("IMAGE_USER")]
     public class ImageUser : BaseEntity
     {
         [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]

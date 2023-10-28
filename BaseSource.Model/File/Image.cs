@@ -1,12 +1,24 @@
 ﻿
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BaseSource.Model
 {
-    public  class Image : BaseEntity
+    [Table("IMAGES")]
+    public class Image : BaseEntity
     {
-        public string Lable { get; set; }
+        [DataMember]
+        [Column("LABEL")]
+        public string Label { get; set; }
+        [Column("URL")]
         public string Url { get; set; }
-        public string Field { get; set; }
-        public string Size { get; set; }
+        [Column("TYPE")]
+        public string Type { get; set; }
+        [Column("SIZE")]
+        public UInt64 Size { get; set; }
+        [JsonIgnore]
         public List<ImageUser> Users { get; } = new();
     }
 }

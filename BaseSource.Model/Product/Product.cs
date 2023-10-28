@@ -21,7 +21,7 @@ namespace BaseSource.Model
         public string Description { get; set; } = string.Empty;
 
         [Column("QUANTITY")]
-        public int Quantity { get; set; } = 0;
+        public UInt16 Quantity { get; set; } = 0;
 
         [Column("IS_AVAILABLE")]
         public bool IsAvailable { get; set; } = false;

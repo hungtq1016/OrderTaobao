@@ -3,17 +3,17 @@ namespace BaseSource.Dto
 {
     public class PaginationRequest
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-        public PaginationRequest()
+        public UInt16 PageNumber { get; set; }
+        public UInt16 PageSize { get; set; }
+        public PaginationRequest(int v, ushort pageSize)
         {
             PageNumber = 1;
             PageSize = 10;
         }
-        public PaginationRequest(int pageNumber, int pageSize)
+        public PaginationRequest(UInt16 pageNumber, UInt16 pageSize)
         {
-            PageNumber = pageNumber < 1 ? 1 : pageNumber;
-            PageSize = pageSize > 100 ? 100 : pageSize;
+            PageNumber = (UInt16)(pageNumber < 1 ? 1 : pageNumber);
+            PageSize = (UInt16)(pageSize > 100 ? 100 : pageSize);
         }
     }
 }

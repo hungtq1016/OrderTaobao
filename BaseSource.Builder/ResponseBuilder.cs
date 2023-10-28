@@ -24,7 +24,7 @@ namespace BaseSource.Builder
             response.Data = default(T);
         }
 
-        public ResponseBuilder<T> WithStatusCode(int code)
+        public ResponseBuilder<T> WithStatusCode(UInt16 code)
         {
             response.StatusCode = code;
             return this;

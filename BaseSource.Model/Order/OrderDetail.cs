@@ -16,10 +16,10 @@ namespace BaseSource.Model
         public string Id { get; set; }
 
         [Column("QUANTITY")]
-        public int Quantity { get; set; } = 1;
+        public UInt16 Quantity { get; set; } = 1;
 
         [Column("PRICE")]
-        public int Price { get; set; } = 0;
+        public UInt32 Price { get; set; } = 0;
 
         [Column("PRODUCT_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Product")]

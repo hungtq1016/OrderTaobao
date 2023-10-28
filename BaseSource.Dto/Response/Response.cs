@@ -16,6 +16,6 @@ namespace BaseSource.Dto
         public T? Data { get; set; }
         public bool Error { get; set; }
         public string Message { get; set; }
-        public int StatusCode { get; set; }
+        public UInt16 StatusCode { get; set; }
     }
 }

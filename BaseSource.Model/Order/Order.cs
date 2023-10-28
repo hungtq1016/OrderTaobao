@@ -8,7 +8,7 @@ namespace BaseSource.Model
     {
 
         [Column("STATUS")]
-        public int Status { get; set; } = 1;
+        public Byte Status { get; set; } = 1;
 
         [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
         [ForeignKey("User")]

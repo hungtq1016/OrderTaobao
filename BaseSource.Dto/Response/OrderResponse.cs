@@ -5,7 +5,7 @@ namespace BaseSource.Dto
     public class OrderResponse
     {
         public string Id { get; set; }
-        public int Status { get; set; }
+        public byte Status { get; set; }
         public bool Enable { get; set; }
         public DateTime CreatedAt { get; set; } 
         public string CreatedBy { get; set; }

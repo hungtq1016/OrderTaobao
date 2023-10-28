@@ -5,11 +5,12 @@ namespace BaseSource.Helper
 {
     public class PaginationHelper
     {
-        public static PageResponse<List<T>> CreatePagedReponse<T>(List<T> pagedData, PaginationRequest validFilter, int totalRecords, IUriService uriService, string route)
+        public static PageResponse<List<T>> CreatePagedReponse<T>(List<T> pagedData, PaginationRequest validFilter, UInt16 totalRecords, IUriService uriService, string route)
         {
             var respose = new PageResponse<List<T>>(pagedData, validFilter.PageNumber, validFilter.PageSize);
-            int totalPages = ((int)totalRecords / (int)validFilter.PageSize);
-            int roundedTotalPages = totalPages;
+            PaginationRequest validFilter1 = validFilter;
+            UInt16 totalPages = (UInt16)(totalRecords /validFilter1.PageSize);
+            UInt16 roundedTotalPages = totalPages;
 
             respose.NextPage =
                 validFilter.PageNumber >= 1 && validFilter.PageNumber < roundedTotalPages

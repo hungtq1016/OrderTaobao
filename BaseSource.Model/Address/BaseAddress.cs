@@ -18,6 +18,6 @@ namespace BaseSource.Model
         [Column("TYPE_SLUG", TypeName = "nvarchar"), MaxLength(36)]
         public string TypeSlug { get; set; } = string.Empty;
         [Column("CODE")]
-        public int Code { get; set; }
+        public UInt16 Code { get; set; }
     }
 }

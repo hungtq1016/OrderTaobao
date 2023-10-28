@@ -26,7 +26,11 @@ namespace BaseSource.BackendAPI.Services
 
         Task<Response<bool>> DeleteUser(string id);
 
+        Task<Response<List<string>>> DeleteAllUser(List<string> ids);
+
         Task<Response<bool>> AbsoluteDeleteUser(string id);
+
+        Task<Response<List<string>>> AbsoluteDeleteAllUser(List<string> ids);
     }
 
     public class UserService : IUserService
@@ -79,7 +83,7 @@ namespace BaseSource.BackendAPI.Services
                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                .Take(validFilter.PageSize).ToListAsync();
 
-            var pagedResponse = PaginationHelper.CreatePagedReponse<UserResponse>(users, validFilter, totalRecords, _uriService, route);
+            var pagedResponse = PaginationHelper.CreatePagedReponse<UserResponse>(users, validFilter, Convert.ToUInt16(totalRecords), _uriService, route);
 
             return ResponseHelper.CreateSuccessResponse<PageResponse<List<UserResponse>>>(pagedResponse);
         }
@@ -199,14 +203,39 @@ namespace BaseSource.BackendAPI.Services
         public async Task<Response<bool>> DeleteUser(string id)
         {
             User? user = await _userManager.FindByIdAsync(id);
-
             if (user is null)
+            {
                 return ResponseHelper.CreateErrorResponse<bool>(404, "Can not found user");
-
+            }
             user.Enable = false;
 
             return await Update(user);
         }
+
+        public async Task<Response<List<string>>> DeleteAllUser(List<string> ids)
+        {
+            var responseList = new List<string>();
+
+            var tasks = ids.Select(async id =>
+            {
+                User? user = await _userManager.FindByIdAsync(id);
+                if (user is null)
+                {
+                    responseList.Add($"{id} : False");
+                }
+                else
+                {
+                    user.Enable = false;
+                    responseList.Add($"{id} : True");
+                    await _userManager.UpdateAsync(user);
+                }
+            });
+
+            await Task.WhenAll(tasks);
+
+            return ResponseHelper.CreateSuccessResponse(responseList);
+        }
+
 
         public async Task<Response<bool>> AbsoluteDeleteUser(string id)
         {
@@ -223,6 +252,31 @@ namespace BaseSource.BackendAPI.Services
 
             return ResponseHelper.CreateCreatedResponse(true);
         }
+
+        public async Task<Response<List<string>>> AbsoluteDeleteAllUser(List<string> ids)
+        {
+            var responseList = new List<string>();
+
+            var tasks = ids.Select(async id =>
+            {
+                User? user = await _userManager.FindByIdAsync(id);
+                if (user is null)
+                {
+                    responseList.Add($"{id} : False");
+                }
+                else
+                {
+                    user.Enable = false;
+                    responseList.Add($"{id} : True");
+                    await _userManager.DeleteAsync(user);
+                }
+            });
+
+            await Task.WhenAll(tasks);
+
+            return ResponseHelper.CreateSuccessResponse(responseList);
+        }
+
 
         public async Task<Response<bool>> UpdatePassword(ResetPasswordRequest request)
         {

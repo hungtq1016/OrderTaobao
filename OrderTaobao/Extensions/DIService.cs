@@ -9,6 +9,7 @@
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IAuthHistoryService, AuthHistoryService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IImageService, ImageService>();
             services.AddHttpContextAccessor();
             services.AddSingleton<IUriService>(o =>
             {
