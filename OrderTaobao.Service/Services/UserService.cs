@@ -12,11 +12,11 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IUserService
     {
-        Task<Response<PageResponse<List<UserResponse>>>> GetAllWithPagination(PaginationRequest request, string route, bool enable);
+        Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route, bool enable);
 
         Task<List<UserResponse>> GetAll();
 
-        Task<Response<UserDetailResponse>> GetUserDetailById(string id);
+        Task<Response<UserDetailResponse>> GetById(string id);
 
         Task<Response<bool>> StoreUser(UserRequest request);
 
@@ -48,7 +48,7 @@ namespace BaseSource.BackendAPI.Services
             _configuration = configuration;
         }
 
-        public async Task<Response<PageResponse<List<UserResponse>>>> GetAllWithPagination(PaginationRequest request, string route,bool enable)
+        public async Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route,bool enable)
         {
             if (_userManager.Users is null)
                 return ResponseHelper
@@ -109,7 +109,7 @@ namespace BaseSource.BackendAPI.Services
             return users;
         }
 
-        public async Task<Response<UserDetailResponse>> GetUserDetailById(string id)
+        public async Task<Response<UserDetailResponse>> GetById(string id)
         {
             var user = await _userManager.Users
                 .Where(user => user.Id == id)
@@ -285,7 +285,7 @@ namespace BaseSource.BackendAPI.Services
             if (user is null)
                 return ResponseHelper.CreateErrorResponse<bool>(409, "Email does not exist");
 
-            ResetPassword? reset = await _repository.GetById(request.IdResetPassword);
+            ResetPassword? reset = await _repository.ReadByIdAsync(request.IdResetPassword);
             if (reset is null)
                 return ResponseHelper.CreateErrorResponse<bool>(403, "Your request has been blocked");
 
@@ -305,7 +305,7 @@ namespace BaseSource.BackendAPI.Services
                 reset.UpdatedAt = DateTime.UtcNow;
                 reset.Enable = false;
 
-                await _repository.Update(reset, user.UserName!);
+                await _repository.UpdateAsync(reset, user.UserName!);
                 return ResponseHelper.CreateSuccessResponse<bool>(true);
             }
             else

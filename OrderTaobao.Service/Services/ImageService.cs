@@ -35,7 +35,7 @@ namespace BaseSource.BackendAPI.Services
                     Url = image.Path,
                     
                 };
-                await _imageRepo.Create(img, "admin");
+                await _imageRepo.AddAsync(img, "admin");
             });
 
             await Task.WhenAll(tasks);

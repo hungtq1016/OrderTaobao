@@ -20,7 +20,7 @@ namespace BaseSource.BackendAPI.Services
             AuthHistory history = new AuthHistory();
             history.UserId = user.Id;
             history.Content = content;
-            await _rootRepo.Create(history,user.UserName!);
+            await _rootRepo.AddAsync(history,user.UserName!);
         }
     }
 }

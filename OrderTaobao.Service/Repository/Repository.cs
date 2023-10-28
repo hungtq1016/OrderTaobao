@@ -8,22 +8,23 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<PageResponse<List<T>>> GetAll(PaginationRequest request, string route, IUriService uriService);
+        Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request, string route, IUriService uriService);
+
         Task<List<T>> ReadAllAsync();
 
-        Task<T> GetById(string id);
+        Task<T> ReadByIdAsync(string id);
 
-        Task Create(T entity, string user);
+        Task AddAsync(T entity, string user);
 
-        Task Delete(T entity, string user);
+        Task DeleteAsync(T entity, string user);
 
-        Task AbsoluteDelete(T entity);
+        Task EraseAsync(T entity);
 
-        Task Update(T entity, string user);
+        Task UpdateAsync(T entity, string user);
 
         Task Save();
     }
-    public class Repository<T> : IRepository<T> where T : BaseEntity 
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly DataContext _context;
         private DbSet<T> entities;
@@ -34,7 +35,7 @@ namespace BaseSource.BackendAPI.Services
             entities = _context.Set<T>();
         }
 
-        public async Task<PageResponse<List<T>>> GetAll(PaginationRequest request,string route, IUriService uriService)
+        public async Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request,string route, IUriService uriService)
         {
             var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
 
@@ -56,7 +57,7 @@ namespace BaseSource.BackendAPI.Services
             return records;
         }
 
-        public async Task<T> GetById(string id)
+        public async Task<T> ReadByIdAsync(string id)
         {
             var customer = await entities.FirstOrDefaultAsync(t => t.Id == id && t.Enable);
 
@@ -65,7 +66,7 @@ namespace BaseSource.BackendAPI.Services
             return customer;
         }
 
-        public async Task Create(T entity, string user = "admin")
+        public async Task AddAsync(T entity, string user = "admin")
         {
             if (entity == null)
             {
@@ -81,7 +82,7 @@ namespace BaseSource.BackendAPI.Services
             await Save();
         }
 
-        public async Task Delete(T entity, string user = "admin")
+        public async Task DeleteAsync(T entity, string user = "admin")
         {
             if (entity == null)
             {
@@ -94,7 +95,7 @@ namespace BaseSource.BackendAPI.Services
             await Save();
         }
 
-        public async Task AbsoluteDelete(T entity)
+        public async Task EraseAsync(T entity)
         {
             if (entity == null)
             {
@@ -105,7 +106,7 @@ namespace BaseSource.BackendAPI.Services
             await Save();
         }
 
-        public async Task Update(T entity, string user)
+        public async Task UpdateAsync(T entity, string user)
         {
             if (entity == null)
             {

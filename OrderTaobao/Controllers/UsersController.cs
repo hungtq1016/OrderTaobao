@@ -24,16 +24,16 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] PaginationRequest request)
         {
-            var result = await _userService.GetAllWithPagination(request, Request.Path.Value!,true);
+            var result = await _userService.GetPagedData(request, Request.Path.Value!,true);
             return StatusCode(result.StatusCode,result);
         }
 
         // GET: api/Users/Delete
         [HttpGet("Delete")]
         [Authorize(Roles = "Admin, Super Admin")]
-        public async Task<IActionResult> GetDeleteUsers([FromQuery] PaginationRequest request)
+        public async Task<IActionResult> GetDeletedUsers([FromQuery] PaginationRequest request)
         {
-            var result = await _userService.GetAllWithPagination(request, Request.Path.Value!,false);
+            var result = await _userService.GetPagedData(request, Request.Path.Value!,false);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -41,7 +41,7 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
-            return await PerformAction(id, _userService.GetUserDetailById);
+            return await PerformAction(id, _userService.GetById);
         }
 
         // PUT: api/Users/5
@@ -61,31 +61,31 @@ namespace BaseSource.BackendAPI.Controllers
             return await PerformAction(request, _userService.StoreUser);
         }
 
-        // DELETE: api/Users/5
-        [HttpDelete("single/{id}")]
+        // DELETE: api/Users/single/delete/5
+        [HttpDelete("single/delete/{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             return await PerformAction(id, _userService.DeleteUser);
         }
 
-        // DELETE: api/Users/5
-        [HttpDelete("multiple")]
+        // DELETE: api/Users/multiple/delete
+        [HttpDelete("multiple/delete")]
         public async Task<IActionResult> DeleteMultipleUser(List<string> ids)
         {
             return await PerformAction(ids, _userService.DeleteAllUser);
         }
 
         // DELETE: api/Users/5/Delete
-        [HttpDelete("{id}/delete")]
+        [HttpDelete("single/erase/{id}")]
         [Authorize(Roles = "Admin, Super Admin")]
-        public async Task<IActionResult> AbsoluteDeleteUser(string id)
+        public async Task<IActionResult> EraseUser(string id)
         {
             return await PerformAction(id, _userService.AbsoluteDeleteUser);
         }
 
-        [HttpDelete("multiple/delete")]
+        [HttpDelete("multiple/erase")]
         [Authorize(Roles = "Admin, Super Admin")]
-        public async Task<IActionResult> AbsoluteDeleteAllUser(List<string> ids)
+        public async Task<IActionResult> EraseAllUsers(List<string> ids)
         {
             return await PerformAction(ids, _userService.AbsoluteDeleteAllUser);
         }
