@@ -28,8 +28,8 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode,result);
         }
 
-        // GET: api/Users/Delete
-        [HttpGet("Delete")]
+        // GET: api/Users/disabled
+        [HttpGet("disable")]
         [Authorize(Roles = "Admin, Super Admin")]
         public async Task<IActionResult> GetDeletedUsers([FromQuery] PaginationRequest request)
         {
@@ -63,7 +63,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Users/single/delete/5
         [HttpDelete("single/delete/{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteSingleUser(string id)
         {
             return await PerformAction(id, _userService.DeleteUser);
         }
@@ -72,22 +72,22 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpDelete("multiple/delete")]
         public async Task<IActionResult> DeleteMultipleUser(List<string> ids)
         {
-            return await PerformAction(ids, _userService.DeleteAllUser);
+            return await PerformAction(ids, _userService.DeleteMultipleUser);
         }
 
         // DELETE: api/Users/5/Delete
         [HttpDelete("single/erase/{id}")]
         [Authorize(Roles = "Admin, Super Admin")]
-        public async Task<IActionResult> EraseUser(string id)
+        public async Task<IActionResult> EraseSingleUser(string id)
         {
-            return await PerformAction(id, _userService.AbsoluteDeleteUser);
+            return await PerformAction(id, _userService.EraseUser);
         }
 
         [HttpDelete("multiple/erase")]
         [Authorize(Roles = "Admin, Super Admin")]
-        public async Task<IActionResult> EraseAllUsers(List<string> ids)
+        public async Task<IActionResult> EraseMultipleUsers(List<string> ids)
         {
-            return await PerformAction(ids, _userService.AbsoluteDeleteAllUser);
+            return await PerformAction(ids, _userService.EraseMultipleUser);
         }
     }
 }

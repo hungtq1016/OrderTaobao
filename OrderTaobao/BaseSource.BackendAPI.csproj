@@ -23,8 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Upload\" />
-    <Folder Include="Upload\Excel\" />
-    <Folder Include="Upload\Image\" />
   </ItemGroup>
 
 </Project>

@@ -14,12 +14,12 @@ namespace BaseSource.Helper
 
             respose.NextPage =
                 validFilter.PageNumber >= 1 && validFilter.PageNumber < roundedTotalPages
-                ? uriService.GetPageUri(new PaginationRequest(validFilter.PageNumber + 1, validFilter.PageSize), route)
+                ? uriService.GetPageUri(new PaginationRequest(Convert.ToUInt16(validFilter.PageNumber + 1), validFilter.PageSize), route)
                 : null;
 
             respose.PreviousPage =
                 validFilter.PageNumber - 1 >= 1 && validFilter.PageNumber <= roundedTotalPages
-                ? uriService.GetPageUri(new PaginationRequest(validFilter.PageNumber - 1, validFilter.PageSize), route)
+                ? uriService.GetPageUri(new PaginationRequest(Convert.ToUInt16(validFilter.PageNumber - 1), validFilter.PageSize), route)
                 : null;
 
             respose.FirstPage = uriService.GetPageUri(new PaginationRequest(1, validFilter.PageSize), route);

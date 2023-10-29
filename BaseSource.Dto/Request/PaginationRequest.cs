@@ -5,7 +5,7 @@ namespace BaseSource.Dto
     {
         public UInt16 PageNumber { get; set; }
         public UInt16 PageSize { get; set; }
-        public PaginationRequest(int v, ushort pageSize)
+        public PaginationRequest()
         {
             PageNumber = 1;
             PageSize = 10;

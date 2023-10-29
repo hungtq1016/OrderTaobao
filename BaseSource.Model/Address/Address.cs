@@ -15,5 +15,10 @@ namespace BaseSource.Model
         [ForeignKey("Ward")]
         public string WardId { get; set; }
         public Ward Ward { get; set; } = null!;
+
+        [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public User User { get; set; } = null!;
     }
 }

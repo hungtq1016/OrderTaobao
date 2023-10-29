@@ -12,8 +12,7 @@ namespace BaseSource.Model
         public DateTime RefreshTokenExpiryTime { get; set; }
         public bool Enable { get; set; }
 
-        
-
+        public Address? Address { get; set; }
         public ICollection<AuthHistory> AuthHistory { get; } = new List<AuthHistory>();
         public ICollection<UserHistory> UserHistory { get; } = new List<UserHistory>();
         public ICollection<ResetPassword> ResetPassword { get; } = new List<ResetPassword>();

@@ -11,17 +11,17 @@ namespace BaseSource.Configurations
             // Each User can have many entries in the UserRole join table
             builder.HasMany(user => user.Roles)
                 .WithOne(userrole => userrole.User)
-                .HasForeignKey(userrole => userrole.UserId)
+                .HasForeignKey(userrole => userrole.UserId).OnDelete(DeleteBehavior.ClientCascade)
                 .IsRequired();
 
             builder.HasMany(user => user.Orders)
                 .WithOne(order => order.User)
-                .HasForeignKey(order => order.UserId)
+                .HasForeignKey(order => order.UserId).OnDelete(DeleteBehavior.ClientCascade)
                 .IsRequired();
 
             builder.HasMany(user => user.Images)
                 .WithOne(imageuser => imageuser.User)
-                .HasForeignKey(imageuser => imageuser.UserId)
+                .HasForeignKey(imageuser => imageuser.UserId).OnDelete(DeleteBehavior.ClientCascade)
                 .IsRequired();
         }
     }

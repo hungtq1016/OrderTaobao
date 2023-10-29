@@ -8,7 +8,7 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request, string route, IUriService uriService);
+        Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request, string route, IUriService uriService,bool enable);
 
         Task<List<T>> ReadAllAsync();
 
@@ -35,13 +35,15 @@ namespace BaseSource.BackendAPI.Services
             entities = _context.Set<T>();
         }
 
-        public async Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request,string route, IUriService uriService)
+        public async Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request,string route, IUriService uriService, bool enable)
         {
             var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
 
             UInt16 totalRecords = Convert.ToUInt16(await entities.CountAsync());
 
             var lists = await entities
+                .Where(e => e.Enable == enable)
+                .OrderByDescending(e => e.UpdatedAt)
                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                .Take(validFilter.PageSize).ToListAsync();
 

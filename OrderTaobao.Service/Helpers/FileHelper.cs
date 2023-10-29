@@ -15,9 +15,8 @@ namespace BaseSource.BackendAPI.Services.Helpers
                 try
                 {
                     var oldName = file.FileName;
-                    var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                    var extension = "." + GetExtension(oldName);
                     string newName = DateTime.Now.Ticks.ToString() + extension;
-
                     var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}");
 
                     if (!Directory.Exists(filepath))
@@ -33,7 +32,7 @@ namespace BaseSource.BackendAPI.Services.Helpers
                         {
                             Name = oldName,
                             Extension = extension,
-                            Path = $"Upload\\{folder}\\${newName}",
+                            Path = newName,
                             Size = Convert.ToUInt64(file.Length),
                             Type = type
                         });
@@ -45,6 +44,11 @@ namespace BaseSource.BackendAPI.Services.Helpers
             }
 
             return fileRes;
+        }
+
+        public static string GetExtension(string name)
+        {
+            return name.Split('.')[name.Split('.').Length - 1];
         }
     }
 }

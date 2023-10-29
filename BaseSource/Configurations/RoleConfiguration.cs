@@ -15,7 +15,7 @@ namespace BaseSource.Configurations
         {
             builder.HasMany(role => role.Users)
                  .WithOne(userrole => userrole.Role)
-                 .HasForeignKey(userrole => userrole.RoleId)
+                 .HasForeignKey(userrole => userrole.RoleId).OnDelete(DeleteBehavior.ClientCascade)
                  .IsRequired();
         }
     }

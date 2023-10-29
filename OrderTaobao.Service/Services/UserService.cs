@@ -26,11 +26,11 @@ namespace BaseSource.BackendAPI.Services
 
         Task<Response<bool>> DeleteUser(string id);
 
-        Task<Response<List<string>>> DeleteAllUser(List<string> ids);
+        Task<Response<List<string>>> DeleteMultipleUser(List<string> ids);
 
-        Task<Response<bool>> AbsoluteDeleteUser(string id);
+        Task<Response<bool>> EraseUser(string id);
 
-        Task<Response<List<string>>> AbsoluteDeleteAllUser(List<string> ids);
+        Task<Response<List<string>>> EraseMultipleUser(List<string> ids);
     }
 
     public class UserService : IUserService
@@ -212,32 +212,30 @@ namespace BaseSource.BackendAPI.Services
             return await Update(user);
         }
 
-        public async Task<Response<List<string>>> DeleteAllUser(List<string> ids)
+        public async Task<Response<List<string>>> DeleteMultipleUser(List<string> ids)
         {
-            var responseList = new List<string>();
+            List<string> responseList = new List<string>();
 
-            var tasks = ids.Select(async id =>
+            foreach (string id in ids)
             {
                 User? user = await _userManager.FindByIdAsync(id);
                 if (user is null)
                 {
-                    responseList.Add($"{id} : False");
+                    responseList.Add($"{id} : Fail");
                 }
                 else
                 {
                     user.Enable = false;
-                    responseList.Add($"{id} : True");
+                    responseList.Add($"{id} : Pass");
                     await _userManager.UpdateAsync(user);
                 }
-            });
-
-            await Task.WhenAll(tasks);
+            }
 
             return ResponseHelper.CreateSuccessResponse(responseList);
         }
 
 
-        public async Task<Response<bool>> AbsoluteDeleteUser(string id)
+        public async Task<Response<bool>> EraseUser(string id)
         {
             User? user = await _userManager.FindByIdAsync(id);
 
@@ -253,26 +251,24 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateCreatedResponse(true);
         }
 
-        public async Task<Response<List<string>>> AbsoluteDeleteAllUser(List<string> ids)
+        public async Task<Response<List<string>>> EraseMultipleUser(List<string> ids)
         {
-            var responseList = new List<string>();
+            List<string> responseList = new List<string>();
 
-            var tasks = ids.Select(async id =>
+            foreach (string id in ids)
             {
                 User? user = await _userManager.FindByIdAsync(id);
                 if (user is null)
                 {
-                    responseList.Add($"{id} : False");
+                    responseList.Add($"{id} : Fail");
                 }
                 else
                 {
                     user.Enable = false;
-                    responseList.Add($"{id} : True");
+                    responseList.Add($"{id} : Pass");
                     await _userManager.DeleteAsync(user);
                 }
-            });
-
-            await Task.WhenAll(tasks);
+            }
 
             return ResponseHelper.CreateSuccessResponse(responseList);
         }

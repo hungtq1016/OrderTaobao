@@ -14,27 +14,39 @@ namespace BaseSource.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AdministrativeUnit",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    NAME = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
+                    SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
+                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ENABLE = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdministrativeUnit", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CATEGORIES",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     NAME = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     SLUG = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    PARENT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
-                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
+                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
+                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CATEGORIES", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_CATEGORIES_CATEGORIES_PARENT_ID",
-                        column: x => x.PARENT_ID,
-                        principalTable: "CATEGORIES",
-                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -55,27 +67,6 @@ namespace BaseSource.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IMAGES", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PROVINCES",
-                columns: table => new
-                {
-                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
-                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ENABLE = table.Column<bool>(type: "bit", nullable: false),
-                    NAME = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    TYPE = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    TYPE_SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    CODE = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PROVINCES", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,6 +114,33 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PROVINCES",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ENABLE = table.Column<bool>(type: "bit", nullable: false),
+                    NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    NAME_EN = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EN_SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CODE = table.Column<int>(type: "int", nullable: false),
+                    ADMINISTRATIVE_UNIT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PROVINCES", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_PROVINCES_AdministrativeUnit_ADMINISTRATIVE_UNIT_ID",
+                        column: x => x.ADMINISTRATIVE_UNIT_ID,
+                        principalTable: "AdministrativeUnit",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PRODUCTS",
                 columns: table => new
                 {
@@ -147,34 +165,6 @@ namespace BaseSource.Migrations
                         name: "FK_PRODUCTS_CATEGORIES_CATEGORY_ID",
                         column: x => x.CATEGORY_ID,
                         principalTable: "CATEGORIES",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DISTRICTS",
-                columns: table => new
-                {
-                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
-                    PROVINCE_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
-                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ENABLE = table.Column<bool>(type: "bit", nullable: false),
-                    NAME = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    TYPE = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    TYPE_SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    CODE = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DISTRICTS", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_DISTRICTS_PROVINCES_PROVINCE_ID",
-                        column: x => x.PROVINCE_ID,
-                        principalTable: "PROVINCES",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -215,14 +205,12 @@ namespace BaseSource.Migrations
                         name: "FK_AspNetUserRoles_ROLE_RoleId",
                         column: x => x.RoleId,
                         principalTable: "ROLE",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_USER_UserId",
                         column: x => x.UserId,
                         principalTable: "USER",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -291,14 +279,12 @@ namespace BaseSource.Migrations
                         name: "FK_IMAGE_USER_IMAGES_IMAGE_ID",
                         column: x => x.IMAGE_ID,
                         principalTable: "IMAGES",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_IMAGE_USER_USER_USER_ID",
                         column: x => x.USER_ID,
                         principalTable: "USER",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -411,31 +397,36 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WARDS",
+                name: "DISTRICTS",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
-                    DISTRICT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    PROVINCE_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false),
-                    NAME = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    TYPE = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    TYPE_SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
-                    CODE = table.Column<int>(type: "int", nullable: false)
+                    NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    NAME_EN = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EN_SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CODE = table.Column<int>(type: "int", nullable: false),
+                    ADMINISTRATIVE_UNIT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WARDS", x => x.ID);
+                    table.PrimaryKey("PK_DISTRICTS", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_WARDS_DISTRICTS_DISTRICT_ID",
-                        column: x => x.DISTRICT_ID,
-                        principalTable: "DISTRICTS",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_DISTRICTS_AdministrativeUnit_ADMINISTRATIVE_UNIT_ID",
+                        column: x => x.ADMINISTRATIVE_UNIT_ID,
+                        principalTable: "AdministrativeUnit",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_DISTRICTS_PROVINCES_PROVINCE_ID",
+                        column: x => x.PROVINCE_ID,
+                        principalTable: "PROVINCES",
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -495,12 +486,46 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WARDS",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    DISTRICT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ENABLE = table.Column<bool>(type: "bit", nullable: false),
+                    NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    NAME_EN = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EN_SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CODE = table.Column<int>(type: "int", nullable: false),
+                    ADMINISTRATIVE_UNIT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WARDS", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_WARDS_AdministrativeUnit_ADMINISTRATIVE_UNIT_ID",
+                        column: x => x.ADMINISTRATIVE_UNIT_ID,
+                        principalTable: "AdministrativeUnit",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_WARDS_DISTRICTS_DISTRICT_ID",
+                        column: x => x.DISTRICT_ID,
+                        principalTable: "DISTRICTS",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ADDRESS",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     STREET = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    WARD_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    WARD_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
+                    USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -511,11 +536,15 @@ namespace BaseSource.Migrations
                 {
                     table.PrimaryKey("PK_ADDRESS", x => x.ID);
                     table.ForeignKey(
+                        name: "FK_ADDRESS_USER_USER_ID",
+                        column: x => x.USER_ID,
+                        principalTable: "USER",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_ADDRESS_WARDS_WARD_ID",
                         column: x => x.WARD_ID,
                         principalTable: "WARDS",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.InsertData(
@@ -523,14 +552,21 @@ namespace BaseSource.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "44cc2cff-72c3-4771-98e6-f46a287cbf46", null, "Manager", "MANAGER" },
-                    { "79c61413-392e-42ae-8523-e9962dbc278a", null, "Collaborator", "COLLABORATOR" },
-                    { "92b0a5cf-8b72-44c7-903f-d786228771ec", null, "Super Admin", "SUPER ADMIN" },
-                    { "9ef6316a-c114-4234-b05e-f5b4b70011e1", null, "Staff", "STAFF" },
-                    { "d2e0cb34-55f9-4fc6-b9c3-90dfdc44cb3c", null, "Admin", "ADMIN" },
-                    { "d8798e97-a75f-44c4-b2a5-276bd82127fa", null, "Customer", "CUSTOMER" },
-                    { "ef68f352-37a7-4b4a-8688-ceb8a5fe1dca", null, "Visitor", "VISITOR" }
+                    { "00b81080-f9a3-44c6-9967-d6f6cf992cf5", null, "Collaborator", "COLLABORATOR" },
+                    { "01090aab-f658-4819-8e9c-a5e426da21cd", null, "Visitor", "VISITOR" },
+                    { "06b53368-7dd1-4a09-a868-0cf366095763", null, "Manager", "MANAGER" },
+                    { "42cc3adb-a3cd-40f6-af70-bee431ab511e", null, "Staff", "STAFF" },
+                    { "a35048e1-2e9e-4c2f-93bb-741cdae9e237", null, "Customer", "CUSTOMER" },
+                    { "ae04138a-9973-4fe3-9bd9-dc90bf899e5e", null, "Super Admin", "SUPER ADMIN" },
+                    { "e3f5f3cc-d416-4875-89df-4fc1453d0862", null, "Admin", "ADMIN" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ADDRESS_USER_ID",
+                table: "ADDRESS",
+                column: "USER_ID",
+                unique: true,
+                filter: "[USER_ID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ADDRESS_WARD_ID",
@@ -548,14 +584,14 @@ namespace BaseSource.Migrations
                 column: "USER_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CATEGORIES_PARENT_ID",
-                table: "CATEGORIES",
-                column: "PARENT_ID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CUSTOMER_HISTORY_USER_ID",
                 table: "CUSTOMER_HISTORY",
                 column: "USER_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DISTRICTS_ADMINISTRATIVE_UNIT_ID",
+                table: "DISTRICTS",
+                column: "ADMINISTRATIVE_UNIT_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DISTRICTS_PROVINCE_ID",
@@ -604,6 +640,11 @@ namespace BaseSource.Migrations
                 column: "CATEGORY_ID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PROVINCES_ADMINISTRATIVE_UNIT_ID",
+                table: "PROVINCES",
+                column: "ADMINISTRATIVE_UNIT_ID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RESET_PASSWORD_EMAIL",
                 table: "RESET_PASSWORD",
                 column: "EMAIL");
@@ -641,6 +682,11 @@ namespace BaseSource.Migrations
                 name: "IX_USER_LOGIN_UserId",
                 table: "USER_LOGIN",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WARDS_ADMINISTRATIVE_UNIT_ID",
+                table: "WARDS",
+                column: "ADMINISTRATIVE_UNIT_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WARDS_DISTRICT_ID",
@@ -713,6 +759,9 @@ namespace BaseSource.Migrations
 
             migrationBuilder.DropTable(
                 name: "PROVINCES");
+
+            migrationBuilder.DropTable(
+                name: "AdministrativeUnit");
         }
     }
 }

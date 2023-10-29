@@ -50,8 +50,8 @@ namespace BaseSource.BackendAPI.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Phone = user.UserName,
-         
+                Phone = user.PhoneNumber,
+                UserName = user.UserName
             };
 
             return Ok(new PermissionResponse<UserResponse> { Data = result, Message = "Thành Công",IsAuthen = true,

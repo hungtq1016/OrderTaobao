@@ -57,17 +57,71 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("UPDATED_BY");
 
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
+
                     b.Property<string>("WardId")
-                        .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("varchar")
                         .HasColumnName("WARD_ID");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[USER_ID] IS NOT NULL");
+
                     b.HasIndex("WardId");
 
                     b.ToTable("ADDRESS");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.AdministrativeUnit", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("SLUG");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdministrativeUnit");
                 });
 
             modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
@@ -126,67 +180,6 @@ namespace BaseSource.Migrations
                         .HasColumnName("ID");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CREATED_AT")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("bit")
-                        .HasColumnName("ENABLE");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("NAME");
-
-                    b.Property<string>("ParentId")
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("PARENT_ID");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("SLUG");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("UPDATED_AT")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("CATEGORIES");
-                });
-
-            modelBuilder.Entity("BaseSource.Model.District", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("ID");
-
-                    b.Property<int>("Code")
-                        .HasColumnType("int")
-                        .HasColumnName("CODE");
-
-                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
@@ -201,33 +194,15 @@ namespace BaseSource.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(36)
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar")
                         .HasColumnName("NAME");
 
-                    b.Property<string>("ProvinceId")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar")
-                        .HasColumnName("PROVINCE_ID");
-
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(36)
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar")
                         .HasColumnName("SLUG");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("TYPE");
-
-                    b.Property<string>("TypeSlug")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("TYPE_SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -239,6 +214,82 @@ namespace BaseSource.Migrations
                         .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
+
+                    b.ToTable("CATEGORIES");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.District", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<string>("AdministrativeUnitID")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ADMINISTRATIVE_UNIT_ID");
+
+                    b.Property<int>("CODE")
+                        .HasColumnType("int")
+                        .HasColumnName("CODE");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CREATED_BY");
+
+                    b.Property<string>("EnSlug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("EN_SLUG");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME_EN");
+
+                    b.Property<string>("ProvinceId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("PROVINCE_ID");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("SLUG");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UPDATED_BY");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdministrativeUnitID");
 
                     b.HasIndex("ProvinceId");
 
@@ -572,7 +623,13 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
 
-                    b.Property<int>("Code")
+                    b.Property<string>("AdministrativeUnitID")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ADMINISTRATIVE_UNIT_ID");
+
+                    b.Property<int>("CODE")
                         .HasColumnType("int")
                         .HasColumnName("CODE");
 
@@ -585,33 +642,33 @@ namespace BaseSource.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("CREATED_BY");
 
+                    b.Property<string>("EnSlug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("EN_SLUG");
+
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(36)
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar")
                         .HasColumnName("NAME");
 
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME_EN");
+
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(36)
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar")
                         .HasColumnName("SLUG");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("TYPE");
-
-                    b.Property<string>("TypeSlug")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("TYPE_SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -623,6 +680,8 @@ namespace BaseSource.Migrations
                         .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdministrativeUnitID");
 
                     b.ToTable("PROVINCES");
                 });
@@ -704,43 +763,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d8798e97-a75f-44c4-b2a5-276bd82127fa",
+                            Id = "a35048e1-2e9e-4c2f-93bb-741cdae9e237",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "9ef6316a-c114-4234-b05e-f5b4b70011e1",
+                            Id = "42cc3adb-a3cd-40f6-af70-bee431ab511e",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "79c61413-392e-42ae-8523-e9962dbc278a",
+                            Id = "00b81080-f9a3-44c6-9967-d6f6cf992cf5",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "44cc2cff-72c3-4771-98e6-f46a287cbf46",
+                            Id = "06b53368-7dd1-4a09-a868-0cf366095763",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "d2e0cb34-55f9-4fc6-b9c3-90dfdc44cb3c",
+                            Id = "e3f5f3cc-d416-4875-89df-4fc1453d0862",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "92b0a5cf-8b72-44c7-903f-d786228771ec",
+                            Id = "ae04138a-9973-4fe3-9bd9-dc90bf899e5e",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "ef68f352-37a7-4b4a-8688-ceb8a5fe1dca",
+                            Id = "01090aab-f658-4819-8e9c-a5e426da21cd",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });
@@ -877,7 +936,13 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("ID");
 
-                    b.Property<int>("Code")
+                    b.Property<string>("AdministrativeUnitID")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ADMINISTRATIVE_UNIT_ID");
+
+                    b.Property<int>("CODE")
                         .HasColumnType("int")
                         .HasColumnName("CODE");
 
@@ -896,33 +961,33 @@ namespace BaseSource.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("DISTRICT_ID");
 
+                    b.Property<string>("EnSlug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("EN_SLUG");
+
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(36)
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar")
                         .HasColumnName("NAME");
 
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("NAME_EN");
+
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(36)
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar")
                         .HasColumnName("SLUG");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("TYPE");
-
-                    b.Property<string>("TypeSlug")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("nvarchar")
-                        .HasColumnName("TYPE_SLUG");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
@@ -934,6 +999,8 @@ namespace BaseSource.Migrations
                         .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdministrativeUnitID");
 
                     b.HasIndex("DistrictId");
 
@@ -1063,11 +1130,17 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("BaseSource.Model.Address", b =>
                 {
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithOne("Address")
+                        .HasForeignKey("BaseSource.Model.Address", "UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
                     b.HasOne("BaseSource.Model.Ward", "Ward")
                         .WithMany("Address")
                         .HasForeignKey("WardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.Navigation("User");
 
                     b.Navigation("Ward");
                 });
@@ -1083,23 +1156,21 @@ namespace BaseSource.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BaseSource.Model.Category", b =>
-                {
-                    b.HasOne("BaseSource.Model.Category", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
-
-                    b.Navigation("Parent");
-                });
-
             modelBuilder.Entity("BaseSource.Model.District", b =>
                 {
+                    b.HasOne("BaseSource.Model.AdministrativeUnit", "AdministrativeUnit")
+                        .WithMany("Districts")
+                        .HasForeignKey("AdministrativeUnitID")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
                     b.HasOne("BaseSource.Model.Province", "Province")
                         .WithMany("Districts")
                         .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.Navigation("AdministrativeUnit");
 
                     b.Navigation("Province");
                 });
@@ -1109,13 +1180,13 @@ namespace BaseSource.Migrations
                     b.HasOne("BaseSource.Model.Image", "Image")
                         .WithMany("Users")
                         .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("BaseSource.Model.User", "User")
                         .WithMany("Images")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Image");
@@ -1183,6 +1254,17 @@ namespace BaseSource.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.Province", b =>
+                {
+                    b.HasOne("BaseSource.Model.AdministrativeUnit", "AdministrativeUnit")
+                        .WithMany("Provinces")
+                        .HasForeignKey("AdministrativeUnitID")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("AdministrativeUnit");
+                });
+
             modelBuilder.Entity("BaseSource.Model.ResetPassword", b =>
                 {
                     b.HasOne("BaseSource.Model.User", "User")
@@ -1207,11 +1289,19 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("BaseSource.Model.Ward", b =>
                 {
+                    b.HasOne("BaseSource.Model.AdministrativeUnit", "AdministrativeUnit")
+                        .WithMany("Wards")
+                        .HasForeignKey("AdministrativeUnitID")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
                     b.HasOne("BaseSource.Model.District", "District")
                         .WithMany("Wards")
                         .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.Navigation("AdministrativeUnit");
 
                     b.Navigation("District");
                 });
@@ -1257,13 +1347,13 @@ namespace BaseSource.Migrations
                     b.HasOne("BaseSource.Model.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("BaseSource.Model.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -1271,9 +1361,13 @@ namespace BaseSource.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BaseSource.Model.Category", b =>
+            modelBuilder.Entity("BaseSource.Model.AdministrativeUnit", b =>
                 {
-                    b.Navigation("Children");
+                    b.Navigation("Districts");
+
+                    b.Navigation("Provinces");
+
+                    b.Navigation("Wards");
                 });
 
             modelBuilder.Entity("BaseSource.Model.District", b =>
@@ -1310,6 +1404,8 @@ namespace BaseSource.Migrations
 
             modelBuilder.Entity("BaseSource.Model.User", b =>
                 {
+                    b.Navigation("Address");
+
                     b.Navigation("AuthHistory");
 
                     b.Navigation("Images");

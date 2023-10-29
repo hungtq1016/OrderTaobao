@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImagesController : ControllerBase
+    [Authorize]
+    public class ImagesController : StatusController
     {
         private readonly IImageService _imageService;
+
         public ImagesController(IImageService imageService)
         {
             _imageService = imageService;
@@ -17,31 +19,41 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllImage()
         {
-            var result = await _imageService.ReadAllImages();
-            return Ok(result);
+            return await PerformAction("", _imageService.ReadAllImages);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateImage(List<IFormFile> files)
+        [HttpGet("page")]
+        public async Task<IActionResult> GetPagedImage([FromQuery] PaginationRequest request)
         {
-            var result = await _imageService.CreateImage(files);
-            return Ok(result);
+            var result = await _imageService.ReadPageImages(request, Request.Path.Value!, true);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("{user}")]
+        public async Task<IActionResult> CreateImage(List<IFormFile> files, string user)
+        {
+            var result = await _imageService.CreateImage(files, user);
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet("{name}")]
+        [AllowAnonymous]
         public IActionResult GetImage(string name)
         {
-            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload/Image", name);
+            ImageResponse result = _imageService.ReadImage(name);
 
-            if (System.IO.File.Exists(imagePath))
-            {
-                var imageBytes = System.IO.File.ReadAllBytes(imagePath);
-                return File(imageBytes, "image/*"); 
-            }
-            else
-            {
-                return NotFound(); 
-            }
+            if (result is null)
+                return NotFound();
+
+            return base.File(result.ImageBytes, $"image/{result.Extension}");
+        }
+
+        [HttpDelete("{id}/{name}")]
+        public async Task<IActionResult> DeleteImage(string id,string name)
+        {
+            var result = await _imageService.DeleteImage(id,name);
+            return StatusCode(result.StatusCode, result);
+
         }
 
     }
