@@ -6,7 +6,6 @@ using BaseSource.Dto;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 
 namespace BaseSource.BackendAPI.Services
 {
@@ -20,11 +19,7 @@ namespace BaseSource.BackendAPI.Services
 
         Task<Response<TokenResponse>> RefreshToken(TokenRequest request);
 
-        Task<User> GetUserByToken(TokenRequest request);
-
-        Task<IList<string>> GetRolesByUser(User user);
-
-        bool IsPermission(IList<string> userRoles, IList<string> roles);
+        Task<Response<PermissionResponse<User>>> GetPermission(TokenRequest request);
     }
 
     public class AuthenticateService : IAuthenticateService
@@ -55,7 +50,7 @@ namespace BaseSource.BackendAPI.Services
             {
                 IList<string> roles = await _userManager.GetRolesAsync(user);
 
-                TokenResponse token = _tokenService.CreateAccessToken(user, roles);
+                TokenResponse token = await _tokenService.CreateAccessToken(user, roles);
 
                 await _historyService.CreateAuthHistory(user, UserConstant.Login);
 
@@ -96,7 +91,7 @@ namespace BaseSource.BackendAPI.Services
 
             var roles = await _authenRepo.GetRolesByUser(user);
 
-            TokenResponse token = _tokenService.CreateAccessToken(user, roles);
+            TokenResponse token = await _tokenService.CreateAccessToken(user, roles);
 
             await _historyService.CreateAuthHistory(user, UserConstant.Register);
 
@@ -105,9 +100,14 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<Response<bool>> Logout(TokenRequest request)
         {
+
             User? user = await GetUserByToken(request);
+
+            if (user is null)
+                return ResponseHelper.CreateErrorResponse<bool>(404, "User is not found");
+
             await _historyService.CreateAuthHistory(user, UserConstant.Logout);
-            return ResponseHelper.CreateCreatedResponse<bool>(true);
+            return ResponseHelper.CreateCreatedResponse(true);
         }
 
         public async Task<Response<TokenResponse>> RefreshToken(TokenRequest request)
@@ -117,7 +117,7 @@ namespace BaseSource.BackendAPI.Services
             if (isValidToken)
             {
                 TokenResponse tokenResponse =  await _tokenService.CreateNewAccessToken(request!);
-                return ResponseHelper.CreateCreatedResponse<TokenResponse>(tokenResponse);
+                return ResponseHelper.CreateCreatedResponse(tokenResponse);
             }
 
             TokenResponse token =  new TokenResponse
@@ -128,39 +128,44 @@ namespace BaseSource.BackendAPI.Services
                 TokenType = "Bearer"
             };
 
-            return ResponseHelper.CreateSuccessResponse<TokenResponse>(token);
-
+            return ResponseHelper.CreateSuccessResponse(token);
         }
 
-        public async Task<User> GetUserByToken(TokenRequest request)
+        public async Task<Response<PermissionResponse<User>>> GetPermission(TokenRequest request)
+        {
+            User? user = await GetUserByToken(request);
+            if (user is null)
+                return ResponseHelper.CreateErrorResponse<PermissionResponse<User>> (404, "Token is not found");
+
+            PermissionResponse<User> permission = new PermissionResponse<User>();
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            IList<string> roles = new List<string>{"Admin","Customer","Super Admin"};
+            var match = userRoles.Intersect(roles);
+            bool isAdmin = match.Any();
+
+            permission.Data = user;
+            permission.IsAuthen = true;
+            permission.IsAdmin = isAdmin;
+
+            return ResponseHelper.CreateSuccessResponse(permission);
+            
+        }
+
+        private async Task<User> GetUserByToken(TokenRequest request)
         {
             var principal = _tokenService.GetPrincipalFromExpiredToken(request.AccessToken!);
             if (principal is null)
             {
                 return null!;
             }
-            string id = principal!.Identity!.Name!;
-            var user = await _authenRepo.ReadUserAsync(id);
-            
-            return user;
+            string id = principal.Identity.Name;
+
+            if (id is null)
+                return null;
+
+            return await _userManager.FindByIdAsync(id);
         }
 
-        public async Task<IList<string>> GetRolesByUser(User user)
-        {
-            return await _authenRepo.GetRolesByUser(user);
-        }
-
-        public bool IsPermission(IList<string> userRoles, IList<string> roles)
-        {
-            for (int i = 0; i < userRoles.Count; i++)
-            {
-                if (roles.Any(x => x.ToLower() == userRoles[i].ToLower()))
-                {
-                    return true;
-                }
-                
-            }
-            return false;
-        }
     }
 }

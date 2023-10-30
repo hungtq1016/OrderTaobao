@@ -24,9 +24,9 @@ namespace BaseSource.BackendAPI.Services
 
         Task<Response<bool>> UpdatePassword(ResetPasswordRequest request);
 
-        Task<Response<bool>> DeleteUser(string id);
+        Task<Response<bool>> UpdateEnable(string id,bool enable);
 
-        Task<Response<List<string>>> DeleteMultipleUser(List<string> ids);
+        Task<Response<List<string>>> UpdateEnableMultipleUser(List<string> ids, bool enable);
 
         Task<Response<bool>> EraseUser(string id);
 
@@ -200,19 +200,19 @@ namespace BaseSource.BackendAPI.Services
 
         }
 
-        public async Task<Response<bool>> DeleteUser(string id)
+        public async Task<Response<bool>> UpdateEnable(string id, bool enable)
         {
             User? user = await _userManager.FindByIdAsync(id);
             if (user is null)
             {
                 return ResponseHelper.CreateErrorResponse<bool>(404, "Can not found user");
             }
-            user.Enable = false;
+            user.Enable = enable;
 
             return await Update(user);
         }
 
-        public async Task<Response<List<string>>> DeleteMultipleUser(List<string> ids)
+        public async Task<Response<List<string>>> UpdateEnableMultipleUser(List<string> ids,bool enable)
         {
             List<string> responseList = new List<string>();
 
@@ -225,7 +225,7 @@ namespace BaseSource.BackendAPI.Services
                 }
                 else
                 {
-                    user.Enable = false;
+                    user.Enable = enable;
                     responseList.Add($"{id} : Pass");
                     await _userManager.UpdateAsync(user);
                 }

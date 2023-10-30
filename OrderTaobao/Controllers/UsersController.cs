@@ -1,16 +1,11 @@
-﻿using System.Data;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using OfficeOpenXml;
-using OfficeOpenXml.Table;
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,Super Admin,Manager")]
+    [Authorize(Policy = "UserView")]
     public class UsersController : StatusController
     {
         private readonly IUserService _userService;
@@ -30,7 +25,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // GET: api/Users/disabled
         [HttpGet("disable")]
-        [Authorize(Roles = "Admin, Super Admin")]
+        [Authorize(Policy = "DeleteView")]
         public async Task<IActionResult> GetDeletedUsers([FromQuery] PaginationRequest request)
         {
             var result = await _userService.GetPagedData(request, Request.Path.Value!,false);
@@ -56,6 +51,7 @@ namespace BaseSource.BackendAPI.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Policy = "UserEdit")]
         public async Task<IActionResult> PostUser(UserRequest request)
         {
             return await PerformAction(request, _userService.StoreUser);
@@ -63,28 +59,50 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Users/single/delete/5
         [HttpDelete("single/delete/{id}")]
+        [Authorize(Policy = "UserDelete")]
         public async Task<IActionResult> DeleteSingleUser(string id)
         {
-            return await PerformAction(id, _userService.DeleteUser);
+            var result = await _userService.UpdateEnable(id, false);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        // PUT: api/Users/single/Restore/5
+        [HttpPut("single/restore/{id}")]
+        [Authorize(Policy = "UserDelete")]
+        public async Task<IActionResult> RestoreSingleUser(string id)
+        {
+            var result = await _userService.UpdateEnable(id, true);
+            return StatusCode(result.StatusCode, result);
         }
 
         // DELETE: api/Users/multiple/delete
         [HttpDelete("multiple/delete")]
+        [Authorize(Policy = "UserDelete")]
         public async Task<IActionResult> DeleteMultipleUser(List<string> ids)
         {
-            return await PerformAction(ids, _userService.DeleteMultipleUser);
+            var result = await _userService.UpdateEnableMultipleUser(ids, false);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        // PUT: api/Users/multiple/Restore
+        [HttpPut("multiple/restore")]
+        [Authorize(Policy = "UserDelete")]
+        public async Task<IActionResult> RestoreMultipleUser(List<string> ids)
+        {
+            var result = await _userService.UpdateEnableMultipleUser(ids, true);
+            return StatusCode(result.StatusCode, result);
         }
 
         // DELETE: api/Users/5/Delete
         [HttpDelete("single/erase/{id}")]
-        [Authorize(Roles = "Admin, Super Admin")]
+        [Authorize(Policy = "UserDelete")]
         public async Task<IActionResult> EraseSingleUser(string id)
         {
             return await PerformAction(id, _userService.EraseUser);
         }
 
         [HttpDelete("multiple/erase")]
-        [Authorize(Roles = "Admin, Super Admin")]
+        [Authorize(Policy = "UserDelete")]
         public async Task<IActionResult> EraseMultipleUsers(List<string> ids)
         {
             return await PerformAction(ids, _userService.EraseMultipleUser);

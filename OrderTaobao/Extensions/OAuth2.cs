@@ -17,6 +17,27 @@ namespace Microsoft.Extensions
                                     .RequireRole("Customer"));
                 options.AddPolicy("AuthUsers", policy => policy.RequireAuthenticatedUser());
 
+                options.AddPolicy("AdminView", policy => {
+                    policy.RequireClaim("permission", "admin.view");
+                });
+                options.AddPolicy("UserView", policy => {
+                    policy.RequireClaim("permission", "user.view");
+                });
+                options.AddPolicy("DeleteView", policy => {
+                    policy.RequireClaim("permission", "delete.view");
+                });
+                options.AddPolicy("UserDelete", policy =>
+                {
+                    policy.RequireClaim("permission", "user.delete");
+                });
+                options.AddPolicy("UserEdit", policy =>
+                {
+                    policy.RequireClaim("permission", "user.edit");
+                });
+                options.AddPolicy("RoleView", policy => {
+                    policy.RequireClaim("permission", "role.view");
+                });
+
             });
 
             services.AddCors(options =>
@@ -27,9 +48,11 @@ namespace Microsoft.Extensions
                                         builder.WithOrigins("http://localhost:3000",
                                                             "https://localhost:3000")
                                         .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE") // defining the allowed HTTP method
-                                        .AllowAnyHeader(); ;
+                                        .AllowAnyHeader();
                                     });
             });
+
+
             return services;
         }
     }

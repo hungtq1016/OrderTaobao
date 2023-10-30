@@ -7,6 +7,7 @@ using System.Text;
 using BaseSource.Dto;
 using BaseSource.Model;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
 
 namespace BaseSource.BackendAPI.Services
 {
@@ -15,20 +16,22 @@ namespace BaseSource.BackendAPI.Services
         bool _isEmptyOrInvalid(string token);
         Task<string> UpdateRefreshToken(TokenRequest request);
         Task<TokenResponse> CreateNewAccessToken(TokenRequest request);
-        TokenResponse CreateAccessToken(User user, IList<string> roles);
+        Task<TokenResponse> CreateAccessToken(User user, IList<string> roles);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
-        string GenerateRefreshToken();
     }
     public class TokenService : ITokenService
     {
         IConfiguration _configuration;
         IAuthenticateRepository _authRepo;
-        
+        UserManager<User> _userManager;
+        RoleManager<Role> _roleManager;
 
-        public TokenService(IConfiguration configuration, IAuthenticateRepository authRepo)
+        public TokenService(IConfiguration configuration, IAuthenticateRepository authRepo, UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _configuration = configuration;
             _authRepo = authRepo;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public bool _isEmptyOrInvalid(string token)
@@ -42,7 +45,6 @@ namespace BaseSource.BackendAPI.Services
             return (jwtToken == null) || (jwtToken.ValidFrom > DateTime.UtcNow) || (jwtToken.ValidTo < DateTime.UtcNow);
         }
 
-        //Update refresh token if expire 
         public async Task<string> UpdateRefreshToken(TokenRequest request)
         {
             var principal = GetPrincipalFromExpiredToken(request.AccessToken!);
@@ -59,7 +61,7 @@ namespace BaseSource.BackendAPI.Services
                 return request.RefreshToken!;
             }
 
-            var newRefreshToken = GenerateRefreshToken();
+            string newRefreshToken = TokenHelper.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;
             var result = await _authRepo.UpdateUserAsync(user);
@@ -71,7 +73,6 @@ namespace BaseSource.BackendAPI.Services
             return newRefreshToken;
         }
 
-        //Access token expired ---> Get all principal of token ----> New access token
         public async Task<TokenResponse> CreateNewAccessToken(TokenRequest request)
         {
             var principal = GetPrincipalFromExpiredToken(request.AccessToken!);
@@ -81,13 +82,12 @@ namespace BaseSource.BackendAPI.Services
             var roles = await _authRepo.GetRolesByUser(user);
             var refres_token = await UpdateRefreshToken(request);
             user.RefreshToken = refres_token;
-            return CreateAccessToken(user, roles);
+            return  await CreateAccessToken(user, roles);
         }
 
-        //Just create access token
-        public TokenResponse CreateAccessToken(User user, IList<string> roles)
+        public async Task<TokenResponse> CreateAccessToken(User user, IList<string> roles)
         {
-            var access_token = AccessToken(user, roles);
+            var access_token = await AccessToken(user, roles);
             
             return new TokenResponse
             {
@@ -98,7 +98,6 @@ namespace BaseSource.BackendAPI.Services
             };
         }
 
-        //Get all principal
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
@@ -119,24 +118,38 @@ namespace BaseSource.BackendAPI.Services
 
         }
 
-        //Add all info to claims ----> JWT Token
-        private JwtSecurityToken AccessToken(User user,IList<string> roles)
+        private async Task<JwtSecurityToken> AccessToken(User user,IList<string> roles)
         {
-            List<Claim> authClaims = new List<Claim>
+            IdentityOptions _options = new IdentityOptions();
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
             {
-                new Claim("Id", user.Id!),
                 new Claim(ClaimTypes.Name, user.Id!),
-                new Claim("Email", user.Email!),
-                new Claim("Expired", DateTime.Now.AddMinutes(ExpiredTime()).ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id!),
+                new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id.ToString()),
+                new Claim(_options.ClaimsIdentity.UserNameClaimType, user.UserName),
             };
 
-            foreach (var role in roles)
+            claims.AddRange(userClaims);
+            foreach (var userRole in userRoles)
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, role));
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await _roleManager.FindByNameAsync(userRole);
+                if (role != null)
+                {
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+                    foreach (Claim roleClaim in roleClaims)
+                    {
+                        claims.Add(roleClaim);
+                    }
+                }
             }
             //Transform claim to token
-            var token = GenerateAccessToken(authClaims);
+            var token = GenerateAccessToken(claims);
             return token;
         }
 
@@ -164,12 +177,5 @@ namespace BaseSource.BackendAPI.Services
             return accessTokenValidityInMinutes;
         }
 
-        public string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[64];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
-        }
     }
 }
