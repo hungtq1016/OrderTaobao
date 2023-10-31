@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.12">
       <PrivateAssets>all</PrivateAssets>
@@ -13,14 +12,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\BaseSource.Builder\BaseSource.Builder.csproj" />
     <ProjectReference Include="..\BaseSource.Dto\BaseSource.Dto.csproj" />
     <ProjectReference Include="..\BaseSource.Infrastructure\BaseSource.Infrastructure.csproj" />
     <ProjectReference Include="..\OrderTaobao.Service\BaseSource.BackendAPI.Services.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Authorization\Requirements\" />
     <Folder Include="Upload\" />
