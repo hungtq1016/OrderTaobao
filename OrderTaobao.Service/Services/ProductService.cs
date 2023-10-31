@@ -1,11 +1,14 @@
 ﻿using BaseSource.Dto;
 using BaseSource.Model;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
 namespace BaseSource.BackendAPI.Services
 {
     public interface IProductService
     {
         Task<Response<List<Product>>> Get();
+        Task<Response<PageResponse<List<Product>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable);
         Task<Response<Product>> GetById(string id);
         Task<Response<bool>> Add(Product product, string user);
         Task<Response<bool>> Update(string id, string user, Product request);
@@ -16,9 +19,18 @@ namespace BaseSource.BackendAPI.Services
     public class ProductService : IProductService
     {
         private readonly IRepository<Product> _productRepo;
-        public ProductService(IRepository<Product> productRepo)
+        private readonly IUriService _uriService;
+        public ProductService(IRepository<Product> productRepo, IUriService uriService)
         {
             _productRepo = productRepo;
+            _uriService = uriService;
+        }
+
+        public async Task<Response<PageResponse<List<Product>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable)
+        {
+            PageResponse<List<Product>> products = await _productRepo.GetPagedDataAsync(request, route, _uriService, enable);
+
+            return ResponseHelper.CreateSuccessResponse(products);
         }
 
         public async Task<Response<List<Product>>> Get()
