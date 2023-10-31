@@ -4,7 +4,6 @@
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IAuthenticateRepository, AuthenticateRepository>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             return services;
         }
