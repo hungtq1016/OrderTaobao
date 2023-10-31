@@ -1,16 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
         public ProductsController(IProductService productService)
         {
             _productService = productService;
+        }
+
+        [HttpGet("page")]
+        public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
+        {
+            var result = await _productService.GetPagedData(request, Request.Path.Value!,true);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("page-disable")]
+        public async Task<IActionResult> GetPagedDisableData([FromQuery] PaginationRequest request)
+        {
+            var result = await _productService.GetPagedData(request, Request.Path.Value!, false);
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpGet]
