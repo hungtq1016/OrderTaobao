@@ -44,6 +44,7 @@ namespace BaseSource.BackendAPI.Services
                         (404, "No roles found.");
 
             List<Role> roles = await _roleManager.Roles
+                .Where(role => role.Name != "Super Admin")
                 .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                .Take(validFilter.PageSize).ToListAsync();
 

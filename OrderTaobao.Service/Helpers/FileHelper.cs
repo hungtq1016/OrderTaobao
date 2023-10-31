@@ -11,7 +11,11 @@ namespace BaseSource.BackendAPI.Services.Helpers
             List<FileResponse> fileRes = new List<FileResponse>();
             foreach (var file in files)
             {
-
+                //Denine if file
+                if (file.Length > Math.Pow(2,20)*8)
+                {
+                    return null;
+                }
                 try
                 {
                     var oldName = file.FileName;
@@ -40,6 +44,7 @@ namespace BaseSource.BackendAPI.Services.Helpers
                 }
                 catch (Exception ex)
                 {
+                    throw new ArithmeticException("Access denied - You must be at least 18 years old.");
                 }
             }
 

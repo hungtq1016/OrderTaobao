@@ -22,14 +22,12 @@ namespace BaseSource.BackendAPI.Services
     public class TokenService : ITokenService
     {
         IConfiguration _configuration;
-        IAuthenticateRepository _authRepo;
         UserManager<User> _userManager;
         RoleManager<Role> _roleManager;
 
-        public TokenService(IConfiguration configuration, IAuthenticateRepository authRepo, UserManager<User> userManager, RoleManager<Role> roleManager)
+        public TokenService(IConfiguration configuration, UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _configuration = configuration;
-            _authRepo = authRepo;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -55,7 +53,7 @@ namespace BaseSource.BackendAPI.Services
                 return request.RefreshToken!;
             }
 
-            var user = await _authRepo.ReadUserAsync(id!);
+            var user = await _userManager.FindByIdAsync(id!);
             if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 return request.RefreshToken!;
@@ -64,7 +62,7 @@ namespace BaseSource.BackendAPI.Services
             string newRefreshToken = TokenHelper.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;
-            var result = await _authRepo.UpdateUserAsync(user);
+            var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
                 return request.RefreshToken!;
@@ -78,8 +76,8 @@ namespace BaseSource.BackendAPI.Services
             var principal = GetPrincipalFromExpiredToken(request.AccessToken!);
             string id = principal!.Identity!.Name!;
 
-            var user = await _authRepo.ReadUserAsync(id);
-            var roles = await _authRepo.GetRolesByUser(user);
+            User? user = await _userManager.FindByIdAsync(id);
+            var roles = await _userManager.GetRolesAsync(user);
             var refres_token = await UpdateRefreshToken(request);
             user.RefreshToken = refres_token;
             return  await CreateAccessToken(user, roles);
