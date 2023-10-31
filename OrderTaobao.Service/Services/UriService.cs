@@ -1,5 +1,7 @@
 ﻿using BaseSource.Dto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BaseSource.BackendAPI.Services
 {
@@ -11,9 +13,12 @@ namespace BaseSource.BackendAPI.Services
     public class UriService : IUriService
     {
         private readonly string _baseUri;
-        public UriService(string baseUri)
+
+        public UriService(IServiceProvider serviceProvider)
         {
-            _baseUri = baseUri;
+            var accessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+            var request = accessor.HttpContext.Request;
+            _baseUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
         }
         public Uri GetPageUri(PaginationRequest filter, string route)
         {

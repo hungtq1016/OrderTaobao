@@ -1,5 +1,4 @@
 ﻿
-
 using Basesource.Constants;
 using BaseSource.Builder;
 using BaseSource.Dto;
@@ -24,16 +23,14 @@ namespace BaseSource.BackendAPI.Services
 
     public class AuthenticateService : IAuthenticateService
     {
-        private readonly IAuthenticateRepository _authenRepo;
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
         private readonly IAuthHistoryService _historyService;
         private readonly UserManager<User> _userManager;
 
-        public AuthenticateService(IAuthenticateRepository authenRepo, IConfiguration configuration, 
-            ITokenService tokenService, IAuthHistoryService historyService, UserManager<User> userManager)
+        public AuthenticateService(IConfiguration configuration, ITokenService tokenService,
+            IAuthHistoryService historyService, UserManager<User> userManager)
         {
-            _authenRepo = authenRepo;
             _configuration = configuration;
             _tokenService = tokenService;
             _historyService = historyService;
@@ -63,8 +60,8 @@ namespace BaseSource.BackendAPI.Services
         public async Task<Response<TokenResponse>> Register(RegisterRequest request)
         {
          
-            User isUserNameExists = await _authenRepo.UserExists(request.UserName);
-            User isEmailExists = await _authenRepo.EmailExists(request.Email);
+            User? isUserNameExists = await _userManager.FindByNameAsync(request.UserName);
+            User? isEmailExists = await _userManager.FindByEmailAsync(request.Email);
 
             if (isUserNameExists is not null)
                 return ResponseHelper.CreateErrorResponse<TokenResponse>(409, "Username is already exists");
@@ -84,13 +81,16 @@ namespace BaseSource.BackendAPI.Services
                 .WithEnable()
                 .Build();
 
-            var result = await _authenRepo.CreateUserAsync(user, request.Password, RolePermission.Customer);
+            var createResult = await _userManager.CreateAsync(user, request.Password);
 
-            if (!result.Succeeded)
+            IList<string> roles = new List<string> { RolePermission.Customer };
+
+            var addRoleResult = await _userManager.AddToRolesAsync(user, roles);
+            
+            if (!createResult.Succeeded || !addRoleResult.Succeeded)
                 return ResponseHelper.CreateErrorResponse<TokenResponse>(500, "The server cannot process the request for an unknown reason");
 
-            var roles = await _authenRepo.GetRolesByUser(user);
-
+            
             TokenResponse token = await _tokenService.CreateAccessToken(user, roles);
 
             await _historyService.CreateAuthHistory(user, UserConstant.Register);
