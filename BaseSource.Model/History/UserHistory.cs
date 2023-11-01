@@ -17,6 +17,7 @@ namespace BaseSource.Model
 
         [Column("OLD_VALUE", TypeName = "nvarchar")]
         public string OldValue { get; set; } = string.Empty;
+
         [Column("NEW_VALUE", TypeName = "nvarchar")]
         public string NewValue { get; set; } = string.Empty;
 
@@ -29,7 +30,8 @@ namespace BaseSource.Model
         [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
         [ForeignKey("User")]
         public string UserId { get; set; }
-        public User User { get; set; } = null!;
+
+        public User? User { get; set; } = null!;
 
     }
 }

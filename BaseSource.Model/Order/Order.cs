@@ -8,15 +8,20 @@ namespace BaseSource.Model
     {
 
         [Column("STATUS")]
-        public Byte Status { get; set; } = 1;
+        public Byte Status { get; set; }
 
         [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
         [ForeignKey("User")]
-        public string UserId { get; set; }
-        public User User { get; set; } 
+        [NotMapped]
+        public string? UserId { get; set; }
 
+        [NotMapped]
+        public User? User { get; set; }
+
+        [NotMapped]
         public Notification? Notification { get; set; }
 
-        public ICollection<OrderDetail> Details { get; } = new List<OrderDetail>();
+        [NotMapped]
+        public ICollection<OrderDetail>? Details { get; } = new List<OrderDetail>();
     }
 }
