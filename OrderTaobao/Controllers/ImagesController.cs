@@ -6,7 +6,6 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ImagesController : StatusController
     {
         private readonly IImageService _imageService;
