@@ -43,6 +43,17 @@ namespace BaseSource.Builder
         }
 
         /// <summary>
+        /// The <c>With404</c> method returns a response with a status code of 404, item not found.
+        /// </summary>
+        public ResponseBuilder<T> With404(string type)
+        {
+            response.Message = type+ResponseConstant.Message404;
+            response.StatusCode = 404;
+            response.Error = true;
+            return this;
+        }
+
+        /// <summary>
         /// The <c>With201</c> method returns a response with a status code of 201 after successfully creating data.
         /// </summary>
         public ResponseBuilder<T> With201()
