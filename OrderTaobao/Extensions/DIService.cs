@@ -11,8 +11,7 @@
             services.AddScoped<IAuthHistoryService, AuthHistoryService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IImageService, ImageService>();
-            services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IRoleService, RoleService>();    
             services.AddSingleton<IUriService, UriService>();
             services.AddHttpContextAccessor();
             
