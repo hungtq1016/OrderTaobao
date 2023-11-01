@@ -11,8 +11,14 @@ namespace BaseSource.Model
 
         [Column("SLUG", TypeName = "nvarchar"), MaxLength(36)]
         public string Slug { get; set; } = string.Empty;
-        public ICollection<Ward> Wards { get; } = new List<Ward>();
-        public ICollection<District> Districts { get; } = new List<District>();
-        public ICollection<Province> Provinces { get; } = new List<Province>();
+
+        [NotMapped]
+        public ICollection<Ward>? Wards { get; } = new List<Ward>();
+
+        [NotMapped]
+        public ICollection<District>? Districts { get; } = new List<District>();
+
+        [NotMapped]
+        public ICollection<Province>? Provinces { get; } = new List<Province>();
     }
 }

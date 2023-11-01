@@ -10,6 +10,7 @@ namespace BaseSource.Model
         {
             Id = Guid.NewGuid().ToString();
         }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID", TypeName = "varchar"), MaxLength(36)]
@@ -23,14 +24,18 @@ namespace BaseSource.Model
 
         [Column("PRODUCT_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Product")]
-        public string ProductId { get; set; }
+        [NotMapped]
+        public string? ProductId { get; set; }
 
-        public Product Product { get; set; } = null!;
+        [NotMapped]
+        public Product? Product { get; set; } = null!;
 
         [Column("ORDER_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Order")]
-        public string OrderId { get; set; }
+        [NotMapped]
+        public string? OrderId { get; set; }
 
-        public Order Order { get; set; } = null!;
+        [NotMapped]
+        public Order? Order { get; set; } = null!;
     }
 }

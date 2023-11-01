@@ -9,29 +9,25 @@ namespace BaseSource.Model
     {
 
         [Column("NAME", TypeName = "nvarchar"), MaxLength(255)]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
 
         [Column("SLUG", TypeName = "nvarchar"), MaxLength(255)]
-        public string Slug { get; set; } = string.Empty;
+        public string Slug { get; set; }
 
-        [Column("PRICE", TypeName = "nvarchar"), MaxLength(255)]
-        public string Price { get; set; } = string.Empty;
+        [Column("PRICE")]
+        public UInt32 Price { get; set; }
 
         [Column("DESCRIPTION")]
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; set; }
 
         [Column("QUANTITY")]
-        public UInt16 Quantity { get; set; } = 0;
+        public UInt16 Quantity { get; set; }
 
-        [Column("IS_AVAILABLE")]
-        public bool IsAvailable { get; set; } = false;
+        [NotMapped]
+        public List<ProductCategory>? Categories { get; } = new();
 
-        [Column("CATEGORY_ID", TypeName = "varchar"), MaxLength(36)]
-        [ForeignKey("Category")]
-        public string CategoryId { get; set; }
-
-        public Category Category { get; set; } = null!;
-        public ICollection<OrderDetail> Orders { get; } = new List<OrderDetail>();
+        [NotMapped]
+        public List<OrderDetail>? Orders { get; } = new();
 
     }
 }

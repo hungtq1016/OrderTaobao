@@ -6,7 +6,7 @@ namespace BaseSource.Model
     [Table("PROVINCES")]
     public class Province : BaseAddress
     {
-        public ICollection<District> Districts { get; } = new List<District>();
+        public ICollection<District>? Districts { get; } = new List<District>();
 
     }
 }

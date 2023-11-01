@@ -23,6 +23,6 @@ namespace BaseSource.Model
         [Column("ADMINISTRATIVE_UNIT_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("AdministrativeUnit")]
         public string AdministrativeUnitID { get; set; }
-        public AdministrativeUnit AdministrativeUnit { get; set; }
+        public AdministrativeUnit? AdministrativeUnit { get; set; }
     }
 }
