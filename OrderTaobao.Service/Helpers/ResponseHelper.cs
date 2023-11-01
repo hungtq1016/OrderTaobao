@@ -16,6 +16,11 @@ namespace BaseSource.BackendAPI.Services
             return new ResponseBuilder<T>(data).With201().Build();
         }
 
+        public static Response<T> CreateNotFoundResponse<T>(string type)
+        {
+            return new ResponseBuilder<T>().With404(type).Build();
+        }
+
         public static Response<T> CreateErrorResponse<T>(UInt16 statusCode, string message)
         {
             return new ResponseBuilder<T>().WithStatusCode(statusCode).WithMessage(message).WithError().Build();
