@@ -10,7 +10,7 @@ namespace BaseSource.Model
         [Column("PROVINCE_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Province")]
         public string ProvinceId { get; set; }
-        public Province Province { get; set; } = null!;
-        public ICollection<Ward> Wards { get; } = new List<Ward>();
+        public Province? Province { get; set; } = null!;
+        public ICollection<Ward>? Wards { get; } = new List<Ward>();
     }
 }

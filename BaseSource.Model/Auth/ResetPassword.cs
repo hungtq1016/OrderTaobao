@@ -15,7 +15,7 @@ namespace BaseSource.Model
 
         public DateTime ExpiredTime { get; set; }
 
-        public User User { get; set; } = null!;
+        public User? User { get; set; } = null!;
 
     }
 }

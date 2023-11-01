@@ -15,8 +15,8 @@ namespace BaseSource.Model
         public string UserId { get; set; }
 
         [Column("IMAGE_ID", TypeName = "varchar"), MaxLength(36)]
-        public string ImageId { get; set; }
-        public User User { get; set; } = null!;
-        public Image Image { get; set; } = null!;
+        public string? ImageId { get; set; }
+        public User? User { get; set; } = null!;
+        public Image? Image { get; set; } = null!;
     }
 }

@@ -15,13 +15,15 @@ namespace BaseSource.Model
 
         [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
         [ForeignKey("User")]
-        public string UserId { get; set; }
-        public User User { get; set; } = null!;
+        public string? UserId { get; set; }
+
+        public User? User { get; set; } = null!;
 
         [Column("ORDER_ID", TypeName = "varchar"), MaxLength(36)]
         [ForeignKey("Order")]
-        public string OrderID { get; set; }
+        [NotMapped]
+        public string? OrderID { get; set; }
 
-        public Order Order { get; set; } = null!;
+        public Order? Order { get; set; } = null!;
     }
 }
