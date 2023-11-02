@@ -17,7 +17,7 @@ namespace BaseScource.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=OrderTaoBao;Trusted_Connection=true;TrustServerCertificate=true;");
+            optionsBuilder.UseSqlServer("Server=192.168.0.104\\SQLEXPRESS,1433;Database=OrderTaoBao;Trusted_Connection=False;TrustServerCertificate=true;User id=hungtran;Password=123456;MultipleActiveResultSets=true");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
