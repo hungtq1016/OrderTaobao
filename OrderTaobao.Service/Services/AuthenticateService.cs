@@ -4,6 +4,7 @@ using BaseSource.Builder;
 using BaseSource.Dto;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 
 namespace BaseSource.BackendAPI.Services
@@ -27,14 +28,17 @@ namespace BaseSource.BackendAPI.Services
         private readonly ITokenService _tokenService;
         private readonly IAuthHistoryService _historyService;
         private readonly UserManager<User> _userManager;
+        private IMemoryCache _cache;
+        private const string authorize = "authorize";
 
         public AuthenticateService(IConfiguration configuration, ITokenService tokenService,
-            IAuthHistoryService historyService, UserManager<User> userManager)
+            IAuthHistoryService historyService, UserManager<User> userManager,IMemoryCache cache)
         {
             _configuration = configuration;
             _tokenService = tokenService;
             _historyService = historyService;
             _userManager = userManager;
+            _cache = cache;
         }
 
         public async Task<Response<TokenResponse>> Login(LoginRequest request)
@@ -133,20 +137,35 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<Response<PermissionResponse<User>>> GetPermission(TokenRequest request)
         {
-            User? user = await GetUserByToken(request);
-            if (user is null)
-                return ResponseHelper.CreateErrorResponse<PermissionResponse<User>> (404, "Token is not found");
+            if (_cache.TryGetValue(authorize, out PermissionResponse<User> permission))
+            {
+                Console.WriteLine("Token found in cache.");
+            }
+            else
+            {
+                User? user = await GetUserByToken(request);
+                if (user is null)
+                    return ResponseHelper.CreateErrorResponse<PermissionResponse<User>>(404, "Token is not found");
 
-            PermissionResponse<User> permission = new PermissionResponse<User>();
+                permission = new PermissionResponse<User>();
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-            IList<string> roles = new List<string>{"Admin","Customer","Super Admin"};
-            var match = userRoles.Intersect(roles);
-            bool isAdmin = match.Any();
+                var userRoles = await _userManager.GetRolesAsync(user);
+                IList<string> roles = new List<string> { "Admin", "Manager", "Super Admin" };
+                var match = userRoles.Intersect(roles);
+                bool isAdmin = match.Any();
 
-            permission.Data = user;
-            permission.IsAuthen = true;
-            permission.IsAdmin = isAdmin;
+                permission.Data = user;
+                permission.IsAuthen = true;
+                permission.IsAdmin = isAdmin;
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(60))
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                    .SetPriority(CacheItemPriority.Normal)
+                    .SetSize(1024);
+                _cache.Set(authorize, permission, cacheEntryOptions);
+            }
+            
 
             return ResponseHelper.CreateSuccessResponse(permission);
             
