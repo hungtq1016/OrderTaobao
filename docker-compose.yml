@@ -12,7 +12,8 @@ services:
       context: .
       dockerfile: OrderTaobao/Dockerfile
     ports:
-        - 8001:80
+        - "51830:80"
+        - "51836:443"
     depends_on:
         - ordertaobao.db
     environment:
@@ -21,6 +22,8 @@ services:
         - DB_SA_PASSWORD=Strong(!)Password
         - DB_USER=sa
         - DB_PORT=8002
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=https://+:443;http://+:80
     networks:
         - ordertaobao
 
