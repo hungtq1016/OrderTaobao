@@ -16,8 +16,16 @@ namespace BaseScource.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+            var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+            var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+            var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
+
+            var connectionString = $"Data Source=host.docker.internal,{dbPort};Database={dbName};User ID={dbUser};Password={dbPassword};Trusted_Connection=False;TrustServerCertificate=true";
+            
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server=192.168.0.104\\SQLEXPRESS,1433;Database=OrderTaoBao;Trusted_Connection=False;TrustServerCertificate=true;User id=hungtran;Password=123456;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

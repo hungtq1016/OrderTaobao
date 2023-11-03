@@ -1,0 +1,38 @@
+version: '3.4'
+
+networks:
+  ordertaobao:
+
+services:
+  
+  basesource.backendapi:
+    container_name: API
+    image: ${DOCKER_REGISTRY-}basesourcebackendapi
+    build:
+      context: .
+      dockerfile: OrderTaobao/Dockerfile
+    ports:
+        - 8001:80
+    depends_on:
+        - ordertaobao.db
+    environment:
+        - DB_HOST=ordertaobao.db
+        - DB_NAME=OrderTaoBao
+        - DB_SA_PASSWORD=Strong(!)Password
+        - DB_USER=sa
+        - DB_PORT=8002
+    networks:
+        - ordertaobao
+
+  ordertaobao.db:
+    container_name: DB
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+        - 8002:1433
+    environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=Strong(!)Password 
+        - MSSQL_USER=SA
+        - MSSQL_PID=Developer
+    networks:
+        - ordertaobao
