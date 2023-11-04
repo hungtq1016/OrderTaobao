@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using BaseSource.Dto.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly IService<Category> _service;
@@ -15,6 +13,7 @@ namespace BaseSource.BackendAPI.Controllers
             _service = service;
         }
 
+        // GET: api/Categories/page
         [HttpGet("page")]
         public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
@@ -22,6 +21,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        // GET: api/Categories/page-disable
         [HttpGet("page-disable")]
         public async Task<IActionResult> GetPagedDisableData([FromQuery] PaginationRequest request)
         {
@@ -29,6 +29,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        // GET: api/Categories
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -36,6 +37,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        // GET: api/Categories/123
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -43,13 +45,15 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        // POST: api/Categories/usersubmit
         [HttpPost("{user}")]
         public async Task<IActionResult> Post(Category request, string user)
         {
-            var result = await _service.Add(user,request);
+            var result = await _service.Add(user, request);
             return StatusCode(result.StatusCode, result);
         }
 
+        // PUT: api/Categories/123/usersubmit
         [HttpPut("{id}/{user}")]
         public async Task<IActionResult> Update(string id, string user, Category request)
         {
@@ -57,6 +61,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        // DELETE: api/Categories/123/usersubmit
         [HttpDelete("delete/{id}/{user}")]
         public async Task<IActionResult> Enable(string id, string user)
         {
@@ -64,6 +69,15 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        // DELETE: api/Categories
+        [HttpDelete("delete/multiple")]
+        public async Task<IActionResult> MultipleEnable(MultipleRequest request)
+        {
+            var result = await _service.MultipleEnable(request, false);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        // PUT: api/Categories/restore/123/usersubmit
         [HttpPut("restore/{id}/{user}")]
         public async Task<IActionResult> Restore(string id, string user)
         {
@@ -71,10 +85,27 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpDelete("erase/{id}/{user}")]
-        public async Task<IActionResult> Erase(string id, string user)
+        // PUT: api/Categories/delete/multiple
+        [HttpPut("delete/multiple")]
+        public async Task<IActionResult> MultipleRestore(MultipleRequest request)
         {
-            var result = await _service.Erase(id, user);
+            var result = await _service.MultipleEnable(request, true);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        // DELETE: api/Categories/erase/123/usersubmit
+        [HttpDelete("erase/{id}")]
+        public async Task<IActionResult> Erase(string id)
+        {
+            var result = await _service.Erase(id);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        // DELETE: api/Categories/erase/multiple
+        [HttpDelete("erase/multiple")]
+        public async Task<IActionResult> MultipleErase(MultipleRequest request)
+        {
+            var result = await _service.MultipleErase(request);
             return StatusCode(result.StatusCode, result);
         }
     }

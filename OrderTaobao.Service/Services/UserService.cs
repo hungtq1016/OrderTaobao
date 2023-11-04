@@ -2,6 +2,7 @@
 using Azure.Core;
 using BaseSource.Builder;
 using BaseSource.Dto;
+using BaseSource.Dto.Request;
 using BaseSource.Helper;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Identity;
@@ -14,23 +15,23 @@ namespace BaseSource.BackendAPI.Services
     {
         Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route, bool enable);
 
-        Task<List<UserResponse>> GetAll();
+        Task<Response<List<UserResponse>>> Get();
 
         Task<Response<UserDetailResponse>> GetById(string id);
 
-        Task<Response<bool>> StoreUser(UserRequest request);
+        Task<Response<bool>> Add(UserRequest request);
 
-        Task<Response<bool>> UpdateUser(string id, UserRequest request);
+        Task<Response<bool>> Update(string id, UserRequest request);
 
         Task<Response<bool>> UpdatePassword(ResetPasswordRequest request);
 
-        Task<Response<bool>> UpdateEnable(string id,bool enable);
+        Task<Response<bool>> Enable(string id,bool enable);
 
-        Task<Response<List<string>>> UpdateEnableMultipleUser(List<string> ids, bool enable);
+        Task<Response<List<string>>> MultipleEnable(MultipleRequest request, bool enable);
 
-        Task<Response<bool>> EraseUser(string id);
+        Task<Response<bool>> Erase(string id);
 
-        Task<Response<List<string>>> EraseMultipleUser(List<string> ids);
+        Task<Response<List<string>>> MultipleErase(MultipleRequest request);
     }
 
     public class UserService : IUserService
@@ -88,7 +89,7 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse<PageResponse<List<UserResponse>>>(pagedResponse);
         }
 
-        public async Task<List<UserResponse>> GetAll()
+        public async Task<Response<List<UserResponse>>> Get()
         {
   
             List<UserResponse> users = _userManager.Users
@@ -106,12 +107,12 @@ namespace BaseSource.BackendAPI.Services
                     Enable = user.Enable
                 }).ToList();
 
-            return users;
+            return ResponseHelper.CreateSuccessResponse(users);
         }
 
         public async Task<Response<UserDetailResponse>> GetById(string id)
         {
-            var user = await _userManager.Users
+            User? user = await _userManager.Users
                 .Where(user => user.Id == id)
                 .Where(user => user.Enable)
                 .Include(user => user.Orders)
@@ -142,10 +143,10 @@ namespace BaseSource.BackendAPI.Services
                 Roles = await _userManager.GetRolesAsync(user)
             };
 
-            return ResponseHelper.CreateSuccessResponse<UserDetailResponse>(userDetail);
+            return ResponseHelper.CreateSuccessResponse(userDetail);
         }
 
-        public async Task<Response<bool>> StoreUser(UserRequest request)
+        public async Task<Response<bool>> Add(UserRequest request)
         {
             User? isUserNameExists = await _userManager.FindByNameAsync(request.UserName);
             User? isEmailExists = await _userManager.FindByEmailAsync(request.Email);
@@ -178,7 +179,7 @@ namespace BaseSource.BackendAPI.Services
 
         }
 
-        public async Task<Response<bool>> UpdateUser(string id, UserRequest request)
+        public async Task<Response<bool>> Update(string id, UserRequest request)
         {
             if (id != request.Id)
                 return ResponseHelper.CreateErrorResponse<bool>(404, "Can not found user");
@@ -200,7 +201,7 @@ namespace BaseSource.BackendAPI.Services
 
         }
 
-        public async Task<Response<bool>> UpdateEnable(string id, bool enable)
+        public async Task<Response<bool>> Enable(string id, bool enable)
         {
             User? user = await _userManager.FindByIdAsync(id);
             if (user is null)
@@ -212,11 +213,11 @@ namespace BaseSource.BackendAPI.Services
             return await Update(user);
         }
 
-        public async Task<Response<List<string>>> UpdateEnableMultipleUser(List<string> ids,bool enable)
+        public async Task<Response<List<string>>> MultipleEnable(MultipleRequest request, bool enable)
         {
             List<string> responseList = new List<string>();
 
-            foreach (string id in ids)
+            foreach (string id in request.Ids)
             {
                 User? user = await _userManager.FindByIdAsync(id);
                 if (user is null)
@@ -235,7 +236,7 @@ namespace BaseSource.BackendAPI.Services
         }
 
 
-        public async Task<Response<bool>> EraseUser(string id)
+        public async Task<Response<bool>> Erase(string id)
         {
             User? user = await _userManager.FindByIdAsync(id);
 
@@ -251,11 +252,11 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateCreatedResponse(true);
         }
 
-        public async Task<Response<List<string>>> EraseMultipleUser(List<string> ids)
+        public async Task<Response<List<string>>> MultipleErase(MultipleRequest request)
         {
             List<string> responseList = new List<string>();
 
-            foreach (string id in ids)
+            foreach (string id in request.Ids)
             {
                 User? user = await _userManager.FindByIdAsync(id);
                 if (user is null)
