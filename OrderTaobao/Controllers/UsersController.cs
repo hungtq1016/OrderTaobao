@@ -23,6 +23,11 @@ namespace BaseSource.BackendAPI.Controllers
             var result = await _userService.GetPagedData(request, Request.Path.Value!,true);
             return StatusCode(result.StatusCode,result);
         }
+        [HttpGet("ss")]
+        public async Task<IActionResult> a([FromQuery] PaginationRequest request)
+        {
+            return Ok();
+        }
 
         // GET: api/Users/page-disable
         [HttpGet("page-disable")]
@@ -35,6 +40,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // GET: api/Users
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var result = await _userService.Get();
