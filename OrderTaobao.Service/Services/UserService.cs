@@ -7,6 +7,7 @@ using BaseSource.Helper;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 
 namespace BaseSource.BackendAPI.Services
@@ -40,13 +41,15 @@ namespace BaseSource.BackendAPI.Services
         private readonly IRepository<ResetPassword> _repository;
         private readonly IUriService _uriService;
         private readonly IConfiguration _configuration;
+        private readonly IMemoryCache _cache;
 
-        public UserService(UserManager<User> userManager, IRepository<ResetPassword> repository, IUriService uriService, IConfiguration configuration)
+        public UserService(UserManager<User> userManager, IRepository<ResetPassword> repository, IUriService uriService, IConfiguration configuration,IMemoryCache cache)
         {
             _userManager = userManager;
             _repository = repository;
             _uriService = uriService;
             _configuration = configuration;
+            _cache = cache;
         }
 
         public async Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route,bool enable)
@@ -91,8 +94,9 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<Response<List<UserResponse>>> Get()
         {
-  
-            List<UserResponse> users = _userManager.Users
+            if (_cache.TryGetValue("users", out List<UserResponse> users))
+            {
+                users = _userManager.Users
                 .Select(user => new UserResponse
                 {
                     Id = user.Id,
@@ -106,6 +110,13 @@ namespace BaseSource.BackendAPI.Services
                     TwoFactorEnabled = user.TwoFactorEnabled,
                     Enable = user.Enable
                 }).ToList();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                                   .SetSlidingExpiration(TimeSpan.FromSeconds(60))
+                                   .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                                   .SetPriority(CacheItemPriority.Normal)
+                                   .SetSize(1024);
+            }
 
             return ResponseHelper.CreateSuccessResponse(users);
         }

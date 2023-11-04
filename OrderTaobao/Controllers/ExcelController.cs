@@ -24,10 +24,10 @@ namespace BaseSource.BackendAPI.Controllers
         public async Task<IActionResult> ExportUser()
         {
             string reportname = $"User_Sheet";
-            var list = await _userService.GetAll();
-            if (list.Count > 0)
+            var list = await _userService.Get();
+            if (list.Data.Count > 0)
             {
-                var exportbytes = ExportToExcel<UserResponse>(list, reportname);
+                var exportbytes = ExportToExcel<UserResponse>(list.Data, reportname);
                 return File(exportbytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", reportname);
             }
             return NotFound(list);
@@ -93,7 +93,7 @@ namespace BaseSource.BackendAPI.Controllers
                             Password = "H#ng123456",
                             Phone = workSheet.Cells[i, 6].Value.ToString(),
                         };
-                        await _userService.StoreUser(user);
+                        await _userService.Add(user);
 
                         customerList.Add(user);
                     }

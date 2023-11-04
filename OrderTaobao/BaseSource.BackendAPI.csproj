@@ -23,7 +23,6 @@
     <ProjectReference Include="..\OrderTaobao.Service\BaseSource.BackendAPI.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Authorization\Requirements\" />
     <Folder Include="Upload\" />
   </ItemGroup>
 
