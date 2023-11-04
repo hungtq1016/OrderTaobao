@@ -1,24 +1,38 @@
 ﻿using BaseSource.Dto;
+using BaseSource.Dto.Request;
 using BaseSource.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto;
 
 namespace BaseSource.BackendAPI.Services
 {
     public interface IService<T> where T : BaseEntity
     {
         Task<Response<List<T>>> Get();
+
         Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable);
+
         Task<Response<T>> GetById(string id);
+
         Task<Response<bool>> Add(string user,T request);
+
         Task<Response<bool>> Update(string id, string user,T request);
+
         Task<Response<bool>> Enable(string id, string user, bool enable);
-        Task<Response<bool>> Erase(string id, string user);
+
+        Task<Response<IList<string>>> MultipleEnable(MultipleRequest request, bool enable);
+
+        Task<Response<bool>> Erase(string id);
+
+        Task<Response<IList<string>>> MultipleErase(MultipleRequest request);
     }
 
     public class Service<T> : IService<T> where T : BaseEntity
     {
         private readonly IRepository<T> _repository;
         private readonly IUriService _uriService;
+
         public Service(IRepository<T> repository, IUriService uriService)
         {
             _repository = repository;
@@ -89,16 +103,61 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(true);
         }
 
-        public async Task<Response<bool>> Erase(string id, string user)
+        public async Task<Response<IList<string>>> MultipleEnable(MultipleRequest request, bool enable)
+        {
+            IList<string> responseList = new List<string>();
+
+            foreach (string id in request.Ids)
+            {
+                T item = await _repository.ReadByIdAsync(id);
+                if (item is null)
+                {
+                    responseList.Add($"{id} : Fail");
+                }
+                else
+                {
+                    item.Enable = enable;
+                    responseList.Add($"{id} : Pass");
+                    await _repository.DeleteAsync(item,request.User);
+                }
+            }
+
+            return ResponseHelper.CreateSuccessResponse(responseList);
+
+        }
+
+        public async Task<Response<bool>> Erase(string id)
         {
             T item = await _repository.ReadByIdAsync(id);
 
             if (item is null)
                 return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).FullName!);
 
-            await _repository.DeleteAsync(item, user);
+            await _repository.EraseAsync(item);
 
             return ResponseHelper.CreateSuccessResponse(true);
+        }
+
+        public async Task<Response<IList<string>>> MultipleErase(MultipleRequest request)
+        {
+            IList<string> responseList = new List<string>();
+
+            foreach (string id in request.Ids)
+            {
+                T item = await _repository.ReadByIdAsync(id);
+                if (item is null)
+                {
+                    responseList.Add($"{id} : Fail");
+                }
+                else
+                {
+                    responseList.Add($"{id} : Pass");
+                    await _repository.EraseAsync(item);
+                }
+            }
+
+            return ResponseHelper.CreateSuccessResponse(responseList);
+
         }
     }
 }
