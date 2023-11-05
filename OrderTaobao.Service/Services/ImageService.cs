@@ -9,11 +9,15 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IImageService
     {
-        Task<Response<bool>> CreateImage(List<IFormFile> files, string user);
-        Task<Response<List<Image>>> ReadAllImages(string user);
-        Task<Response<PageResponse<List<Image>>>> ReadPageImages([FromQuery] PaginationRequest request, string route, bool enable);
-        ImageResponse ReadImage(string name);
-        Task<Response<bool>> DeleteImage(string id, string user);
+        Task<Response<List<Image>>> Get();
+
+        Task<Response<PageResponse<List<Image>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable);
+
+        ImageResponse GetByPath(string path);
+
+        Task<Response<bool>> Add(List<IFormFile> files, string user);
+        
+        Task<Response<bool>> Erase(string id, string user);
     }
 
     public class ImageService : IImageService
@@ -28,7 +32,7 @@ namespace BaseSource.BackendAPI.Services
 
         }
 
-        public async Task<Response<bool>> CreateImage(List<IFormFile> files, string user)
+        public async Task<Response<bool>> Add(List<IFormFile> files, string user)
         {
             List<FileResponse> images = await FileHelper.WriteFile(files,"Image", "Image");
 
@@ -49,21 +53,21 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateCreatedResponse(true);
         }
 
-        public async Task<Response<List<Image>>> ReadAllImages(string user)
+        public async Task<Response<List<Image>>> Get()
         {
             List<Image> images = await _imageRepo.ReadAllAsync();
 
             return ResponseHelper.CreateSuccessResponse(images);
         }
 
-        public async Task<Response<PageResponse<List<Image>>>> ReadPageImages([FromQuery] PaginationRequest request, string route, bool enable)
+        public async Task<Response<PageResponse<List<Image>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable)
         {
             PageResponse<List<Image>> images = await _imageRepo.GetPagedDataAsync(request,route, _uriService,enable);
 
-            return ResponseHelper.CreateSuccessResponse<PageResponse<List<Image>>>(images);
+            return ResponseHelper.CreateSuccessResponse(images);
         }
 
-        public async Task<Response<bool>> DeleteImage(string id,string user)
+        public async Task<Response<bool>> Erase(string id,string user)
         {
             Image image = await _imageRepo.ReadByIdAsync(id);
 
@@ -81,10 +85,10 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(true);
         }
 
-        public ImageResponse ReadImage(string name)
+        public ImageResponse GetByPath(string path)
         {
-            string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload/Image", name);
-            string extension = FileHelper.GetExtension(name);
+            string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload/Image", path);
+            string extension = FileHelper.GetExtension(path);
             if (File.Exists(imagePath))
             {        
                 byte[] imageBytes = File.ReadAllBytes(imagePath);

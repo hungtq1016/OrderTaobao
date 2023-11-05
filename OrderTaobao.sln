@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basesource.Constants", "Bas
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{6F43E5C1-941B-4C4A-8BBD-136156B9A4DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseSource.UnitTest", "BaseSource.UnitTest\BaseSource.UnitTest.csproj", "{88985732-C6D0-4992-9628-DDF61E7BA798}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseSource.UnitTest", "BaseSource.UnitTest\BaseSource.UnitTest.csproj", "{88985732-C6D0-4992-9628-DDF61E7BA798}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4833EE11-8FAD-4A1D-A4ED-7B028472623E}"
 EndProject
