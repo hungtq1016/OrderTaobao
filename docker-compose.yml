@@ -39,10 +39,3 @@ services:
         - MSSQL_PID=Developer
     networks:
         - ordertaobao
-
-  ordertaobao.upload:
-    image: ${DOCKER_REGISTRY-}ordertaobaoupload
-    build:
-      context: .
-      dockerfile: ../OrderTaobao.Upload/Dockerfile
-
