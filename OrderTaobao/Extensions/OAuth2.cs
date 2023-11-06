@@ -1,4 +1,6 @@
 ﻿
+using BaseSource.BackendAPI.Authorization.Requirements;
+
 namespace Microsoft.Extensions
 {
     public static class OAuth2
@@ -25,6 +27,9 @@ namespace Microsoft.Extensions
                         builder.RequireClaim("permission", policy.Value,"all");
                     });
                 }
+
+                options.AddPolicy("AtLeast21", policy =>
+                    policy.Requirements.Add(new AdminAccessRequirement()));
 
             });
             
