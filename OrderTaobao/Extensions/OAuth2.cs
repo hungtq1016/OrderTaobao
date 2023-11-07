@@ -8,32 +8,24 @@ namespace Microsoft.Extensions
         public static IServiceCollection AddOAuth2(this IServiceCollection services, IConfigurationRoot configuration)
         {
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-            var policies = new Dictionary<string, string>
-            {
-                { "AdminView", "admin.view" },
-                { "UserView", "user.view" },
-                { "DeleteView", "delete.view" },
-                { "UserDelete", "user.delete" },
-                { "UserEdit", "user.edit" },
-                { "RoleView", "role.view" }
-            };
+         /*   var policies = new List<string>
+                {"AdminView","UserView","DeleteView","UserDelete","UserEdit","RoleView"};
 
             services.AddAuthorization(options =>
             {
-                foreach(var policy in policies)
+                foreach (var policy in policies)
                 {
-                    options.AddPolicy(policy.Key, builder =>
+                    options.AddPolicy(policy, builder =>
                     {
-                        builder.RequireClaim("permission", policy.Value,"all");
+                        builder.RequireClaim("permission", policy, "all");
                     });
+
+                    options.AddPolicy(policy, builder =>
+                        builder.Requirements.Add(new PermissionRequirement(policy)));
                 }
 
-                options.AddPolicy("AtLeast21", policy =>
-                    policy.Requirements.Add(new AdminAccessRequirement()));
 
-            });
-            
-
+            });*/
 
             services.AddCors(options =>
             {

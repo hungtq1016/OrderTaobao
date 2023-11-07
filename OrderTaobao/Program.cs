@@ -25,8 +25,10 @@ builder.Services.AddControllersWithViews()
 );
 builder.Services.AddServices();
 builder.Services.AddRepositories();
+builder.Services.AddDIOAuth2();
 builder.Services.AddOAuth2(configuration);
 builder.Services.AddDataContext();
+builder.Services.AddConfigures(configuration);
 builder.Services.AddConfigures(configuration);
 
 //<------------------- End Custom Services
