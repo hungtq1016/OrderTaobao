@@ -1,4 +1,5 @@
 ﻿using BaseSource.Dto.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers
@@ -15,6 +16,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // GET: api/Categories/page
         [HttpGet("page")]
+        [Authorize(Policy = "AtLeast21")]
         public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
             var result = await _service.GetPagedData(request, Request.Path.Value!, true);

@@ -1,4 +1,5 @@
-﻿using BaseSource.Dto.Request;
+﻿using BaseSource.BackendAPI.Authorization;
+using BaseSource.Dto.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,7 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "UserView")]
+    [ClaimRequirement("permission", "user.view")]
     public class UsersController : StatusController
     {
         private readonly IUserService _userService;
@@ -22,11 +23,6 @@ namespace BaseSource.BackendAPI.Controllers
         {
             var result = await _userService.GetPagedData(request, Request.Path.Value!,true);
             return StatusCode(result.StatusCode,result);
-        }
-        [HttpGet("ss")]
-        public async Task<IActionResult> a([FromQuery] PaginationRequest request)
-        {
-            return Ok();
         }
 
         // GET: api/Users/page-disable

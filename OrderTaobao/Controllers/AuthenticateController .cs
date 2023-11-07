@@ -18,7 +18,6 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("login")]
-        [Authorize(Policy = "AtLeast21")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
             return await PerformAction(request, _authenService.Login);
