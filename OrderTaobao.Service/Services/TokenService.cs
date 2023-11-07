@@ -125,7 +125,7 @@ namespace BaseSource.BackendAPI.Services
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Id!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id!),
                 new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id.ToString()),
