@@ -1,6 +1,8 @@
 ﻿
 using BaseSource.Dto;
 using Microsoft.AspNetCore.Http;
+using OfficeOpenXml.Table;
+using OfficeOpenXml;
 
 namespace BaseSource.BackendAPI.Services.Helpers
 {
@@ -54,6 +56,14 @@ namespace BaseSource.BackendAPI.Services.Helpers
         public static string GetExtension(string name)
         {
             return name.Split('.')[name.Split('.').Length - 1];
+        }
+
+        public static byte[] ExportToExcel<T>(List<T> table, string filename)
+        {
+            using ExcelPackage pack = new ExcelPackage();
+            ExcelWorksheet ws = pack.Workbook.Worksheets.Add(filename);
+            ws.Cells["A1"].LoadFromCollection(table, true, TableStyles.Light1);
+            return pack.GetAsByteArray();
         }
     }
 }
