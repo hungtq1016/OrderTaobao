@@ -2,12 +2,14 @@
 using BaseSource.Dto.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.Table;
+using OfficeOpenXml;
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ClaimRequirement("permission", "user.view")]
+    [Authorize]
     public class UsersController : StatusController
     {
         private readonly IUserService _userService;
@@ -27,7 +29,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // GET: api/Users/page-disable
         [HttpGet("page-disable")]
-        [Authorize(Policy = "DeleteView")]
+        [ClaimRequirement("permission", "disable.view")]
         public async Task<IActionResult> GetPagedDisableData([FromQuery] PaginationRequest request)
         {
             var result = await _userService.GetPagedData(request, Request.Path.Value!,false);
@@ -51,7 +53,6 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}/{user}")]
         public async Task<IActionResult> Update(string id,string user,UserRequest request)
         {
@@ -60,18 +61,17 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = "UserEdit")]
+        [ClaimRequirement("permission", "user.add")]
         public async Task<IActionResult> Add(UserRequest request)
         {
             return await PerformAction(request, _userService.Add);
         }
 
         // DELETE: api/Users/delete/usersubmit
-        [HttpDelete("delete/{id}/{user}")]
-        [Authorize(Policy = "UserDelete")]
-        public async Task<IActionResult> Enable(string id,string user)
+        [HttpPut("disable/{id}/{user}")]
+        [ClaimRequirement("permission", "user.edit")]
+        public async Task<IActionResult> Disable(string id,string user)
         {
             var result = await _userService.Enable(id, false);
             return StatusCode(result.StatusCode, result);
@@ -79,7 +79,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // PUT: api/Users/Restore/5
         [HttpPut("restore/{id}/{user}")]
-        [Authorize(Policy = "UserDelete")]
+        [ClaimRequirement("permission", "user.edit")]
         public async Task<IActionResult> Restore(string id,string user)
         {
             var result = await _userService.Enable(id, true);
@@ -87,9 +87,9 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         // DELETE: api/Users/delete/multiple
-        [HttpDelete("delete/multiple")]
-        [Authorize(Policy = "UserDelete")]
-        public async Task<IActionResult> MultipleEnable(MultipleRequest request)
+        [HttpPut("disable/multiple")]
+        [ClaimRequirement("permission", "user.edit")]
+        public async Task<IActionResult> MultipleDisable(MultipleRequest request)
         {
             var result = await _userService.MultipleEnable(request, false);
             return StatusCode(result.StatusCode, result);
@@ -97,7 +97,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // PUT: api/Users/Restore/multiple
         [HttpPut("restore/multiple")]
-        [Authorize(Policy = "UserDelete")]
+        [ClaimRequirement("permission", "user.edit")]
         public async Task<IActionResult> MultipleRestore(MultipleRequest request)
         {
             var result = await _userService.MultipleEnable(request, true);
@@ -106,7 +106,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Users/erase/123
         [HttpDelete("erase/{id}")]
-        [Authorize(Policy = "UserDelete")]
+        [ClaimRequirement("permission", "user.delete")]
         public async Task<IActionResult> Erase(string id)
         {
             return await PerformAction(id, _userService.Erase);
@@ -114,10 +114,31 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Users/multiple/erase
         [HttpDelete("multiple/erase")]
-        [Authorize(Policy = "UserDelete")]
+        [ClaimRequirement("permission", "user.delete")]
         public async Task<IActionResult> MultipleErase(MultipleRequest request)
         {
             return await PerformAction(request, _userService.MultipleErase);
+        }
+
+        [HttpGet("excel")]
+        // GET: api/Products/excel
+        public async Task<IActionResult> Export()
+        {
+            var export = await _userService.Export();
+
+            if (export is null)
+                return NotFound();
+
+            return File(export.File, export.Extension, export.Name);
+        }
+
+
+        [HttpPost("excel")]
+        // POST: api/Products/excel
+        public async Task<IActionResult> Import(IFormFile file)
+        {
+            var result = await _userService.Import(file);
+            return Ok(result);
         }
     }
 }

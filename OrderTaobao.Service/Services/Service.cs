@@ -1,9 +1,10 @@
-﻿using BaseSource.Dto;
+﻿using BaseSource.BackendAPI.Services.Helpers;
+using BaseSource.Dto;
 using BaseSource.Dto.Request;
+using BaseSource.Dto.Response;
 using BaseSource.Model;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto;
 
 namespace BaseSource.BackendAPI.Services
 {
@@ -26,6 +27,10 @@ namespace BaseSource.BackendAPI.Services
         Task<Response<bool>> Erase(string id);
 
         Task<Response<IList<string>>> MultipleErase(MultipleRequest request);
+
+        Task<ExcelResponse> Export();
+
+        Task<Response<bool>> Import(IFormFile file);
     }
 
     public class Service<T> : IService<T> where T : BaseEntity
@@ -158,6 +163,43 @@ namespace BaseSource.BackendAPI.Services
 
             return ResponseHelper.CreateSuccessResponse(responseList);
 
+        }
+
+        public async Task<ExcelResponse> Export()
+        {
+            string reportname = typeof(T).FullName!;
+
+            var list = await Get();
+
+            if (list.Data.Count > 0)
+            {
+                var exportbytes = FileHelper.ExportToExcel(list.Data, reportname);
+
+                return new ExcelResponse
+                {
+                    File = exportbytes,
+                    Extension = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    Name = reportname
+                };
+            }
+
+            return null;
+        }
+
+        public async Task<Response<bool>> Import(IFormFile file)
+        {
+            string folder = $"Excel\\{typeof(T).FullName!}";
+            List<IFormFile> files = new List<IFormFile>();
+
+            files.Add(file);
+
+            var result = await FileHelper.WriteFile(files, folder, "xlsx");
+
+            if (result is null)
+            {
+                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).FullName!);
+            }
+            return ResponseHelper.CreateSuccessResponse(true);
         }
     }
 }

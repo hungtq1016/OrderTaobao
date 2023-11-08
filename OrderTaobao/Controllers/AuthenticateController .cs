@@ -5,6 +5,7 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthenticateController : StatusController
     {
         private readonly IAuthenticateService _authenService;
@@ -18,6 +19,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginRequest request)
         {
             return await PerformAction(request, _authenService.Login);
@@ -25,6 +27,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             return await PerformAction(request, _authenService.Register);
@@ -46,6 +49,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("reset-password")]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
             return await PerformAction(request, _userService.UpdatePassword);
