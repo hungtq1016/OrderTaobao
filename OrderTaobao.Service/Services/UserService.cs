@@ -1,10 +1,13 @@
 ﻿
 using Azure.Core;
+using BaseSource.BackendAPI.Services.Helpers;
 using BaseSource.Builder;
 using BaseSource.Dto;
 using BaseSource.Dto.Request;
+using BaseSource.Dto.Response;
 using BaseSource.Helper;
 using BaseSource.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -33,6 +36,10 @@ namespace BaseSource.BackendAPI.Services
         Task<Response<bool>> Erase(string id);
 
         Task<Response<List<string>>> MultipleErase(MultipleRequest request);
+
+        Task<ExcelResponse> Export();
+
+        Task<Response<bool>> Import(IFormFile file);
     }
 
     public class UserService : IUserService
@@ -89,7 +96,7 @@ namespace BaseSource.BackendAPI.Services
 
             var pagedResponse = PaginationHelper.CreatePagedReponse<UserResponse>(users, validFilter, Convert.ToUInt16(totalRecords), _uriService, route);
 
-            return ResponseHelper.CreateSuccessResponse<PageResponse<List<UserResponse>>>(pagedResponse);
+            return ResponseHelper.CreateSuccessResponse(pagedResponse);
         }
 
         public async Task<Response<List<UserResponse>>> Get()
@@ -333,5 +340,41 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(true);
         }
 
+        public async Task<ExcelResponse> Export()
+        {
+            string reportname = typeof(User).FullName!;
+
+            var list = await Get();
+
+            if (list.Data.Count > 0)
+            {
+                var exportbytes = FileHelper.ExportToExcel(list.Data, reportname);
+
+                return new ExcelResponse
+                {
+                    File = exportbytes,
+                    Extension = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    Name = reportname
+                };
+            }
+
+            return null;
+        }
+
+        public async Task<Response<bool>> Import(IFormFile file)
+        {
+            string folder = $"Excel\\{typeof(User).FullName!}";
+            List<IFormFile> files = new List<IFormFile>();
+
+            files.Add(file);
+
+            var result = await FileHelper.WriteFile(files, folder, "xlsx");
+
+            if (result is null)
+            {
+                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(User).FullName!);
+            }
+            return ResponseHelper.CreateSuccessResponse(true);
+        }
     }
 }
