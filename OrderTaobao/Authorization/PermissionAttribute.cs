@@ -30,7 +30,12 @@ namespace BaseSource.BackendAPI.Authorization
                 context.Result = new UnauthorizedResult();
                 return;
             }
-            var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
+            var hasClaim = context.HttpContext.User.Claims
+                        .Any(claim =>
+                            (claim.Type == _claim.Type && claim.Value == _claim.Value) //Role have permission
+                            || (claim.Type == "Admin" && claim.Value == "All") //Admin role
+                        );
+
             if (!hasClaim)
             {
                 context.Result = new ForbidResult();
