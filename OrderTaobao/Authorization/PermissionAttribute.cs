@@ -25,6 +25,11 @@ namespace BaseSource.BackendAPI.Authorization
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            if (!context.HttpContext.User.Identity.IsAuthenticated)
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
             var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
             if (!hasClaim)
             {
