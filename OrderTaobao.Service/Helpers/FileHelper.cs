@@ -22,14 +22,14 @@ namespace BaseSource.BackendAPI.Services.Helpers
                 var oldName = file.FileName;
                 var extension = "." + GetExtension(oldName);
                 string newName = DateTime.Now.Ticks.ToString() + extension;
-                var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}");
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload/{folder}");
 
                 if (!Directory.Exists(filepath))
                 {
                     Directory.CreateDirectory(filepath);
                 }
 
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}", newName);
+                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload/{folder}", newName);
                 using (var stream = new FileStream(exactpath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
