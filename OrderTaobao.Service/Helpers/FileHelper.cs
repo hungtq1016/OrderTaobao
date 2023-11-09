@@ -16,37 +16,31 @@ namespace BaseSource.BackendAPI.Services.Helpers
                 //Denine if file
                 if (file.Length > Math.Pow(2,20)*8)
                 {
-                    return null;
+                    return null!;
                 }
-                try
+
+                var oldName = file.FileName;
+                var extension = "." + GetExtension(oldName);
+                string newName = DateTime.Now.Ticks.ToString() + extension;
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}");
+
+                if (!Directory.Exists(filepath))
                 {
-                    var oldName = file.FileName;
-                    var extension = "." + GetExtension(oldName);
-                    string newName = DateTime.Now.Ticks.ToString() + extension;
-                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}");
-
-                    if (!Directory.Exists(filepath))
-                    {
-                        Directory.CreateDirectory(filepath);
-                    }
-
-                    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}", newName);
-                    using (var stream = new FileStream(exactpath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                        fileRes.Add(new FileResponse
-                        {
-                            Name = oldName,
-                            Extension = extension,
-                            Path = newName,
-                            Size = Convert.ToUInt64(file.Length),
-                            Type = type
-                        });
-                    }
+                    Directory.CreateDirectory(filepath);
                 }
-                catch (Exception ex)
+
+                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}", newName);
+                using (var stream = new FileStream(exactpath, FileMode.Create))
                 {
-                    throw new ArithmeticException("Access denied - You must be at least 18 years old.");
+                    await file.CopyToAsync(stream);
+                    fileRes.Add(new FileResponse
+                    {
+                        Name = oldName,
+                        Extension = extension,
+                        Path = newName,
+                        Size = Convert.ToUInt64(file.Length),
+                        Type = type
+                    });
                 }
             }
 
