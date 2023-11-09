@@ -1,4 +1,8 @@
 ﻿
+using Newtonsoft.Json;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
+
 namespace BaseSource.Dto
 {
     public class Response<T>
@@ -15,7 +19,12 @@ namespace BaseSource.Dto
         }
         public T? Data { get; set; }
         public bool Error { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         public UInt16 StatusCode { get; set; }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }
