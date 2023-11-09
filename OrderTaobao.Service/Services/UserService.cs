@@ -81,11 +81,11 @@ namespace BaseSource.BackendAPI.Services
                 .Select(user => new UserResponse
                 {
                     Id = user.Id,
-                    Email = user.Email,
-                    UserName = user.UserName,
+                    Email = user.Email!,
+                    UserName = user.UserName!,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Phone = user.PhoneNumber,
+                    Phone = user.PhoneNumber!,
                     EmailConfirmed = user.EmailConfirmed,
                     PhoneNumberConfirmed = user.PhoneNumberConfirmed,
                     TwoFactorEnabled = user.TwoFactorEnabled,
@@ -101,22 +101,22 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<Response<List<UserResponse>>> Get()
         {
-            if (_cache.TryGetValue("users", out List<UserResponse> users))
+            if (_cache.TryGetValue("users", out List<UserResponse>? users))
             {
-                users = _userManager.Users
+                users = await _userManager.Users
                 .Select(user => new UserResponse
                 {
                     Id = user.Id,
-                    Email = user.Email,
-                    UserName = user.UserName,
+                    Email = user.Email!,
+                    UserName = user.UserName!,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Phone = user.PhoneNumber,
+                    Phone = user.PhoneNumber!,
                     EmailConfirmed = user.EmailConfirmed,
                     PhoneNumberConfirmed = user.PhoneNumberConfirmed,
                     TwoFactorEnabled = user.TwoFactorEnabled,
                     Enable = user.Enable
-                }).ToList();
+                }).ToListAsync();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                                    .SetSlidingExpiration(TimeSpan.FromSeconds(60))
@@ -125,7 +125,7 @@ namespace BaseSource.BackendAPI.Services
                                    .SetSize(1024);
             }
 
-            return ResponseHelper.CreateSuccessResponse(users);
+            return ResponseHelper.CreateSuccessResponse(users)!;
         }
 
         public async Task<Response<UserDetailResponse>> GetById(string id)
@@ -133,7 +133,7 @@ namespace BaseSource.BackendAPI.Services
             User? user = await _userManager.Users
                 .Where(user => user.Id == id)
                 .Where(user => user.Enable)
-                .Include(user => user.Orders)
+                .Include(user => user.Orders)!
                     .ThenInclude(order => order.Details)
                 .Include(user => user.Notifications)
                 .FirstOrDefaultAsync();
@@ -146,18 +146,18 @@ namespace BaseSource.BackendAPI.Services
                 User = new UserResponse
                 {
                     Id = user.Id,
-                    Email = user.Email,
-                    UserName = user.UserName,
+                    Email = user.Email!,
+                    UserName = user.UserName!,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Phone = user.PhoneNumber,
+                    Phone = user.PhoneNumber!,
                     EmailConfirmed = user.EmailConfirmed,
                     PhoneNumberConfirmed = user.PhoneNumberConfirmed,
                     TwoFactorEnabled = user.TwoFactorEnabled,
                     Enable = user.Enable
                 },
-                Notifications = user.Notifications,
-                Orders = user.Orders,
+                Notifications = user.Notifications!,
+                Orders = user.Orders!,
                 Roles = await _userManager.GetRolesAsync(user)
             };
 
@@ -208,11 +208,11 @@ namespace BaseSource.BackendAPI.Services
                 return ResponseHelper.CreateErrorResponse<bool>(404, "Can not found user");
 
             User entityBuilder = new EntityBuilder<User>().ForEntity(user)
-                .WithProperty(user => user.UserName, request.UserName)
-                .WithProperty(user => user.Email, request.Email)
+                .WithProperty(user => user.UserName!, request.UserName)
+                .WithProperty(user => user.Email!, request.Email)
                 .WithProperty(user => user.FirstName, request.FirstName)
                 .WithProperty(user => user.LastName, request.LastName)
-                .WithProperty(user => user.PhoneNumber, request.Phone)
+                .WithProperty(user => user.PhoneNumber!, request.Phone)
                 .Build();
 
             return await Update(entityBuilder);
@@ -346,7 +346,7 @@ namespace BaseSource.BackendAPI.Services
 
             var list = await Get();
 
-            if (list.Data.Count > 0)
+            if (list.Data!.Count > 0)
             {
                 var exportbytes = FileHelper.ExportToExcel(list.Data, reportname);
 
@@ -358,7 +358,7 @@ namespace BaseSource.BackendAPI.Services
                 };
             }
 
-            return null;
+            return null!;
         }
 
         public async Task<Response<bool>> Import(IFormFile file)
