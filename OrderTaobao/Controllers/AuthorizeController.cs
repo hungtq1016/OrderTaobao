@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BaseSource.BackendAPI.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,7 +20,6 @@ namespace BaseSource.BackendAPI.Controllers
         // POST: api/<AuthorizeController>
         [HttpPost]
         [Route("user-info")]
-        [Authorize]
         public async Task<IActionResult> GetUser(TokenRequest request)
         {
             return await PerformAction(request, _authenService.GetPermission);
@@ -27,7 +27,6 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpGet]
         [Route("authen")]
-        [Authorize]
         public IActionResult IsAuthen()
         {
             return Ok();
@@ -35,7 +34,6 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpGet]
         [Route("admin-view")]
-        [Authorize(Policy = "AdminView")]
         public IActionResult IsViewAdminPage()
         {
             return Ok();

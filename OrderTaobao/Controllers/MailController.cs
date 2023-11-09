@@ -15,9 +15,32 @@ namespace BaseSource.BackendAPI.Controllers
 
         [HttpPost]
         [Route("reset-password")]
-        public async Task<IActionResult> ResetPassword(string request)
+        public async Task<IActionResult> ResetPassword(MailRequest request)
         {
-            return await PerformAction(request, _mailService.SendMail);
-        }    
+            if (request is null)
+                return BadRequest();
+            var result = await _mailService.SendMail(request,"reset-password");
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost]
+        [Route("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(MailRequest request)
+        {
+            if (request is null)
+                return BadRequest();
+            var result = await _mailService.SendMail(request, "confirm-email");
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost]
+        [Route("2fa")]
+        public async Task<IActionResult> TwoFactorAuthentication(MailRequest request)
+        {
+            if (request is null)
+                return BadRequest();
+            var result = await _mailService.SendMail(request, "2fa");
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using BaseSource.BackendAPI.Authorization;
 using BaseSource.Dto.Request;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers

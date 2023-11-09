@@ -112,8 +112,8 @@ namespace BaseSource.BackendAPI.Controllers
             return await PerformAction(id, _userService.Erase);
         }
 
-        // DELETE: api/Users/multiple/erase
-        [HttpDelete("multiple/erase")]
+        // DELETE: api/Users/erase/multiple
+        [HttpDelete("erase/multiple")]
         [ClaimRequirement("permission", "user.delete")]
         public async Task<IActionResult> MultipleErase(MultipleRequest request)
         {
@@ -134,6 +134,7 @@ namespace BaseSource.BackendAPI.Controllers
 
 
         [HttpPost("excel")]
+        [AllowAnonymous]
         // POST: api/Products/excel
         public async Task<IActionResult> Import(IFormFile file)
         {
