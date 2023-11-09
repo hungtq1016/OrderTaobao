@@ -4,6 +4,7 @@
     {
         public static IServiceCollection AddOAuth2(this IServiceCollection services, IConfigurationRoot configuration)
         {
+            services.AddAuthorization();
             services.AddCors(options =>
             {
                options.AddPolicy(name: "_myAllowSpecificOrigins",
