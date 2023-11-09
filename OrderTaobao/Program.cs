@@ -72,7 +72,7 @@ if (context.Database.GetPendingMigrations().Any())
 {
     context.Database.Migrate();
 }
-
+app.ConfigureExceptionHandler();
 app.MapControllers();
 app.UseAuthorization();
 app.UseCors(MyAllowSpecificOrigins);
