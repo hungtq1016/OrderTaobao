@@ -188,7 +188,7 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<Response<bool>> Import(IFormFile file)
         {
-            string folder = $"Excel\\{typeof(T).FullName!}";
+            string folder = $"Excel/{typeof(T).FullName!}";
             List<IFormFile> files = new List<IFormFile>();
 
             files.Add(file);

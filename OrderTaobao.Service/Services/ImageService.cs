@@ -77,7 +77,7 @@ namespace BaseSource.BackendAPI.Services
 
             await _imageRepo.DeleteAsync(image,user);
 
-            string filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{image.Type}\\{image.Url}");
+            string filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload/{image.Type}/{image.Url}");
 
             if (File.Exists(filepath))
                 File.Delete(filepath);
