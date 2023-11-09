@@ -90,16 +90,16 @@ namespace BaseSource.BackendAPI.Services
             IList<string> roles = new List<string> { RolePermission.Customer };
 
             var addRoleResult = await _userManager.AddToRolesAsync(user, roles);
-
+            
             if (!createResult.Succeeded || !addRoleResult.Succeeded)
-                throw new Exception();
+                return ResponseHelper.CreateErrorResponse<TokenResponse>(500, "The server cannot process the request for an unknown reason");
 
             
             TokenResponse token = await _tokenService.CreateAccessToken(user, roles);
 
             await _historyService.CreateAuthHistory(user, UserConstant.Register);
 
-            return ResponseHelper.CreateCreatedResponse(token);
+            return ResponseHelper.CreateCreatedResponse<TokenResponse>(token);
         }
 
         public async Task<Response<bool>> Logout(TokenRequest request)
@@ -137,7 +137,11 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<Response<PermissionResponse<User>>> GetPermission(TokenRequest request)
         {
-            if (!_cache.TryGetValue(authorize, out PermissionResponse<User>? permission))
+            if (_cache.TryGetValue(authorize, out PermissionResponse<User> permission))
+            {
+                Console.WriteLine("Token found in cache.");
+            }
+            else
             {
                 User? user = await GetUserByToken(request);
                 if (user is null)
@@ -161,7 +165,9 @@ namespace BaseSource.BackendAPI.Services
                     .SetSize(1024);
                 _cache.Set(authorize, permission, cacheEntryOptions);
             }
-            return ResponseHelper.CreateSuccessResponse(permission)!;
+            
+
+            return ResponseHelper.CreateSuccessResponse(permission);
             
         }
 
@@ -172,17 +178,12 @@ namespace BaseSource.BackendAPI.Services
             {
                 return null!;
             }
-            string id = principal.Identity!.Name!;
+            string id = principal.Identity.Name;
 
             if (id is null)
-                return null!;
+                return null;
 
-            var user =  await _userManager.FindByIdAsync(id);
-
-            if (user is null) 
-                return null!;
-
-            return user;
+            return await _userManager.FindByIdAsync(id);
         }
 
     }

@@ -13,24 +13,24 @@ namespace BaseSource.BackendAPI.Services.Helpers
             List<FileResponse> fileRes = new List<FileResponse>();
             foreach (var file in files)
             {
-                //Denine if file greater than 8 MB
+                //Denine if file
                 if (file.Length > Math.Pow(2,20)*8)
                 {
-                    return null!;
+                    return null;
                 }
                 try
                 {
                     var oldName = file.FileName;
                     var extension = "." + GetExtension(oldName);
                     string newName = DateTime.Now.Ticks.ToString() + extension;
-                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload/{folder}");
+                    var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}");
 
                     if (!Directory.Exists(filepath))
                     {
                         Directory.CreateDirectory(filepath);
                     }
 
-                    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload/{folder}", newName);
+                    var exactpath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\{folder}", newName);
                     using (var stream = new FileStream(exactpath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -44,10 +44,10 @@ namespace BaseSource.BackendAPI.Services.Helpers
                         });
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw new Exception();
-                }   
+                    throw new ArithmeticException("Access denied - You must be at least 18 years old.");
+                }
             }
 
             return fileRes;

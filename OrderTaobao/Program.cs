@@ -59,7 +59,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.ConfigureExceptionHandler();
 
 app.UseHttpsRedirection();
 
@@ -69,15 +68,10 @@ var services = scope.ServiceProvider;
 
 var context = services.GetRequiredService<DataContext>();
 
-var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
-
-if (pendingMigrations.Any())
+if (context.Database.GetPendingMigrations().Any())
 {
-    Console.WriteLine($"Have {pendingMigrations.Count()} pending migrations to apply.");
-    Console.WriteLine("Applying pending migrations now");
-    await context.Database.MigrateAsync();
+    context.Database.Migrate();
 }
-
 
 app.MapControllers();
 app.UseAuthorization();
