@@ -33,7 +33,7 @@ To work on this project, I recommend setting up your workspace by following thes
 
 ## Builth With
 
-### [FrontEnd](https://github.com/hungtq1016/Nuxt-)
+### [FrontEnd](https://github.com/hungtq1016/Nuxt-OrderTaobao)
 
 * [![Vue][Vue.js]][Vue-url]
 * [![Nuxt][Nuxt.js]][Nuxt-url]
