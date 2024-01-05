@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BaseSource.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InitDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,9 +21,7 @@ namespace BaseSource.Migrations
                     NAME = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
                     SLUG = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -39,9 +37,7 @@ namespace BaseSource.Migrations
                     NAME = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     SLUG = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -59,9 +55,7 @@ namespace BaseSource.Migrations
                     TYPE = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SIZE = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -80,9 +74,7 @@ namespace BaseSource.Migrations
                     DESCRIPTION = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QUANTITY = table.Column<int>(type: "int", nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -140,9 +132,7 @@ namespace BaseSource.Migrations
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false),
                     NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -213,9 +203,7 @@ namespace BaseSource.Migrations
                     CONTENT = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -258,9 +246,7 @@ namespace BaseSource.Migrations
                     USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     IMAGE_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -286,9 +272,7 @@ namespace BaseSource.Migrations
                     STATUS = table.Column<byte>(type: "tinyint", nullable: false),
                     USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -310,9 +294,7 @@ namespace BaseSource.Migrations
                     IS_VERIFY = table.Column<bool>(type: "bit", nullable: false),
                     ExpiredTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -394,9 +376,7 @@ namespace BaseSource.Migrations
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     PROVINCE_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false),
                     NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -430,9 +410,7 @@ namespace BaseSource.Migrations
                     USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     ORDER_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -482,9 +460,7 @@ namespace BaseSource.Migrations
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     DISTRICT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false),
                     NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SLUG = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -517,9 +493,7 @@ namespace BaseSource.Migrations
                     WARD_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
                     USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CREATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_BY = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -542,13 +516,13 @@ namespace BaseSource.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "35e84f5b-b5b7-4312-ba3b-70947ec04f73", null, "Customer", "CUSTOMER" },
-                    { "3fc0589a-d0ab-4d49-a3bd-c986259a89c0", null, "Visitor", "VISITOR" },
-                    { "571f3145-71f9-4371-96ea-b92e853a0933", null, "Manager", "MANAGER" },
-                    { "8ec863ca-f9d9-4c15-9f08-a861bcfcd793", null, "Collaborator", "COLLABORATOR" },
-                    { "956fc442-74b6-4f27-b2d5-e6826fa2196f", null, "Super Admin", "SUPER ADMIN" },
-                    { "ce0e5e93-fc93-4c31-8389-9983d9340a3e", null, "Admin", "ADMIN" },
-                    { "db81431a-df53-48e7-8a63-dc723e1f19aa", null, "Staff", "STAFF" }
+                    { "0c38cb8d-9dd1-4725-99c7-ed20cf41fecf", null, "Collaborator", "COLLABORATOR" },
+                    { "2220926e-d46e-44cd-9e67-e0de1b92052f", null, "Manager", "MANAGER" },
+                    { "281155c9-4b0d-40c9-becf-45afffc379e1", null, "Admin", "ADMIN" },
+                    { "340915b7-12cc-491e-9356-a15b2e39c6f4", null, "Super Admin", "SUPER ADMIN" },
+                    { "386be147-432e-47fb-a41e-52ae76d63b00", null, "Visitor", "VISITOR" },
+                    { "a53e4bb3-9696-4dab-9b33-6d8a12edcebe", null, "Staff", "STAFF" },
+                    { "cb354863-3d1c-448b-80c4-f6204f2aa74d", null, "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(

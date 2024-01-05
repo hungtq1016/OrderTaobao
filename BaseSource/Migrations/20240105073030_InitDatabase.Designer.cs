@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BaseSource.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231101150015_init")]
-    partial class init
+    [Migration("20240105073030_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,11 +36,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -54,11 +49,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.Property<string>("UserId")
                         .HasMaxLength(450)
@@ -92,11 +82,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -116,11 +101,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
 
@@ -144,11 +124,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -156,11 +131,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(450)");
@@ -183,11 +153,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -207,11 +172,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
 
@@ -238,11 +198,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
 
                     b.Property<string>("EnSlug")
                         .IsRequired()
@@ -282,11 +237,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AdministrativeUnitID");
@@ -306,11 +256,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
 
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
@@ -334,11 +279,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -360,11 +300,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -378,11 +313,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -416,11 +346,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -437,11 +362,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.Property<string>("UserId")
                         .HasMaxLength(450)
@@ -470,11 +390,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<bool>("Enable")
                         .HasColumnType("bit")
                         .HasColumnName("ENABLE");
@@ -486,11 +401,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -551,11 +461,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -589,11 +494,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
-
                     b.HasKey("Id");
 
                     b.ToTable("PRODUCTS");
@@ -619,11 +519,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
 
                     b.Property<string>("EnSlug")
                         .IsRequired()
@@ -657,11 +552,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AdministrativeUnitID");
@@ -679,11 +569,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -704,11 +589,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
 
@@ -746,43 +626,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "35e84f5b-b5b7-4312-ba3b-70947ec04f73",
+                            Id = "cb354863-3d1c-448b-80c4-f6204f2aa74d",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "db81431a-df53-48e7-8a63-dc723e1f19aa",
+                            Id = "a53e4bb3-9696-4dab-9b33-6d8a12edcebe",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "8ec863ca-f9d9-4c15-9f08-a861bcfcd793",
+                            Id = "0c38cb8d-9dd1-4725-99c7-ed20cf41fecf",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "571f3145-71f9-4371-96ea-b92e853a0933",
+                            Id = "2220926e-d46e-44cd-9e67-e0de1b92052f",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "ce0e5e93-fc93-4c31-8389-9983d9340a3e",
+                            Id = "281155c9-4b0d-40c9-becf-45afffc379e1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "956fc442-74b6-4f27-b2d5-e6826fa2196f",
+                            Id = "340915b7-12cc-491e-9356-a15b2e39c6f4",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "3fc0589a-d0ab-4d49-a3bd-c986259a89c0",
+                            Id = "386be147-432e-47fb-a41e-52ae76d63b00",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });
@@ -933,11 +813,6 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("CREATED_AT");
 
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CREATED_BY");
-
                     b.Property<string>("DistrictId")
                         .IsRequired()
                         .HasMaxLength(36)
@@ -975,11 +850,6 @@ namespace BaseSource.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UPDATED_BY");
 
                     b.HasKey("Id");
 
