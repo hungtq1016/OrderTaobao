@@ -320,7 +320,7 @@ namespace BaseSource.BackendAPI.Services
                 reset.UpdatedAt = DateTime.UtcNow;
                 reset.Enable = false;
 
-                await _repository.UpdateAsync(reset, user.UserName!);
+                await _repository.UpdateAsync(reset);
                 return ResponseHelper.CreateSuccessResponse<bool>(true);
             }
             else

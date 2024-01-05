@@ -14,13 +14,13 @@ namespace BaseSource.BackendAPI.Services
 
         Task<T> ReadByIdAsync(string id);
 
-        Task AddAsync(T entity, string user);
+        Task AddAsync(T entity);
 
-        Task DeleteAsync(T entity, string user);
+        Task DeleteAsync(T entity);
 
         Task EraseAsync(T entity);
 
-        Task UpdateAsync(T entity, string user);
+        Task UpdateAsync(T entity);
 
         Task Save();
     }
@@ -68,7 +68,7 @@ namespace BaseSource.BackendAPI.Services
             return customer;
         }
 
-        public async Task AddAsync(T entity, string user = "admin")
+        public async Task AddAsync(T entity)
         {
             if (entity == null)
             {
@@ -76,22 +76,22 @@ namespace BaseSource.BackendAPI.Services
             }
 
             Id(entity);
-            Created(entity, user);
-            Updated(entity, user);
+            Created(entity);
+            Updated(entity);
             Enable(entity);
 
             await entities.AddAsync(entity);
             await Save();
         }
 
-        public async Task DeleteAsync(T entity, string user = "admin")
+        public async Task DeleteAsync(T entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("entity");
             }
 
-            Updated(entity, user);
+            Updated(entity);
             Disable(entity);
 
             await Save();
@@ -108,14 +108,14 @@ namespace BaseSource.BackendAPI.Services
             await Save();
         }
 
-        public async Task UpdateAsync(T entity, string user)
+        public async Task UpdateAsync(T entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("entity");
             }
 
-            Updated(entity, user);
+            Updated(entity);
 
             await Save();
         }
@@ -130,15 +130,13 @@ namespace BaseSource.BackendAPI.Services
             entity.Id = Guid.NewGuid().ToString();
         }
 
-        private void Created(T entity, string user)
+        private void Created(T entity)
         {
-            entity.CreatedBy = user;
             entity.CreatedAt = DateTime.Now;
         }
 
-        private void Updated(T entity, string user)
+        private void Updated(T entity)
         {
-            entity.UpdatedBy = user;
             entity.UpdatedAt = DateTime.Now;
         }
 

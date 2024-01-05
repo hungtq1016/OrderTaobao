@@ -15,9 +15,9 @@ namespace BaseSource.BackendAPI.Services
 
         ImageResponse GetByPath(string path);
 
-        Task<Response<bool>> Add(List<IFormFile> files, string user);
+        Task<Response<bool>> Add(List<IFormFile> files);
         
-        Task<Response<bool>> Erase(string id, string user);
+        Task<Response<bool>> Erase(string id);
     }
 
     public class ImageService : IImageService
@@ -32,7 +32,7 @@ namespace BaseSource.BackendAPI.Services
 
         }
 
-        public async Task<Response<bool>> Add(List<IFormFile> files, string user)
+        public async Task<Response<bool>> Add(List<IFormFile> files)
         {
             List<FileResponse> images = await FileHelper.WriteFile(files,"Image", "Image");
 
@@ -47,7 +47,7 @@ namespace BaseSource.BackendAPI.Services
                     Url = image.Path,
 
                 };
-                await _imageRepo.AddAsync(img, user);
+                await _imageRepo.AddAsync(img);
             }
 
             return ResponseHelper.CreateCreatedResponse(true);
@@ -67,7 +67,7 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(images);
         }
 
-        public async Task<Response<bool>> Erase(string id,string user)
+        public async Task<Response<bool>> Erase(string id)
         {
             Image image = await _imageRepo.ReadByIdAsync(id);
 
@@ -75,7 +75,7 @@ namespace BaseSource.BackendAPI.Services
                 return ResponseHelper.CreateErrorResponse<bool>
                        (404, "No image found.");
 
-            await _imageRepo.DeleteAsync(image,user);
+            await _imageRepo.DeleteAsync(image);
 
             string filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload/{image.Type}/{image.Url}");
 

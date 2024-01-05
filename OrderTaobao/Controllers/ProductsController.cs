@@ -50,30 +50,30 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // POST: api/Products/usersubmit
-        [HttpPost("{user}")]
+        // POST: api/Products
+        [HttpPost]
         [ClaimRequirement("permission", "product.add")]
-        public async Task<IActionResult> Post(Product request, string user)
+        public async Task<IActionResult> Post(Product request)
         {
-            var result = await _service.Add(user, request);
+            var result = await _service.Add(request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // PUT: api/Products/123/usersubmit
-        [HttpPut("{id}/{user}")]
+        // PUT: api/Products/123
+        [HttpPut("{id}")]
         [ClaimRequirement("permission", "product.edit")]
-        public async Task<IActionResult> Update(string id, string user, Product request)
+        public async Task<IActionResult> Update(string id, Product request)
         {
-            var result = await _service.Update(id, user, request);
+            var result = await _service.Update(id, request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Products/123/usersubmit
-        [HttpPut("disable/{id}/{user}")]
+        // DELETE: api/Products/123
+        [HttpPut("disable/{id}")]
         [ClaimRequirement("permission", "product.edit")]
-        public async Task<IActionResult> Disable(string id, string user)
+        public async Task<IActionResult> Disable(string id)
         {
-            var result = await _service.Enable(id, user, false);
+            var result = await _service.Enable(id, false);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -86,12 +86,12 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // PUT: api/Products/restore/123/usersubmit
-        [HttpPut("restore/{id}/{user}")]
+        // PUT: api/Products/restore/123
+        [HttpPut("restore/{id}")]
         [ClaimRequirement("permission", "product.edit")]
-        public async Task<IActionResult> Restore(string id, string user)
+        public async Task<IActionResult> Restore(string id)
         {
-            var result = await _service.Enable(id, user, true);
+            var result = await _service.Enable(id, true);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -104,7 +104,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Products/erase/123/usersubmit
+        // DELETE: api/Products/erase/123
         [HttpDelete("erase/{id}")]
         [ClaimRequirement("permission", "product.delete")]
         public async Task<IActionResult> Erase(string id)

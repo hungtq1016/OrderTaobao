@@ -67,7 +67,7 @@ namespace BaseSource.BackendAPI.Services
                 User = user,
 
             };
-            await _repository.AddAsync(resetPassword, user.UserName!);
+            await _repository.AddAsync(resetPassword);
 
             return resetPassword.Id;
         }

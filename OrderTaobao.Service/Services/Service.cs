@@ -16,11 +16,11 @@ namespace BaseSource.BackendAPI.Services
 
         Task<Response<T>> GetById(string id);
 
-        Task<Response<bool>> Add(string user,T request);
+        Task<Response<bool>> Add(T request);
 
-        Task<Response<bool>> Update(string id, string user,T request);
+        Task<Response<bool>> Update(string id, T request);
 
-        Task<Response<bool>> Enable(string id, string user, bool enable);
+        Task<Response<bool>> Enable(string id, bool enable);
 
         Task<Response<IList<string>>> MultipleEnable(MultipleRequest request, bool enable);
 
@@ -73,14 +73,14 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(item);
         }
 
-        public async Task<Response<bool>> Add(string user,T request)
+        public async Task<Response<bool>> Add(T request)
         {
-            await _repository.AddAsync(request, user);
+            await _repository.AddAsync(request);
 
             return ResponseHelper.CreateCreatedResponse(true);
         }
 
-        public async Task<Response<bool>> Update(string id,string user,T request)
+        public async Task<Response<bool>> Update(string id,T request)
         {
             T item = await _repository.ReadByIdAsync(id);
 
@@ -89,12 +89,12 @@ namespace BaseSource.BackendAPI.Services
 
             item = request;
 
-            await _repository.UpdateAsync(item, user);
+            await _repository.UpdateAsync(item);
 
             return ResponseHelper.CreateSuccessResponse(true);
         }
 
-        public async Task<Response<bool>> Enable(string id, string user, bool enable)
+        public async Task<Response<bool>> Enable(string id, bool enable)
         {
             T item = await _repository.ReadByIdAsync(id);
 
@@ -103,7 +103,7 @@ namespace BaseSource.BackendAPI.Services
 
             item.Enable = enable;
 
-            await _repository.UpdateAsync(item, user);
+            await _repository.UpdateAsync(item);
 
             return ResponseHelper.CreateSuccessResponse(true);
         }
@@ -123,7 +123,7 @@ namespace BaseSource.BackendAPI.Services
                 {
                     item.Enable = enable;
                     responseList.Add($"{id} : Pass");
-                    await _repository.DeleteAsync(item,request.User);
+                    await _repository.DeleteAsync(item);
                 }
             }
 

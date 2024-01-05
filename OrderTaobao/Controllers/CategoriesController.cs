@@ -51,30 +51,30 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // POST: api/Categories/usersubmit
-        [HttpPost("{user}")]
+        // POST: api/Categories
+        [HttpPost]
         [ClaimRequirement("permission", "category.add")]
-        public async Task<IActionResult> Post(Category request, string user)
+        public async Task<IActionResult> Post(Category request)
         {
-            var result = await _service.Add(user, request);
+            var result = await _service.Add(request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // PUT: api/Categories/123/usersubmit
-        [HttpPut("{id}/{user}")]
+        // PUT: api/Categories/123
+        [HttpPut("{id}")]
         [ClaimRequirement("permission", "category.edit")]
-        public async Task<IActionResult> Update(string id, string user, Category request)
+        public async Task<IActionResult> Update(string id, Category request)
         {
-            var result = await _service.Update(id, user, request);
+            var result = await _service.Update(id, request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Categories/123/usersubmit
-        [HttpPut("disable/{id}/{user}")]
+        // DELETE: api/Categories/123
+        [HttpPut("disable/{id}")]
         [ClaimRequirement("permission", "category.edit")]
-        public async Task<IActionResult> Disable(string id, string user)
+        public async Task<IActionResult> Disable(string id)
         {
-            var result = await _service.Enable(id, user, false);
+            var result = await _service.Enable(id, false);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -87,12 +87,12 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // PUT: api/Categories/restore/123/usersubmit
-        [HttpPut("restore/{id}/{user}")]
+        // PUT: api/Categories/restore/123
+        [HttpPut("restore/{id}")]
         [ClaimRequirement("permission", "category.edit")]
-        public async Task<IActionResult> Restore(string id, string user)
+        public async Task<IActionResult> Restore(string id)
         {
-            var result = await _service.Enable(id, user, true);
+            var result = await _service.Enable(id, true);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -105,7 +105,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Categories/erase/123/usersubmit
+        // DELETE: api/Categories/erase/123
         [HttpDelete("erase/{id}")]
         [ClaimRequirement("permission", "category.delete")]
         public async Task<IActionResult> Erase(string id)
