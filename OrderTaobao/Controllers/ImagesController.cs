@@ -26,11 +26,11 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpGet("page")]
         public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
-            var result = await _imageService.GetPagedData(request, Request.Path.Value!, true);
+            var result = await _imageService.GetPagedData(request, Request.Path.Value!);
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPost]
+        [HttpPost("upload")]
         [AllowAnonymous]
         public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
         {
@@ -55,10 +55,10 @@ namespace BaseSource.BackendAPI.Controllers
             return Ok(new { count = files.Count, size });
         }
 
-        [HttpPost("{user}")]
-        public async Task<IActionResult> Add(List<IFormFile> files, string user)
+        [HttpPost]
+        public async Task<IActionResult> Add(List<IFormFile> files)
         {
-            var result = await _imageService.Add(files, user);
+            var result = await _imageService.Add(files);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -74,10 +74,10 @@ namespace BaseSource.BackendAPI.Controllers
             return base.File(result.ImageBytes, $"image/{result.Extension}");
         }
 
-        [HttpDelete("{id}/{name}")]
-        public async Task<IActionResult> Erase(string id,string name)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Erase(string id)
         {
-            var result = await _imageService.Erase(id,name);
+            var result = await _imageService.Erase(id);
             return StatusCode(result.StatusCode, result);
 
         }

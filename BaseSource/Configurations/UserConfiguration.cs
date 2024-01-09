@@ -23,6 +23,11 @@ namespace BaseSource.Configurations
                 .WithOne(imageuser => imageuser.User)
                 .HasForeignKey(imageuser => imageuser.UserId).OnDelete(DeleteBehavior.ClientCascade)
                 .IsRequired();
+
+            builder.HasMany(user => user.AuditTrail)
+                .WithOne(audit => audit.User)
+                .HasForeignKey(audit => audit.UserId).OnDelete(DeleteBehavior.ClientCascade)
+                .IsRequired(false);
         }
     }
    

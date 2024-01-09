@@ -7,40 +7,23 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+/*    [Authorize]*/
     public class CategoriesController : ControllerBase
     {
-        private readonly IService<Category> _service;
-        public CategoriesController(IService<Category> service)
+        private readonly IService<Category, CategoryRequest, CategoryResponse> _service;
+        public CategoriesController(IService<Category, CategoryRequest, CategoryResponse> service)
         {
             _service = service;
         }
 
-        // GET: api/Categories/page
-        [HttpGet("page")]
-        public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
-        {
-            var result = await _service.GetPagedData(request, Request.Path.Value!, true);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // GET: api/Categories/page-disable
-        [HttpGet("page-disable")]
-        [ClaimRequirement("permission", "disable.view")]
-        public async Task<IActionResult> GetPagedDisableData([FromQuery] PaginationRequest request)
-        {
-            var result = await _service.GetPagedData(request, Request.Path.Value!, false);
-            return StatusCode(result.StatusCode, result);
-        }
-
         // GET: api/Categories
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
-            var result = await _service.Get();
+            var result = await _service.GetPagedData(request, Request.Path.Value!);
             return StatusCode(result.StatusCode, result);
         }
+
 
         // GET: api/Categories/123
         [HttpGet("{id}")]
@@ -51,62 +34,35 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // POST: api/Categories/usersubmit
-        [HttpPost("{user}")]
-        [ClaimRequirement("permission", "category.add")]
-        public async Task<IActionResult> Post(Category request, string user)
+        // POST: api/Categories
+        [HttpPost]
+      /*  [ClaimRequirement("permission", "category.add")]*/
+        public async Task<IActionResult> Post([FromBody] CategoryRequest request)
         {
-            var result = await _service.Add(user, request);
+            var result = await _service.Add(request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // PUT: api/Categories/123/usersubmit
-        [HttpPut("{id}/{user}")]
-        [ClaimRequirement("permission", "category.edit")]
-        public async Task<IActionResult> Update(string id, string user, Category request)
+        // PUT: api/Categories/123
+        [HttpPut("{id}")]
+        /*[ClaimRequirement("permission", "category.edit")]*/
+        public async Task<IActionResult> Update(string id,[FromBody] CategoryRequest request)
         {
-            var result = await _service.Update(id, user, request);
+            var result = await _service.Update(id, request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Categories/123/usersubmit
-        [HttpPut("disable/{id}/{user}")]
-        [ClaimRequirement("permission", "category.edit")]
-        public async Task<IActionResult> Disable(string id, string user)
-        {
-            var result = await _service.Enable(id, user, false);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // DELETE: api/Categories
-        [HttpPut("disable/multiple")]
+        // PUT: api/Categories
+        [HttpPut]
         [ClaimRequirement("permission", "category.edit")]
         public async Task<IActionResult> MultipleDisable(MultipleRequest request)
         {
-            var result = await _service.MultipleEnable(request, false);
+            var result = await _service.MultipleUpdate(request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // PUT: api/Categories/restore/123/usersubmit
-        [HttpPut("restore/{id}/{user}")]
-        [ClaimRequirement("permission", "category.edit")]
-        public async Task<IActionResult> Restore(string id, string user)
-        {
-            var result = await _service.Enable(id, user, true);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // PUT: api/Categories/delete/multiple
-        [HttpPut("restore/multiple")]
-        [ClaimRequirement("permission", "category.edit")]
-        public async Task<IActionResult> MultipleRestore(MultipleRequest request)
-        {
-            var result = await _service.MultipleEnable(request, true);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // DELETE: api/Categories/erase/123/usersubmit
-        [HttpDelete("erase/{id}")]
+        // DELETE: api/Categories/123
+        [HttpDelete("{id}")]
         [ClaimRequirement("permission", "category.delete")]
         public async Task<IActionResult> Erase(string id)
         {
@@ -114,8 +70,8 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Categories/erase/multiple
-        [HttpDelete("erase/multiple")]
+        // DELETE: api/Categories/multiple
+        [HttpDelete]
         [ClaimRequirement("permission", "category.delete")]
         public async Task<IActionResult> MultipleErase(MultipleRequest request)
         {

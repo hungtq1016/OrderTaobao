@@ -1,4 +1,5 @@
-﻿using BaseSource.BackendAPI.Services.Helpers;
+﻿using AutoMapper;
+using BaseSource.BackendAPI.Services.Helpers;
 using BaseSource.Dto;
 using BaseSource.Dto.Request;
 using BaseSource.Dto.Response;
@@ -8,21 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Services
 {
-    public interface IService<T> where T : BaseEntity
+    public interface IService<T,TRequest, TResponse> where T : BaseEntity
     {
         Task<Response<List<T>>> Get();
 
-        Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable);
+        Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route);
 
         Task<Response<T>> GetById(string id);
 
-        Task<Response<bool>> Add(string user,T request);
+        Task<Response<TResponse>> Add(TRequest request);
 
-        Task<Response<bool>> Update(string id, string user,T request);
+        Task<Response<TResponse>> Update(string id, TRequest request);
 
-        Task<Response<bool>> Enable(string id, string user, bool enable);
-
-        Task<Response<IList<string>>> MultipleEnable(MultipleRequest request, bool enable);
+        Task<Response<IList<string>>> MultipleUpdate(MultipleRequest request);
 
         Task<Response<bool>> Erase(string id);
 
@@ -33,20 +32,22 @@ namespace BaseSource.BackendAPI.Services
         Task<Response<bool>> Import(IFormFile file);
     }
 
-    public class Service<T> : IService<T> where T : BaseEntity
+    public class Service<T, TRequest, TResponse> : IService<T, TRequest, TResponse> where T : BaseEntity
     {
         private readonly IRepository<T> _repository;
         private readonly IUriService _uriService;
+        private readonly IMapper _mapper;
 
-        public Service(IRepository<T> repository, IUriService uriService)
+        public Service(IRepository<T> repository, IUriService uriService, IMapper mapper)
         {
             _repository = repository;
             _uriService = uriService;
+            _mapper = mapper;
         }
 
-        public async Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable)
+        public async Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route)
         {
-            PageResponse<List<T>> items = await _repository.GetPagedDataAsync(request, route, _uriService, enable);
+            PageResponse<List<T>> items = await _repository.GetPagedDataAsync(request, route, _uriService);
 
             return ResponseHelper.CreateSuccessResponse(items);
         }
@@ -56,7 +57,7 @@ namespace BaseSource.BackendAPI.Services
             var items = await _repository.ReadAllAsync();
 
             if (items is null)
-                return ResponseHelper.CreateNotFoundResponse<List<T>>(typeof(T).FullName!);
+                return ResponseHelper.CreateNotFoundResponse<List<T>>(typeof(T).Name!);
 
             items = items.Where(item => item.Enable).ToList();
 
@@ -68,67 +69,58 @@ namespace BaseSource.BackendAPI.Services
             T item = await _repository.ReadByIdAsync(id);
 
             if (item is null)
-                return ResponseHelper.CreateNotFoundResponse<T>(typeof(T).FullName!);
+                return ResponseHelper.CreateNotFoundResponse<T>(typeof(T).Name!);
 
             return ResponseHelper.CreateSuccessResponse(item);
         }
 
-        public async Task<Response<bool>> Add(string user,T request)
+        public async Task<Response<TResponse>> Add(TRequest request)
         {
-            await _repository.AddAsync(request, user);
+            T item = _mapper.Map<T>(request);
 
-            return ResponseHelper.CreateCreatedResponse(true);
+            await _repository.AddAsync(item);
+
+            TResponse response = _mapper.Map<TResponse>(item);
+
+            return ResponseHelper.CreateCreatedResponse(response);
         }
 
-        public async Task<Response<bool>> Update(string id,string user,T request)
+        public async Task<Response<TResponse>> Update(string id,TRequest request)
         {
             T item = await _repository.ReadByIdAsync(id);
 
             if (item is null)
-                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).FullName!);
+                return ResponseHelper.CreateNotFoundResponse<TResponse>(typeof(T).Name!);
 
-            item = request;
+            item = _mapper.Map(request,item);
 
-            await _repository.UpdateAsync(item, user);
+            await _repository.UpdateAsync(item);
 
-            return ResponseHelper.CreateSuccessResponse(true);
+            TResponse response = _mapper.Map<TResponse>(item);
+
+            return ResponseHelper.CreateSuccessResponse(response);
         }
 
-        public async Task<Response<bool>> Enable(string id, string user, bool enable)
+        public async Task<Response<IList<string>>> MultipleUpdate(MultipleRequest request)
         {
-            T item = await _repository.ReadByIdAsync(id);
+            IList<string> response = new List<string>();
 
-            if (item is null)
-                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).FullName!);
-
-            item.Enable = enable;
-
-            await _repository.UpdateAsync(item, user);
-
-            return ResponseHelper.CreateSuccessResponse(true);
-        }
-
-        public async Task<Response<IList<string>>> MultipleEnable(MultipleRequest request, bool enable)
-        {
-            IList<string> responseList = new List<string>();
-
-            foreach (string id in request.Ids)
+            Parallel.ForEach(request.Ids, async id =>
             {
                 T item = await _repository.ReadByIdAsync(id);
                 if (item is null)
                 {
-                    responseList.Add($"{id} : Fail");
+                    response.Add($"{id} : Fail");
                 }
                 else
                 {
-                    item.Enable = enable;
-                    responseList.Add($"{id} : Pass");
-                    await _repository.DeleteAsync(item,request.User);
+                    item.Enable = request.Enable;
+                    response.Add($"{id} : Pass");
+                    await _repository.DeleteAsync(item);
                 }
-            }
+            });
 
-            return ResponseHelper.CreateSuccessResponse(responseList);
-
+            return ResponseHelper.CreateSuccessResponse(response);
         }
 
         public async Task<Response<bool>> Erase(string id)
@@ -136,7 +128,7 @@ namespace BaseSource.BackendAPI.Services
             T item = await _repository.ReadByIdAsync(id);
 
             if (item is null)
-                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).FullName!);
+                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).Name!);
 
             await _repository.EraseAsync(item);
 
@@ -167,11 +159,11 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<ExcelResponse> Export()
         {
-            string reportname = typeof(T).FullName!;
+            string reportname = typeof(T).Name!;
 
             var list = await Get();
 
-            if (list.Data.Count > 0)
+            if (list.Data?.Count > 0)
             {
                 var exportbytes = FileHelper.ExportToExcel(list.Data, reportname);
 
@@ -183,12 +175,12 @@ namespace BaseSource.BackendAPI.Services
                 };
             }
 
-            return null;
+            return null!;
         }
 
         public async Task<Response<bool>> Import(IFormFile file)
         {
-            string folder = $"Excel\\{typeof(T).FullName!}";
+            string folder = $"Excel\\{typeof(T).Name!}";
             List<IFormFile> files = new List<IFormFile>();
 
             files.Add(file);
@@ -197,7 +189,7 @@ namespace BaseSource.BackendAPI.Services
 
             if (result is null)
             {
-                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).FullName!);
+                return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).Name!);
             }
             return ResponseHelper.CreateSuccessResponse(true);
         }

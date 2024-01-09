@@ -8,10 +8,12 @@ namespace BaseSource.Model
     public class ProductCategory
     {
         [Column("PRODUCT_ID", TypeName = "varchar"), MaxLength(36)]
-        public string ProductId { get; set; }
+        [Key]
+        public string ProductId { get; set; } = string.Empty;
 
         [Column("CATEGORY_ID", TypeName = "varchar"), MaxLength(36)]
-        public string CategoryId { get; set; }
+        [Key]
+        public string CategoryId { get; set; }= string.Empty;
 
         public Product? Product { get; set; }
 

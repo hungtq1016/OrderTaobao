@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Basesource.Constants\Basesource.Constants.csproj" />
     <ProjectReference Include="..\BaseSource.Model\BaseSource.Model.csproj" />
   </ItemGroup>
 

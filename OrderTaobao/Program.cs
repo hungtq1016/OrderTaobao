@@ -28,6 +28,7 @@ builder.Services.AddRepositories();
 builder.Services.AddOAuth2(configuration);
 builder.Services.AddDataContext();
 builder.Services.AddConfigures(configuration);
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 //<------------------- End Custom Services
 

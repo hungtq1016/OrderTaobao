@@ -53,8 +53,8 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         // PUT: api/Users/5
-        [HttpPut("{id}/{user}")]
-        public async Task<IActionResult> Update(string id,string user,UserRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, UserRequest request)
         {
             var result = await _userService.Update(id,request);
             return StatusCode(result.StatusCode, result);
@@ -69,18 +69,18 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         // DELETE: api/Users/delete/usersubmit
-        [HttpPut("disable/{id}/{user}")]
+        [HttpPut("disable/{id}")]
         [ClaimRequirement("permission", "user.edit")]
-        public async Task<IActionResult> Disable(string id,string user)
+        public async Task<IActionResult> Disable(string id)
         {
             var result = await _userService.Enable(id, false);
             return StatusCode(result.StatusCode, result);
         }
 
         // PUT: api/Users/Restore/5
-        [HttpPut("restore/{id}/{user}")]
+        [HttpPut("restore/{id}")]
         [ClaimRequirement("permission", "user.edit")]
-        public async Task<IActionResult> Restore(string id,string user)
+        public async Task<IActionResult> Restore(string id)
         {
             var result = await _userService.Enable(id, true);
             return StatusCode(result.StatusCode, result);

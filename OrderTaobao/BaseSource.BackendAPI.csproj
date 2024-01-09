@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseSource.Builder\BaseSource.Builder.csproj" />
+    <ProjectReference Include="..\Basesource.Constants\Basesource.Constants.csproj" />
     <ProjectReference Include="..\BaseSource.Dto\BaseSource.Dto.csproj" />
     <ProjectReference Include="..\BaseSource.Infrastructure\BaseSource.Infrastructure.csproj" />
     <ProjectReference Include="..\OrderTaobao.Service\BaseSource.BackendAPI.Services.csproj" />

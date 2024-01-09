@@ -33,12 +33,14 @@ namespace BaseScource.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
             modelBuilder.ApplyConfiguration(new NotificationConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
+            modelBuilder.ApplyConfiguration(new AuditTrailConfiguration());
             modelBuilder.ApplyConfiguration(new WardConfiguration());
             modelBuilder.ApplyConfiguration(new DistrictConfiguration());
             modelBuilder.ApplyConfiguration(new ProvinceConfiguration());
@@ -77,6 +79,8 @@ namespace BaseScource.Data
         public DbSet<UserHistory> UserHistory => Set<UserHistory>();
         public DbSet<Image> Images => Set<Image>();
         public DbSet<ImageUser> ImageUser => Set<ImageUser>();
+        public DbSet<AuditTrailHistory> AuditLogs => Set<AuditTrailHistory>();
+
 
     }
 }
