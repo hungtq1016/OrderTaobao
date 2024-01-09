@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BaseSource.Configurations
 {
-    public class AddressConfiguration : IEntityTypeConfiguration<Address>
+    public class AuditTrailConfiguration : IEntityTypeConfiguration<AuditTrailHistory>
     {
-        public void Configure(EntityTypeBuilder<Address> builder)
+        public void Configure(EntityTypeBuilder<AuditTrailHistory> builder)
         {
-            builder.HasOne(address => address.User)
-                .WithOne(user => user.Address)
-                .HasForeignKey<Address>(address => address.UserId)
+            builder.HasOne(audit => audit.User)
+                .WithMany(user => user.AuditTrail)
+                .HasForeignKey(audit => audit.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade)
                 .IsRequired(false);
 
