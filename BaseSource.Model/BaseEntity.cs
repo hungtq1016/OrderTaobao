@@ -8,7 +8,7 @@ namespace BaseSource.Model
 
         [Key]
         [Column("ID", TypeName = "varchar"), MaxLength(36)]
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Column("CREATED_AT")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

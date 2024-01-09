@@ -8,12 +8,11 @@ namespace BaseSource.Model
     {
 
         [Column("NAME", TypeName = "nvarchar"), MaxLength(255)]
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; } = string.Empty;
 
         [Column("SLUG", TypeName = "nvarchar"), MaxLength(255)]
-        public string Slug { get; set; } = string.Empty;
+        public string? Slug { get; set; } = string.Empty;
 
-        [NotMapped]
         public List<ProductCategory>? Products { get; } = new();
 
     }

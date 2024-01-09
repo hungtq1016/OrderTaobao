@@ -12,8 +12,8 @@ services:
       context: .
       dockerfile: OrderTaobao/Dockerfile
     ports:
-        - "51830:80"
-        - "51836:443"
+        - "80"
+        - "443"
     depends_on:
         - ordertaobao.db
     environment:

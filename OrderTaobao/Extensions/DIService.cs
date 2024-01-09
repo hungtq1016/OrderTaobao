@@ -4,7 +4,7 @@
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IService<>), typeof(Service<>));
+            services.AddScoped(typeof(IService<,,>), typeof(Service<,,>));
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IMailService, MailService>();

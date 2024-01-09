@@ -10,35 +10,17 @@ namespace BaseSource.BackendAPI.Controllers
     [Authorize]
     public class ProductsController : ControllerBase
     {
-        private readonly IService<Product> _service;
-        public ProductsController(IService<Product> service)
+        private readonly IService<Product, Product, Product> _service;
+        public ProductsController(IService<Product, Product, Product> service)
         {
             _service = service;
         }
 
-        // GET: api/Products/page
-        [HttpGet("page")]
-        public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
-        {
-            var result = await _service.GetPagedData(request, Request.Path.Value!, true);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // GET: api/Products/page-disable
-        [HttpGet("page-disable")]
-        [ClaimRequirement("permission", "disable.view")]
-        public async Task<IActionResult> GetPagedDisableData([FromQuery] PaginationRequest request)
-        {
-            var result = await _service.GetPagedData(request, Request.Path.Value!, false);
-            return StatusCode(result.StatusCode, result);
-        }
-
         // GET: api/Products
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
-            var result = await _service.Get();
+            var result = await _service.GetPagedData(request, Request.Path.Value!);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -68,44 +50,18 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Products/123
-        [HttpPut("disable/{id}")]
+        // PUT: api/Products
+        [HttpPut]
         [ClaimRequirement("permission", "product.edit")]
-        public async Task<IActionResult> Disable(string id)
+        public async Task<IActionResult> MultipleUpdate(MultipleRequest request)
         {
-            var result = await _service.Enable(id, false);
+            var result = await _service.MultipleUpdate(request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Products
-        [HttpPut("disable/multiple")]
-        [ClaimRequirement("permission", "product.edit")]
-        public async Task<IActionResult> MultipleDisable(MultipleRequest request)
-        {
-            var result = await _service.MultipleEnable(request, false);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // PUT: api/Products/restore/123
-        [HttpPut("restore/{id}")]
-        [ClaimRequirement("permission", "product.edit")]
-        public async Task<IActionResult> Restore(string id)
-        {
-            var result = await _service.Enable(id, true);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // PUT: api/Products/delete/multiple
-        [HttpPut("delete/multiple")]
-        [ClaimRequirement("permission", "product.edit")]
-        public async Task<IActionResult> MultipleRestore(MultipleRequest request)
-        {
-            var result = await _service.MultipleEnable(request, true);
-            return StatusCode(result.StatusCode, result);
-        }
 
         // DELETE: api/Products/erase/123
-        [HttpDelete("erase/{id}")]
+        [HttpDelete("{id}")]
         [ClaimRequirement("permission", "product.delete")]
         public async Task<IActionResult> Erase(string id)
         {
@@ -113,8 +69,8 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        // DELETE: api/Products/erase/multiple
-        [HttpDelete("erase/multiple")]
+        // DELETE: api/Products
+        [HttpDelete]
         [ClaimRequirement("permission", "product.delete")]
         public async Task<IActionResult> MultipleErase(MultipleRequest request)
         {

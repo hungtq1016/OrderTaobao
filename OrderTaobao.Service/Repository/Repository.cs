@@ -1,4 +1,5 @@
 ﻿using BaseScource.Data;
+using Basesource.Constants;
 using BaseSource.Dto;
 using BaseSource.Helper;
 using BaseSource.Model;
@@ -8,7 +9,7 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request, string route, IUriService uriService,bool enable);
+        Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request, string route, IUriService uriService);
 
         Task<List<T>> ReadAllAsync();
 
@@ -27,60 +28,59 @@ namespace BaseSource.BackendAPI.Services
     public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly DataContext _context;
-        private DbSet<T> entities;
+        private DbSet<T> _entities;
 
         public Repository(DataContext context)
         {
             _context = context;
-            entities = _context.Set<T>();
+            _entities = _context.Set<T>();
         }
 
-        public async Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request,string route, IUriService uriService, bool enable)
+        public async Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request,string route, IUriService uriService)
         {
             var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
 
-            UInt16 totalRecords = Convert.ToUInt16(await entities.CountAsync());
+            var totalRecords = Convert.ToUInt16(await _entities.CountAsync());
 
-            var lists = await entities
-                .Where(e => e.Enable == enable)
+            var query = _entities.AsQueryable();
+
+            if (request.Status == StatusEnum.Disable || request.Status == StatusEnum.Enable)
+            {
+                query = query.Where(e => e.Enable == (request.Status == StatusEnum.Enable));
+            }
+
+            var lists = await query
                 .OrderByDescending(e => e.UpdatedAt)
-               .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-               .Take(validFilter.PageSize).ToListAsync();
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
 
-            var pagedReponse = PaginationHelper.CreatePagedReponse<T>(lists, validFilter, totalRecords, uriService, route);
+            var pagedReponse = PaginationHelper.CreatePagedReponse(lists, validFilter, totalRecords, uriService, route);
 
             return pagedReponse;
         }
 
         public async Task<List<T>> ReadAllAsync()
         {
-            List<T> records = await entities.ToListAsync();
+            List<T> records = await _entities.ToListAsync();
 
             return records;
         }
 
         public async Task<T> ReadByIdAsync(string id)
         {
-            var customer = await entities.FirstOrDefaultAsync(t => t.Id == id && t.Enable);
-
-            if (customer == null)
-                return null!;
-            return customer;
+            T? record = await _entities.FirstOrDefaultAsync(t => t.Id == id);
+            return record!;
         }
 
         public async Task AddAsync(T entity)
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
-
             Id(entity);
             Created(entity);
             Updated(entity);
             Enable(entity);
 
-            await entities.AddAsync(entity);
+            await _entities.AddAsync(entity);
             await Save();
         }
 
@@ -103,21 +103,17 @@ namespace BaseSource.BackendAPI.Services
             {
                 throw new ArgumentNullException("entity");
             }
-            entities.Remove(entity);
+            _entities.Remove(entity);
 
             await Save();
         }
 
         public async Task UpdateAsync(T entity)
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
-
+            _context.Entry(entity).State = EntityState.Modified;
             Updated(entity);
 
-            await Save();
+            await _context.SaveChangesAsync();
         }
 
         public async Task Save()

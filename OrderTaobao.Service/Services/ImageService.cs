@@ -11,7 +11,7 @@ namespace BaseSource.BackendAPI.Services
     {
         Task<Response<List<Image>>> Get();
 
-        Task<Response<PageResponse<List<Image>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable);
+        Task<Response<PageResponse<List<Image>>>> GetPagedData([FromQuery] PaginationRequest request, string route);
 
         ImageResponse GetByPath(string path);
 
@@ -60,9 +60,9 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(images);
         }
 
-        public async Task<Response<PageResponse<List<Image>>>> GetPagedData([FromQuery] PaginationRequest request, string route, bool enable)
+        public async Task<Response<PageResponse<List<Image>>>> GetPagedData([FromQuery] PaginationRequest request, string route)
         {
-            PageResponse<List<Image>> images = await _imageRepo.GetPagedDataAsync(request,route, _uriService,enable);
+            PageResponse<List<Image>> images = await _imageRepo.GetPagedDataAsync(request,route, _uriService);
 
             return ResponseHelper.CreateSuccessResponse(images);
         }

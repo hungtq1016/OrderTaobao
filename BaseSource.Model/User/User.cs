@@ -20,6 +20,8 @@ namespace BaseSource.Model
 
         public ICollection<AuthHistory>? AuthHistory { get; } = new List<AuthHistory>();
 
+        public ICollection<AuditTrailHistory>? AuditTrail { get; } = new List<AuditTrailHistory>();
+
         public ICollection<UserHistory>? UserHistory { get; } = new List<UserHistory>();
 
         public ICollection<ResetPassword>? ResetPassword { get; } = new List<ResetPassword>();

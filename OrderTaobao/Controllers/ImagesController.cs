@@ -26,7 +26,7 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpGet("page")]
         public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
-            var result = await _imageService.GetPagedData(request, Request.Path.Value!, true);
+            var result = await _imageService.GetPagedData(request, Request.Path.Value!);
             return StatusCode(result.StatusCode, result);
         }
 
