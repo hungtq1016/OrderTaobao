@@ -2,14 +2,12 @@
 using BaseSource.Dto.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.Table;
-using OfficeOpenXml;
+
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UsersController : StatusController
     {
         private readonly IUserService _userService;

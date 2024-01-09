@@ -1,13 +1,11 @@
 ﻿using BaseSource.BackendAPI.Authorization;
 using BaseSource.Dto.Request;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-/*    [Authorize]*/
     public class CategoriesController : ControllerBase
     {
         private readonly IService<Category, CategoryRequest, CategoryResponse> _service;
@@ -27,7 +25,6 @@ namespace BaseSource.BackendAPI.Controllers
 
         // GET: api/Categories/123
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetById(string id)
         {
             var result = await _service.GetById(id);
@@ -36,7 +33,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // POST: api/Categories
         [HttpPost]
-      /*  [ClaimRequirement("permission", "category.add")]*/
+        [ClaimRequirement("permission", "category.add")]
         public async Task<IActionResult> Post([FromBody] CategoryRequest request)
         {
             var result = await _service.Add(request);
