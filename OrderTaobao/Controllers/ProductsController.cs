@@ -34,7 +34,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // POST: api/Products
         [HttpPost]
-        [ClaimRequirement("permission", "product.add")]
+        [Permission]
         public async Task<IActionResult> Post(Product request)
         {
             var result = await _service.Add(request);
@@ -43,7 +43,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // PUT: api/Products/123
         [HttpPut("{id}")]
-        [ClaimRequirement("permission", "product.edit")]
+        [Permission]
         public async Task<IActionResult> Update(string id, Product request)
         {
             var result = await _service.Update(id, request);
@@ -52,7 +52,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // PUT: api/Products
         [HttpPut]
-        [ClaimRequirement("permission", "product.edit")]
+        [Permission]
         public async Task<IActionResult> MultipleUpdate(MultipleRequest request)
         {
             var result = await _service.MultipleUpdate(request);
@@ -62,7 +62,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Products/erase/123
         [HttpDelete("{id}")]
-        [ClaimRequirement("permission", "product.delete")]
+        [Permission]
         public async Task<IActionResult> Erase(string id)
         {
             var result = await _service.Erase(id);
@@ -71,7 +71,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Products
         [HttpDelete]
-        [ClaimRequirement("permission", "product.delete")]
+        [Permission]
         public async Task<IActionResult> MultipleErase(MultipleRequest request)
         {
             var result = await _service.MultipleErase(request);

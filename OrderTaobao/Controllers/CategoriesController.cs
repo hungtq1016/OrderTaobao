@@ -33,7 +33,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // POST: api/Categories
         [HttpPost]
-        [ClaimRequirement("permission", "category.add")]
+        [Permission]
         public async Task<IActionResult> Post([FromBody] CategoryRequest request)
         {
             var result = await _service.Add(request);
@@ -42,7 +42,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // PUT: api/Categories/123
         [HttpPut("{id}")]
-        /*[ClaimRequirement("permission", "category.edit")]*/
+        [Permission]
         public async Task<IActionResult> Update(string id,[FromBody] CategoryRequest request)
         {
             var result = await _service.Update(id, request);
@@ -51,7 +51,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // PUT: api/Categories
         [HttpPut]
-        [ClaimRequirement("permission", "category.edit")]
+        [Permission]
         public async Task<IActionResult> MultipleDisable(MultipleRequest request)
         {
             var result = await _service.MultipleUpdate(request);
@@ -60,7 +60,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Categories/123
         [HttpDelete("{id}")]
-        [ClaimRequirement("permission", "category.delete")]
+        [Permission]
         public async Task<IActionResult> Erase(string id)
         {
             var result = await _service.Erase(id);
@@ -69,7 +69,7 @@ namespace BaseSource.BackendAPI.Controllers
 
         // DELETE: api/Categories/multiple
         [HttpDelete]
-        [ClaimRequirement("permission", "category.delete")]
+        [Permission]
         public async Task<IActionResult> MultipleErase(MultipleRequest request)
         {
             var result = await _service.MultipleErase(request);

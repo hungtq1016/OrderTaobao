@@ -1,4 +1,5 @@
 ﻿
+using BaseSource.BackendAPI.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         [HttpPost("upload")]
-        [AllowAnonymous]
+        [Permission]
         public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
         {
             long size = files.Sum(f => f.Length);
@@ -56,6 +57,7 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [Permission]
         public async Task<IActionResult> Add(List<IFormFile> files)
         {
             var result = await _imageService.Add(files);
@@ -63,7 +65,7 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         [HttpGet("{path}")]
-        [AllowAnonymous]
+        [Permission]
         public IActionResult GetByPath(string path)
         {
             ImageResponse result = _imageService.GetByPath(path);
@@ -75,6 +77,7 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Permission]
         public async Task<IActionResult> Erase(string id)
         {
             var result = await _imageService.Erase(id);
