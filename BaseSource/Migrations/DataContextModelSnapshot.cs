@@ -104,6 +104,69 @@ namespace BaseSource.Migrations
                     b.ToTable("AdministrativeUnit");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.AuditTrailHistory", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ID");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ACTION");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT");
+
+                    b.Property<string>("DeviceIP")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar")
+                        .HasColumnName("DEVICE_IP");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit")
+                        .HasColumnName("ENABLE");
+
+                    b.Property<string>("EntityId")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("ENTITY_ID");
+
+                    b.Property<int?>("StatusCode")
+                        .HasColumnType("int")
+                        .HasColumnName("STATUS_CODE");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("TABLE_NAME");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("VALUE");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AUDIT_TRAIL");
+                });
+
             modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
                 {
                     b.Property<string>("Id")
@@ -129,12 +192,14 @@ namespace BaseSource.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar")
+                        .HasColumnName("USER_ID");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("AUTH_HISTORY");
                 });
@@ -155,13 +220,11 @@ namespace BaseSource.Migrations
                         .HasColumnName("ENABLE");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar")
                         .HasColumnName("NAME");
 
                     b.Property<string>("Slug")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar")
                         .HasColumnName("SLUG");
@@ -496,6 +559,25 @@ namespace BaseSource.Migrations
                     b.ToTable("PRODUCTS");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.ProductCategory", b =>
+                {
+                    b.Property<string>("ProductId")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("PRODUCT_ID");
+
+                    b.Property<string>("CategoryId")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar")
+                        .HasColumnName("CATEGORY_ID");
+
+                    b.HasKey("ProductId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("PRODUCT_CATEGORY");
+                });
+
             modelBuilder.Entity("BaseSource.Model.Province", b =>
                 {
                     b.Property<string>("Id")
@@ -623,43 +705,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cb354863-3d1c-448b-80c4-f6204f2aa74d",
+                            Id = "56068c03-3234-48e5-bd07-3162fcb6e08e",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "a53e4bb3-9696-4dab-9b33-6d8a12edcebe",
+                            Id = "6be3fc10-560e-4361-9a12-12f794aa8b22",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "0c38cb8d-9dd1-4725-99c7-ed20cf41fecf",
+                            Id = "99ff81d6-3898-498d-910d-78c855939803",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "2220926e-d46e-44cd-9e67-e0de1b92052f",
+                            Id = "a1576cb0-74e3-4f1c-b814-e3dcf08d1828",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "281155c9-4b0d-40c9-becf-45afffc379e1",
+                            Id = "bc88c91f-9ba6-4925-8a6d-a5af559404d9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "340915b7-12cc-491e-9356-a15b2e39c6f4",
+                            Id = "9769ec9b-9eb5-4cc8-99ea-4b56f356ee04",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "386be147-432e-47fb-a41e-52ae76d63b00",
+                            Id = "7b6d1f75-885a-4936-a9ad-7c4caa429b2d",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });
@@ -995,11 +1077,21 @@ namespace BaseSource.Migrations
                     b.Navigation("Ward");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.AuditTrailHistory", b =>
+                {
+                    b.HasOne("BaseSource.Model.User", "User")
+                        .WithMany("AuditTrail")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BaseSource.Model.AuthHistory", b =>
                 {
                     b.HasOne("BaseSource.Model.User", "User")
                         .WithMany("AuthHistory")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -1082,6 +1174,25 @@ namespace BaseSource.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("BaseSource.Model.ProductCategory", b =>
+                {
+                    b.HasOne("BaseSource.Model.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BaseSource.Model.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Product");
                 });
@@ -1202,6 +1313,11 @@ namespace BaseSource.Migrations
                     b.Navigation("Wards");
                 });
 
+            modelBuilder.Entity("BaseSource.Model.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("BaseSource.Model.District", b =>
                 {
                     b.Navigation("Wards");
@@ -1237,6 +1353,8 @@ namespace BaseSource.Migrations
             modelBuilder.Entity("BaseSource.Model.User", b =>
                 {
                     b.Navigation("Address");
+
+                    b.Navigation("AuditTrail");
 
                     b.Navigation("AuthHistory");
 

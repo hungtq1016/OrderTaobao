@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BaseSource.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDatabase : Migration
+    public partial class init_db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,8 +34,8 @@ namespace BaseSource.Migrations
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
-                    NAME = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    SLUG = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    NAME = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    SLUG = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
@@ -152,6 +152,30 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PRODUCT_CATEGORY",
+                columns: table => new
+                {
+                    PRODUCT_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    CATEGORY_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PRODUCT_CATEGORY", x => new { x.PRODUCT_ID, x.CATEGORY_ID });
+                    table.ForeignKey(
+                        name: "FK_PRODUCT_CATEGORY_CATEGORIES_CATEGORY_ID",
+                        column: x => x.CATEGORY_ID,
+                        principalTable: "CATEGORIES",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PRODUCT_CATEGORY_PRODUCTS_PRODUCT_ID",
+                        column: x => x.PRODUCT_ID,
+                        principalTable: "PRODUCTS",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ROLE_CLAIM",
                 columns: table => new
                 {
@@ -196,12 +220,38 @@ namespace BaseSource.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AUDIT_TRAIL",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
+                    USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    TABLE_NAME = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DEVICE_IP = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    ACTION = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false),
+                    ENTITY_ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
+                    STATUS_CODE = table.Column<int>(type: "int", nullable: true),
+                    VALUE = table.Column<string>(type: "text", nullable: false),
+                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ENABLE = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AUDIT_TRAIL", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_AUDIT_TRAIL_USER_USER_ID",
+                        column: x => x.USER_ID,
+                        principalTable: "USER",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AUTH_HISTORY",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false),
                     CONTENT = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    USER_ID = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ENABLE = table.Column<bool>(type: "bit", nullable: false)
@@ -210,8 +260,8 @@ namespace BaseSource.Migrations
                 {
                     table.PrimaryKey("PK_AUTH_HISTORY", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_AUTH_HISTORY_USER_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_AUTH_HISTORY_USER_USER_ID",
+                        column: x => x.USER_ID,
                         principalTable: "USER",
                         principalColumn: "Id");
                 });
@@ -516,13 +566,13 @@ namespace BaseSource.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0c38cb8d-9dd1-4725-99c7-ed20cf41fecf", null, "Collaborator", "COLLABORATOR" },
-                    { "2220926e-d46e-44cd-9e67-e0de1b92052f", null, "Manager", "MANAGER" },
-                    { "281155c9-4b0d-40c9-becf-45afffc379e1", null, "Admin", "ADMIN" },
-                    { "340915b7-12cc-491e-9356-a15b2e39c6f4", null, "Super Admin", "SUPER ADMIN" },
-                    { "386be147-432e-47fb-a41e-52ae76d63b00", null, "Visitor", "VISITOR" },
-                    { "a53e4bb3-9696-4dab-9b33-6d8a12edcebe", null, "Staff", "STAFF" },
-                    { "cb354863-3d1c-448b-80c4-f6204f2aa74d", null, "Customer", "CUSTOMER" }
+                    { "56068c03-3234-48e5-bd07-3162fcb6e08e", null, "Customer", "CUSTOMER" },
+                    { "6be3fc10-560e-4361-9a12-12f794aa8b22", null, "Staff", "STAFF" },
+                    { "7b6d1f75-885a-4936-a9ad-7c4caa429b2d", null, "Visitor", "VISITOR" },
+                    { "9769ec9b-9eb5-4cc8-99ea-4b56f356ee04", null, "Super Admin", "SUPER ADMIN" },
+                    { "99ff81d6-3898-498d-910d-78c855939803", null, "Collaborator", "COLLABORATOR" },
+                    { "a1576cb0-74e3-4f1c-b814-e3dcf08d1828", null, "Manager", "MANAGER" },
+                    { "bc88c91f-9ba6-4925-8a6d-a5af559404d9", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -543,9 +593,14 @@ namespace BaseSource.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AUTH_HISTORY_UserId1",
+                name: "IX_AUDIT_TRAIL_USER_ID",
+                table: "AUDIT_TRAIL",
+                column: "USER_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AUTH_HISTORY_USER_ID",
                 table: "AUTH_HISTORY",
-                column: "UserId1");
+                column: "USER_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CUSTOMER_HISTORY_USER_ID",
@@ -598,6 +653,11 @@ namespace BaseSource.Migrations
                 name: "IX_ORDERS_USER_ID",
                 table: "ORDERS",
                 column: "USER_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PRODUCT_CATEGORY_CATEGORY_ID",
+                table: "PRODUCT_CATEGORY",
+                column: "CATEGORY_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PROVINCES_ADMINISTRATIVE_UNIT_ID",
@@ -664,10 +724,10 @@ namespace BaseSource.Migrations
                 name: "AspNetUserRoles");
 
             migrationBuilder.DropTable(
-                name: "AUTH_HISTORY");
+                name: "AUDIT_TRAIL");
 
             migrationBuilder.DropTable(
-                name: "CATEGORIES");
+                name: "AUTH_HISTORY");
 
             migrationBuilder.DropTable(
                 name: "CUSTOMER_HISTORY");
@@ -680,6 +740,9 @@ namespace BaseSource.Migrations
 
             migrationBuilder.DropTable(
                 name: "ORDER_DETAILS");
+
+            migrationBuilder.DropTable(
+                name: "PRODUCT_CATEGORY");
 
             migrationBuilder.DropTable(
                 name: "RESET_PASSWORD");
@@ -704,6 +767,9 @@ namespace BaseSource.Migrations
 
             migrationBuilder.DropTable(
                 name: "ORDERS");
+
+            migrationBuilder.DropTable(
+                name: "CATEGORIES");
 
             migrationBuilder.DropTable(
                 name: "PRODUCTS");
