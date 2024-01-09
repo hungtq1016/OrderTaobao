@@ -8,6 +8,10 @@ namespace BaseSource.BackendAPI
         {
             CreateMap<CategoryRequest, Category>().ForAllMembers(opt => opt.Condition((src, dest, srcMember, context) => srcMember != null));
             CreateMap<Category, CategoryResponse>();
+
+            CreateMap<UserRequest, User>().ForAllMembers(opt => opt.Condition((src, dest, srcMember, context) => srcMember != null));
+            CreateMap<User, UserResponse>();
+
         }
     }
 }

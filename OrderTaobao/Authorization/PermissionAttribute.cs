@@ -6,27 +6,26 @@ using System.Security.Claims;
 
 namespace BaseSource.BackendAPI.Authorization
 {
-    public class ClaimRequirementAttribute : TypeFilterAttribute
+    public class PermissionAttribute : TypeFilterAttribute
     {
-        public ClaimRequirementAttribute(string claimType, string claimValue) : base(typeof(ClaimRequirementFilter))
+        public PermissionAttribute() : base(typeof(PermissionFilter))
         {
-            Arguments = new object[] { new Claim(claimType, claimValue) };
+            Arguments = new string[] {};
         }
     }
 
-    public class ClaimRequirementFilter : IAsyncAuthorizationFilter
+    public class PermissionFilter : IAsyncAuthorizationFilter
     {
-        readonly Claim _claim;
 
-        public ClaimRequirementFilter(Claim claim)
+        public PermissionFilter()
         {
-            _claim = claim;
         }
      
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
+            var request = context.HttpContext.Request;
 
-            if (!context.HttpContext.User.Identity.IsAuthenticated)
+            if (!context.HttpContext.User.Identity!.IsAuthenticated)
             {
                 context.Result = new UnauthorizedResult();
                 return;
@@ -34,21 +33,20 @@ namespace BaseSource.BackendAPI.Authorization
 
             var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
             var roleManager = context.HttpContext.RequestServices.GetRequiredService<RoleManager<Role>>();
-            var request = context.HttpContext.Request;
 
             request.RouteValues.TryGetValue("controller", out var controllerValue);
             var controllerName = (string)(controllerValue ?? string.Empty);
             var method = request.Method;
 
-            if (method == "GET")
-            {
-                context.Result = new OkResult();
-                return;
-            }
-
             var permission = $"{controllerName}.{method}";
 
             var userId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
 
             var user = await userManager.FindByIdAsync(userId);
 
@@ -90,7 +88,7 @@ namespace BaseSource.BackendAPI.Authorization
             await Task.WhenAll(roleClaimsTasks);
 
             var hasClaim = claims.Any(claim =>
-                (claim.Type == _claim.Type && claim.Value == permission) || // Role has permission
+                (claim.Type == "permission" && claim.Value == permission) || // Role has permission
                 (claim.Type == "Admin" && claim.Value == "All") // Admin role
             );
 

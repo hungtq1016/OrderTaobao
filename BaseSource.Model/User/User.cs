@@ -1,16 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace BaseSource.Model
 {
     public class User : IdentityUser<string>
     {
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
-        public string LastName { get; set; } 
+        public string LastName { get; set; } = string.Empty;
 
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
 
         public DateTime RefreshTokenExpiryTime { get; set; }
 

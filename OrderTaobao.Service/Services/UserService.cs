@@ -1,5 +1,6 @@
 ﻿
-using Azure.Core;
+using AutoMapper;
+using Basesource.Constants;
 using BaseSource.BackendAPI.Services.Helpers;
 using BaseSource.Builder;
 using BaseSource.Dto;
@@ -17,21 +18,19 @@ namespace BaseSource.BackendAPI.Services
 {
     public interface IUserService
     {
-        Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route, bool enable);
+        Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route);
 
         Task<Response<List<UserResponse>>> Get();
 
-        Task<Response<UserDetailResponse>> GetById(string id);
+        Task<Response<UserResponse>> GetById(string id);
 
-        Task<Response<bool>> Add(UserRequest request);
+        Task<Response<UserResponse>> Add(UserRequest request);
 
-        Task<Response<bool>> Update(string id, UserRequest request);
+        Task<Response<UserResponse>> Update(string id, UserRequest request);
+
+        Task<Response<List<String>>> MultipleUpdate(MultipleRequest request);
 
         Task<Response<bool>> UpdatePassword(ResetPasswordRequest request);
-
-        Task<Response<bool>> Enable(string id,bool enable);
-
-        Task<Response<List<string>>> MultipleEnable(MultipleRequest request, bool enable);
 
         Task<Response<bool>> Erase(string id);
 
@@ -49,17 +48,19 @@ namespace BaseSource.BackendAPI.Services
         private readonly IUriService _uriService;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _cache;
+        private readonly IMapper _mapper;
 
-        public UserService(UserManager<User> userManager, IRepository<ResetPassword> repository, IUriService uriService, IConfiguration configuration,IMemoryCache cache)
+        public UserService(UserManager<User> userManager, IRepository<ResetPassword> repository, IUriService uriService, IConfiguration configuration,IMemoryCache cache, IMapper mapper)
         {
             _userManager = userManager;
             _repository = repository;
             _uriService = uriService;
             _configuration = configuration;
             _cache = cache;
+            _mapper = mapper;
         }
 
-        public async Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route,bool enable)
+        public async Task<Response<PageResponse<List<UserResponse>>>> GetPagedData(PaginationRequest request, string route)
         {
             if (_userManager.Users is null)
                 return ResponseHelper
@@ -69,32 +70,26 @@ namespace BaseSource.BackendAPI.Services
             var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
 
             var totalRecords = await _userManager.Users
-                .Where(user => user.Enable == enable)
                 .CountAsync();
 
             if (totalRecords == 0)
                 return ResponseHelper.CreateErrorResponse<PageResponse<List<UserResponse>>>
                         (404, "No users found.");
 
-            List<UserResponse> users = await _userManager.Users
-                .Where(user => user.Enable == enable)
-                .Select(user => new UserResponse
-                {
-                    Id = user.Id,
-                    Email = user.Email!,
-                    UserName = user.UserName!,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Phone = user.PhoneNumber!,
-                    EmailConfirmed = user.EmailConfirmed,
-                    PhoneNumberConfirmed = user.PhoneNumberConfirmed,
-                    TwoFactorEnabled = user.TwoFactorEnabled,
-                    Enable = user.Enable
-                })
-               .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-               .Take(validFilter.PageSize).ToListAsync();
+            var query = _userManager.Users.AsQueryable();
 
-            var pagedResponse = PaginationHelper.CreatePagedReponse<UserResponse>(users, validFilter, Convert.ToUInt16(totalRecords), _uriService, route);
+            if (request.Status == StatusEnum.Disable || request.Status == StatusEnum.Enable)
+            {
+                query = query.Where(user => user.Enable == (request.Status == StatusEnum.Enable));
+            }
+
+            var lists = await query
+                .Select(user => _mapper.Map<UserResponse>(user))
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
+
+            var pagedResponse = PaginationHelper.CreatePagedReponse(lists, validFilter, Convert.ToUInt16(totalRecords), _uriService, route);
 
             return ResponseHelper.CreateSuccessResponse(pagedResponse);
         }
@@ -104,19 +99,8 @@ namespace BaseSource.BackendAPI.Services
             if (_cache.TryGetValue("users", out List<UserResponse>? users))
             {
                 users = await _userManager.Users
-                .Select(user => new UserResponse
-                {
-                    Id = user.Id,
-                    Email = user.Email!,
-                    UserName = user.UserName!,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Phone = user.PhoneNumber!,
-                    EmailConfirmed = user.EmailConfirmed,
-                    PhoneNumberConfirmed = user.PhoneNumberConfirmed,
-                    TwoFactorEnabled = user.TwoFactorEnabled,
-                    Enable = user.Enable
-                }).ToListAsync();
+                .Select(user => _mapper.Map<UserResponse>(user))
+                .ToListAsync();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                                    .SetSlidingExpiration(TimeSpan.FromSeconds(60))
@@ -128,7 +112,7 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(users)!;
         }
 
-        public async Task<Response<UserDetailResponse>> GetById(string id)
+        public async Task<Response<UserResponse>> GetById(string id)
         {
             User? user = await _userManager.Users
                 .Where(user => user.Id == id)
@@ -139,118 +123,77 @@ namespace BaseSource.BackendAPI.Services
                 .FirstOrDefaultAsync();
 
             if (user is null)
-                return ResponseHelper.CreateErrorResponse<UserDetailResponse>(404, "No user found.");
+                return ResponseHelper.CreateErrorResponse<UserResponse>(404, "No user found.");
 
-            var userDetail = new UserDetailResponse
-            {
-                User = new UserResponse
-                {
-                    Id = user.Id,
-                    Email = user.Email!,
-                    UserName = user.UserName!,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Phone = user.PhoneNumber!,
-                    EmailConfirmed = user.EmailConfirmed,
-                    PhoneNumberConfirmed = user.PhoneNumberConfirmed,
-                    TwoFactorEnabled = user.TwoFactorEnabled,
-                    Enable = user.Enable
-                },
-                Notifications = user.Notifications!,
-                Orders = user.Orders!,
-                Roles = await _userManager.GetRolesAsync(user)
-            };
+            var result = _mapper.Map<UserResponse>(user);
 
-            return ResponseHelper.CreateSuccessResponse(userDetail);
+            return ResponseHelper.CreateSuccessResponse(result);
         }
 
-        public async Task<Response<bool>> Add(UserRequest request)
+        public async Task<Response<UserResponse>> Add(UserRequest request)
         {
             User? isUserNameExists = await _userManager.FindByNameAsync(request.UserName);
             User? isEmailExists = await _userManager.FindByEmailAsync(request.Email);
 
             if (isUserNameExists is not null)
-                return ResponseHelper.CreateErrorResponse<bool>(409, "Username is already exists");
+                return ResponseHelper.CreateErrorResponse<UserResponse>(409, "Username is already exists");
 
             if (isEmailExists is not null)
-                return ResponseHelper.CreateErrorResponse<bool>(409, "Email is already exists");
+                return ResponseHelper.CreateErrorResponse<UserResponse>(409, "Email is already exists");
 
             User user = new UserBuilder(_configuration)
                 .WithId()
-                .WithLastName(request.LastName)
-                .WithFirstName(request.FirstName)
-                .WithUserName(request.UserName)
-                .WithEmail(request.Email)
-                .WithPhone(request.Phone)
                 .WithRefreshToken(TokenHelper.GenerateRefreshToken())
                 .WithSecurityStamp()
                 .WithEnable()
                 .Build();
 
+            _mapper.Map(request, user);
+
             var result = await _userManager.CreateAsync(user);
 
             if (!result.Succeeded)
                 return ResponseHelper
-                    .CreateErrorResponse<bool>(500, "The server cannot process the request for an unknown reason");
+                    .CreateErrorResponse<UserResponse>(500, "The server cannot process the request for an unknown reason");
 
-            return ResponseHelper.CreateCreatedResponse(true);
+            UserResponse response = _mapper.Map<UserResponse>(user);
 
-        }
-
-        public async Task<Response<bool>> Update(string id, UserRequest request)
-        {
-            if (id != request.Id)
-                return ResponseHelper.CreateErrorResponse<bool>(404, "Can not found user");
-
-            User? user = await _userManager.FindByIdAsync(request.Id);
-
-            if (user is null || !user.Enable)
-                return ResponseHelper.CreateErrorResponse<bool>(404, "Can not found user");
-
-            User entityBuilder = new EntityBuilder<User>().ForEntity(user)
-                .WithProperty(user => user.UserName!, request.UserName)
-                .WithProperty(user => user.Email!, request.Email)
-                .WithProperty(user => user.FirstName, request.FirstName)
-                .WithProperty(user => user.LastName, request.LastName)
-                .WithProperty(user => user.PhoneNumber!, request.Phone)
-                .Build();
-
-            return await Update(entityBuilder);
+            return ResponseHelper.CreateCreatedResponse(response);
 
         }
 
-        public async Task<Response<bool>> Enable(string id, bool enable)
+        public async Task<Response<UserResponse>> Update(string id, UserRequest request)
         {
             User? user = await _userManager.FindByIdAsync(id);
             if (user is null)
-            {
-                return ResponseHelper.CreateErrorResponse<bool>(404, "Can not found user");
-            }
-            user.Enable = enable;
+                return ResponseHelper.CreateErrorResponse<UserResponse>(404, "Can not found user");
 
-            return await Update(user);
+            var update = _mapper.Map<User>(request);
+
+            return await Update(update);
+
         }
 
-        public async Task<Response<List<string>>> MultipleEnable(MultipleRequest request, bool enable)
+        public async Task<Response<List<string>>> MultipleUpdate(MultipleRequest request)
         {
-            List<string> responseList = new List<string>();
+            List<string> response = new List<string>();
 
-            foreach (string id in request.Ids)
+            Parallel.ForEach(request.Ids, async id =>
             {
                 User? user = await _userManager.FindByIdAsync(id);
                 if (user is null)
                 {
-                    responseList.Add($"{id} : Fail");
+                    response.Add($"{id} : Fail");
                 }
                 else
                 {
-                    user.Enable = enable;
-                    responseList.Add($"{id} : Pass");
+                    user.Enable = request.Enable;
+                    response.Add($"{id} : Pass");
                     await _userManager.UpdateAsync(user);
                 }
-            }
+            });
 
-            return ResponseHelper.CreateSuccessResponse(responseList);
+            return ResponseHelper.CreateSuccessResponse(response);
         }
 
 
@@ -321,7 +264,7 @@ namespace BaseSource.BackendAPI.Services
                 reset.Enable = false;
 
                 await _repository.UpdateAsync(reset);
-                return ResponseHelper.CreateSuccessResponse<bool>(true);
+                return ResponseHelper.CreateSuccessResponse(true);
             }
             else
             {
@@ -329,15 +272,17 @@ namespace BaseSource.BackendAPI.Services
             }
         }
 
-        private async Task<Response<bool>> Update(User user)
+        private async Task<Response<UserResponse>> Update(User user)
         {
             var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
                 return ResponseHelper
-                    .CreateErrorResponse<bool>(500, "The server cannot process the request for an unknown reason");
+                    .CreateErrorResponse<UserResponse>(500, "The server cannot process the request for an unknown reason");
 
-            return ResponseHelper.CreateSuccessResponse(true);
+            UserResponse response = _mapper.Map<UserResponse>(user);
+
+            return ResponseHelper.CreateSuccessResponse(response);
         }
 
         public async Task<ExcelResponse> Export()
