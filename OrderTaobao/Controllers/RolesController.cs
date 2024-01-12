@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BaseSource.BackendAPI.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +6,6 @@ namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RolesController : StatusController
     {
         private readonly IRoleService _roleService;
@@ -24,15 +23,17 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetClaimByRole(string id)
+        public async Task<IActionResult> GetClaimByRole(string id, [FromQuery] PaginationRequest request)
         {
-            return await PerformAction(id, _roleService.GetClaimByRole);
+            var result = await _roleService.GetClaimByRole(request, id, Request.Path.Value!);
+            return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPost("claim")]
-        public async Task<IActionResult> AddClaimToRole(IdentityRoleClaim<string> request)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> AddClaimToRole(string id, IdentityRoleClaim<string> request)
         {
-            return await PerformAction(request, _roleService.AddClaim);
+            var result = await _roleService.AddClaim(request);
+            return StatusCode(result.StatusCode, result);
         }
 
     }

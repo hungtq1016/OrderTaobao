@@ -15,7 +15,8 @@ namespace BaseSource.BackendAPI.Middlewares
         public async Task InvokeAsync(HttpContext context, DataContext dbContext)
         {
             var request = context.Request;
-
+            var body = await ReadBodyFromRequest(request);
+            await _next(context);
             if (request.Path.StartsWithSegments("/api"))
             {
                 request.RouteValues.TryGetValue(ControllerKey, out var controllerValue);
@@ -24,15 +25,13 @@ namespace BaseSource.BackendAPI.Middlewares
                 List<string> values = new List<string> { "Authenticate", "Authorize" };
 
                 if (!values.Contains(controllerName))
-                    await AuditLogHandlerAsync(request, context, dbContext, controllerName);
+                    await AuditLogHandlerAsync(request, context, dbContext, controllerName, body);
             }
-            await _next(context);
-
         }
 
-        private async Task AuditLogHandlerAsync(HttpRequest request, HttpContext httpContext, DataContext dbContext, string controller)
+        private async Task AuditLogHandlerAsync(HttpRequest request, HttpContext httpContext, DataContext dbContext, string controller,string body)
         {
-            var ipV4 = httpContext.Connection.RemoteIpAddress.ToString();
+            string? ipV4 = httpContext.Connection.RemoteIpAddress.ToString();
 
             switch (request.Method)
             {
@@ -49,7 +48,7 @@ namespace BaseSource.BackendAPI.Middlewares
                         EntityId = (request.Method == "DELETE" || request.Method == "PATCH" || request.Method == "PUT") ? GetQueryFromContext(httpContext) : null,
                         DeviceIP = ipV4,
                         StatusCode = httpContext.Response.StatusCode,   
-                        Value = await ReadBodyFromRequest(request)
+                        Value = body
                     };
 
                     dbContext.AuditLogs.Add(auditLog);
@@ -58,7 +57,6 @@ namespace BaseSource.BackendAPI.Middlewares
                 default:
                     break;
             }
-
         }
 
         private string GetQueryFromContext(HttpContext httpContext)

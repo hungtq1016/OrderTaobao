@@ -17,9 +17,7 @@ namespace BaseSource.BackendAPI.Authorization
     public class PermissionFilter : IAsyncAuthorizationFilter
     {
 
-        public PermissionFilter()
-        {
-        }
+        public PermissionFilter(){}
      
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {

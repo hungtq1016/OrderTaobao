@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using Basesource.Constants;
 using BaseSource.Builder;
 using BaseSource.Dto;
@@ -28,17 +29,19 @@ namespace BaseSource.BackendAPI.Services
         private readonly ITokenService _tokenService;
         private readonly IAuthHistoryService _historyService;
         private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
         private IMemoryCache _cache;
         private const string authorize = "authorize";
 
         public AuthenticateService(IConfiguration configuration, ITokenService tokenService,
-            IAuthHistoryService historyService, UserManager<User> userManager,IMemoryCache cache)
+            IAuthHistoryService historyService, UserManager<User> userManager,IMemoryCache cache, IMapper mapper)
         {
             _configuration = configuration;
             _tokenService = tokenService;
             _historyService = historyService;
             _userManager = userManager;
             _cache = cache;
+            _mapper = mapper;
         }
 
         public async Task<Response<TokenResponse>> Login(LoginRequest request)
@@ -49,13 +52,11 @@ namespace BaseSource.BackendAPI.Services
 
             if (await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                IList<string> roles = await _userManager.GetRolesAsync(user);
-
-                TokenResponse token = await _tokenService.CreateAccessToken(user, roles);
+                TokenResponse token = await _tokenService.CreateAccessToken(user);
 
                 await _historyService.CreateAuthHistory(user, UserConstant.Login);
 
-                return ResponseHelper.CreateSuccessResponse<TokenResponse>(token);
+                return ResponseHelper.CreateSuccessResponse(token);
             }
 
             return ResponseHelper.CreateErrorResponse<TokenResponse>(404, "Username or password is invalid");
@@ -75,15 +76,12 @@ namespace BaseSource.BackendAPI.Services
 
             User user = new UserBuilder(_configuration)
                 .WithId()
-                .WithUserName(request.UserName)
-                .WithEmail(request.Email)
-                .WithFirstName(request.FirstName)
-                .WithLastName(request.LastName)
-                .WithPhone(request.Phone)
                 .WithRefreshToken(TokenHelper.GenerateRefreshToken())
                 .WithSecurityStamp()
                 .WithEnable()
                 .Build();
+
+            _mapper.Map(request, user);
 
             var createResult = await _userManager.CreateAsync(user, request.Password);
 
@@ -95,11 +93,11 @@ namespace BaseSource.BackendAPI.Services
                 return ResponseHelper.CreateErrorResponse<TokenResponse>(500, "The server cannot process the request for an unknown reason");
 
             
-            TokenResponse token = await _tokenService.CreateAccessToken(user, roles);
+            TokenResponse token = await _tokenService.CreateAccessToken(user);
 
             await _historyService.CreateAuthHistory(user, UserConstant.Register);
 
-            return ResponseHelper.CreateCreatedResponse<TokenResponse>(token);
+            return ResponseHelper.CreateCreatedResponse(token);
         }
 
         public async Task<Response<bool>> Logout(TokenRequest request)

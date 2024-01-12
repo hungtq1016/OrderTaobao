@@ -16,7 +16,7 @@ namespace BaseSource.BackendAPI.Services
         bool _isEmptyOrInvalid(string token);
         Task<string> UpdateRefreshToken(TokenRequest request);
         Task<TokenResponse> CreateNewAccessToken(TokenRequest request);
-        Task<TokenResponse> CreateAccessToken(User user, IList<string> roles);
+        Task<TokenResponse> CreateAccessToken(User user);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
     public class TokenService : ITokenService
@@ -77,15 +77,14 @@ namespace BaseSource.BackendAPI.Services
             string id = principal!.Identity!.Name!;
 
             User? user = await _userManager.FindByIdAsync(id);
-            var roles = await _userManager.GetRolesAsync(user);
             var refres_token = await UpdateRefreshToken(request);
             user.RefreshToken = refres_token;
-            return  await CreateAccessToken(user, roles);
+            return  await CreateAccessToken(user);
         }
 
-        public async Task<TokenResponse> CreateAccessToken(User user, IList<string> roles)
+        public async Task<TokenResponse> CreateAccessToken(User user)
         {
-            var access_token = await AccessToken(user, roles);
+            var access_token = await AccessToken(user);
             
             return new TokenResponse
             {
@@ -116,39 +115,16 @@ namespace BaseSource.BackendAPI.Services
 
         }
 
-        private async Task<JwtSecurityToken> AccessToken(User user,IList<string> roles)
+        private async Task<JwtSecurityToken> AccessToken(User user)
         {
-            IdentityOptions _options = new IdentityOptions();
-
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var userRoles = await _userManager.GetRolesAsync(user);
-
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id!),
-                new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id.ToString()),
-                new Claim(_options.ClaimsIdentity.UserNameClaimType, user.UserName),
             };
 
-            claims.AddRange(userClaims);
-            foreach (var userRole in userRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, userRole));
-                var role = await _roleManager.FindByNameAsync(userRole);
-                if (role != null)
-                {
-                    var roleClaims = await _roleManager.GetClaimsAsync(role);
-                    foreach (Claim roleClaim in roleClaims)
-                    {
-                        claims.Add(roleClaim);
-                    }
-                }
-            }
-            //Transform claim to token
-            var token = GenerateAccessToken(claims);
-            return token;
+            return GenerateAccessToken(claims);
         }
 
         //Claims

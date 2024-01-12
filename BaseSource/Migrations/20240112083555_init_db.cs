@@ -566,13 +566,13 @@ namespace BaseSource.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "56068c03-3234-48e5-bd07-3162fcb6e08e", null, "Customer", "CUSTOMER" },
-                    { "6be3fc10-560e-4361-9a12-12f794aa8b22", null, "Staff", "STAFF" },
-                    { "7b6d1f75-885a-4936-a9ad-7c4caa429b2d", null, "Visitor", "VISITOR" },
-                    { "9769ec9b-9eb5-4cc8-99ea-4b56f356ee04", null, "Super Admin", "SUPER ADMIN" },
-                    { "99ff81d6-3898-498d-910d-78c855939803", null, "Collaborator", "COLLABORATOR" },
-                    { "a1576cb0-74e3-4f1c-b814-e3dcf08d1828", null, "Manager", "MANAGER" },
-                    { "bc88c91f-9ba6-4925-8a6d-a5af559404d9", null, "Admin", "ADMIN" }
+                    { "00216558-b156-497f-ae76-dee369eb93c0", null, "Admin", "ADMIN" },
+                    { "14ac5cb7-c7ce-4a74-8e8e-78e0324e4e64", null, "Staff", "STAFF" },
+                    { "1f3c1817-ba71-4277-ac92-c4676a6facc0", null, "Super Admin", "SUPER ADMIN" },
+                    { "59bad76c-4fad-4279-9ec5-de521378602e", null, "Manager", "MANAGER" },
+                    { "63d5f700-0e02-4f6b-8760-406196cfb2e5", null, "Visitor", "VISITOR" },
+                    { "7d4d449e-da9d-4015-8388-837797511dec", null, "Customer", "CUSTOMER" },
+                    { "ac294ece-68cc-4ea1-bde9-6ab257d14f0b", null, "Collaborator", "COLLABORATOR" }
                 });
 
             migrationBuilder.CreateIndex(
