@@ -23,10 +23,8 @@ namespace BaseSource.Model
         [Column("QUANTITY")]
         public UInt16 Quantity { get; set; }
 
-        [NotMapped]
         public List<ProductCategory>? Categories { get; } = new();
 
-        [NotMapped]
         public List<OrderDetail>? Orders { get; } = new();
 
     }

@@ -16,7 +16,6 @@ namespace BaseSource.BackendAPI.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        [AllowGuest]
         public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
             var result = await _service.GetPagedData(request, Request.Path.Value!);

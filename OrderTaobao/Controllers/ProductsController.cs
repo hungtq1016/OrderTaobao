@@ -1,13 +1,11 @@
 ﻿using BaseSource.BackendAPI.Authorization;
 using BaseSource.Dto.Request;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IService<Product, Product, Product> _service;
@@ -28,13 +26,13 @@ namespace BaseSource.BackendAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var result = await _service.GetById(id);
+            var result = await _service.GetById(id, properties: "Categories");
             return StatusCode(result.StatusCode, result);
         }
 
         // POST: api/Products
         [HttpPost]
-        [Permission]
+      /*  [Permission]*/
         public async Task<IActionResult> Post(Product request)
         {
             var result = await _service.Add(request);
