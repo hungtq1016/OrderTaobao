@@ -1,9 +1,12 @@
 ﻿
+using System.Collections.Generic;
+using System.Data;
 using System.Security.Claims;
 using BaseSource.Dto;
 using BaseSource.Helper;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
 namespace BaseSource.BackendAPI.Services
@@ -12,7 +15,7 @@ namespace BaseSource.BackendAPI.Services
     {
         Task<Response<PageResponse<List<Role>>>> GetPagedData(PaginationRequest request, string route);
 
-        Task<Response<RoleResponse>> GetClaimByRole(string id);
+        Task<Response<PageResponse<List<Claim>>>> GetClaimByRole(PaginationRequest request, string id, string route);
 
         Task<Response<bool>> AddClaim(IdentityRoleClaim<string> claim);
     }
@@ -41,10 +44,9 @@ namespace BaseSource.BackendAPI.Services
 
             if (totalRecords is 0)
                 return ResponseHelper.CreateErrorResponse<PageResponse<List<Role>>>
-                        (404, "No roles found.");
+                        (404, "No Roles Found!");
 
             List<Role> roles = await _roleManager.Roles
-                .Where(role => role.Name != "Super Admin")
                 .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                .Take(validFilter.PageSize).ToListAsync();
 
@@ -53,25 +55,29 @@ namespace BaseSource.BackendAPI.Services
             return ResponseHelper.CreateSuccessResponse(pagedResponse);
         }
 
-        public async Task<Response<RoleResponse>> GetClaimByRole(string id)
+        public async Task<Response<PageResponse<List<Claim>>>> GetClaimByRole(PaginationRequest request, string id, string route)
         {
             Role role = await _roleManager.Roles
                 .FirstAsync(role => role.Id == id);
 
-            if(role is null)
-                return ResponseHelper.CreateErrorResponse<RoleResponse>
-                       (404, "No role found.");
+            if (role is null)
+                return ResponseHelper.CreateErrorResponse<PageResponse<List<Claim>>>
+                       (404, "No Claims Found!");
 
-            var claims = await _roleManager.GetClaimsAsync(role);
+            var records = await _roleManager.GetClaimsAsync(role);
 
-            RoleResponse newRole =  new RoleResponse();
+            if (records.Count() is 0)
+                return ResponseHelper.CreateErrorResponse<PageResponse<List<Claim>>>
+                        (404, "No Claims Found!");
 
-            newRole.Claims = claims;
-            newRole.Id = id;
-            newRole.NormalizedName = role.NormalizedName;
-            newRole.Name = role.Name;
 
-            return ResponseHelper.CreateSuccessResponse(newRole);
+            PaginationRequest validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
+
+            var claims = _roleManager.GetClaimsAsync(role).Result.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+            .Take(validFilter.PageSize).ToList();
+
+            PageResponse<List<Claim>> pagedResponse = PaginationHelper.CreatePagedReponse(claims, validFilter, Convert.ToUInt16(records.Count()), _uriService, route);
+            return ResponseHelper.CreateSuccessResponse(pagedResponse);
         }
 
         public async Task<Response<bool>> AddClaim(IdentityRoleClaim<string> claim)
@@ -84,6 +90,7 @@ namespace BaseSource.BackendAPI.Services
                        (404, "No role found.");
 
             Claim newClaim = new Claim(claim.ClaimType!, claim.ClaimValue!);
+
             var result = await _roleManager.AddClaimAsync(role, newClaim);
             
             if(!result.Succeeded)

@@ -6,6 +6,7 @@ using BaseSource.Dto.Response;
 using BaseSource.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace BaseSource.BackendAPI.Services
 {
@@ -13,9 +14,9 @@ namespace BaseSource.BackendAPI.Services
     {
         Task<Response<List<T>>> Get();
 
-        Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route);
+        Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route, params Expression<Func<T, object>>[] properties);
 
-        Task<Response<T>> GetById(string id);
+        Task<Response<TResponse>> GetById(string id, params string[] properties);
 
         Task<Response<TResponse>> Add(TRequest request);
 
@@ -45,58 +46,60 @@ namespace BaseSource.BackendAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route)
+        public async Task<Response<PageResponse<List<T>>>> GetPagedData([FromQuery] PaginationRequest request, string route, params Expression<Func<T, object>>[] properties)
         {
-            PageResponse<List<T>> items = await _repository.GetPagedDataAsync(request, route, _uriService);
+            PageResponse<List<T>> records = await _repository.GetPagedDataAsync(request, route, _uriService, properties);
 
-            return ResponseHelper.CreateSuccessResponse(items);
+            return ResponseHelper.CreateSuccessResponse(records);
         }
 
         public async Task<Response<List<T>>> Get()
         {
-            var items = await _repository.ReadAllAsync();
+            var records = await _repository.ReadAllAsync();
 
-            if (items is null)
+            if (records is null)
                 return ResponseHelper.CreateNotFoundResponse<List<T>>(typeof(T).Name!);
 
-            items = items.Where(item => item.Enable).ToList();
+            records = records.Where(record => record.Enable).ToList();
 
-            return ResponseHelper.CreateSuccessResponse(items);
+            return ResponseHelper.CreateSuccessResponse(records);
         }
 
-        public async Task<Response<T>> GetById(string id)
+        public async Task<Response<TResponse>> GetById(string id, params string[] properties)
         {
-            T item = await _repository.ReadByIdAsync(id);
+            T record = await _repository.ReadByIdAsync(id,properties);
 
-            if (item is null)
-                return ResponseHelper.CreateNotFoundResponse<T>(typeof(T).Name!);
+            if (record is null)
+                return ResponseHelper.CreateNotFoundResponse<TResponse>(typeof(T).Name!);
 
-            return ResponseHelper.CreateSuccessResponse(item);
+            var response = _mapper.Map<TResponse>(record);
+
+            return ResponseHelper.CreateSuccessResponse(response);
         }
 
         public async Task<Response<TResponse>> Add(TRequest request)
         {
-            T item = _mapper.Map<T>(request);
+            T record = _mapper.Map<T>(request);
 
-            await _repository.AddAsync(item);
+            await _repository.AddAsync(record);
 
-            TResponse response = _mapper.Map<TResponse>(item);
+            TResponse response = _mapper.Map<TResponse>(record);
 
             return ResponseHelper.CreateCreatedResponse(response);
         }
 
         public async Task<Response<TResponse>> Update(string id,TRequest request)
         {
-            T item = await _repository.ReadByIdAsync(id);
+            T record = await _repository.ReadByIdAsync(id);
 
-            if (item is null)
+            if (record is null)
                 return ResponseHelper.CreateNotFoundResponse<TResponse>(typeof(T).Name!);
 
-            item = _mapper.Map(request,item);
+            record = _mapper.Map(request,record);
 
-            await _repository.UpdateAsync(item);
+            await _repository.UpdateAsync(record);
 
-            TResponse response = _mapper.Map<TResponse>(item);
+            TResponse response = _mapper.Map<TResponse>(record);
 
             return ResponseHelper.CreateSuccessResponse(response);
         }
@@ -107,16 +110,16 @@ namespace BaseSource.BackendAPI.Services
 
             Parallel.ForEach(request.Ids, async id =>
             {
-                T item = await _repository.ReadByIdAsync(id);
-                if (item is null)
+                T record = await _repository.ReadByIdAsync(id);
+                if (record is null)
                 {
                     response.Add($"{id} : Fail");
                 }
                 else
                 {
-                    item.Enable = request.Enable;
+                    record.Enable = request.Enable;
                     response.Add($"{id} : Pass");
-                    await _repository.DeleteAsync(item);
+                    await _repository.DeleteAsync(record);
                 }
             });
 
@@ -125,12 +128,12 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task<Response<bool>> Erase(string id)
         {
-            T item = await _repository.ReadByIdAsync(id);
+            T record = await _repository.ReadByIdAsync(id);
 
-            if (item is null)
+            if (record is null)
                 return ResponseHelper.CreateNotFoundResponse<bool>(typeof(T).Name!);
 
-            await _repository.EraseAsync(item);
+            await _repository.EraseAsync(record);
 
             return ResponseHelper.CreateSuccessResponse(true);
         }
@@ -141,15 +144,15 @@ namespace BaseSource.BackendAPI.Services
 
             foreach (string id in request.Ids)
             {
-                T item = await _repository.ReadByIdAsync(id);
-                if (item is null)
+                T record = await _repository.ReadByIdAsync(id);
+                if (record is null)
                 {
                     responseList.Add($"{id} : Fail");
                 }
                 else
                 {
                     responseList.Add($"{id} : Pass");
-                    await _repository.EraseAsync(item);
+                    await _repository.EraseAsync(record);
                 }
             }
 

@@ -705,43 +705,43 @@ namespace BaseSource.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "56068c03-3234-48e5-bd07-3162fcb6e08e",
+                            Id = "7d4d449e-da9d-4015-8388-837797511dec",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "6be3fc10-560e-4361-9a12-12f794aa8b22",
+                            Id = "14ac5cb7-c7ce-4a74-8e8e-78e0324e4e64",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "99ff81d6-3898-498d-910d-78c855939803",
+                            Id = "ac294ece-68cc-4ea1-bde9-6ab257d14f0b",
                             Name = "Collaborator",
                             NormalizedName = "COLLABORATOR"
                         },
                         new
                         {
-                            Id = "a1576cb0-74e3-4f1c-b814-e3dcf08d1828",
+                            Id = "59bad76c-4fad-4279-9ec5-de521378602e",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "bc88c91f-9ba6-4925-8a6d-a5af559404d9",
+                            Id = "00216558-b156-497f-ae76-dee369eb93c0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9769ec9b-9eb5-4cc8-99ea-4b56f356ee04",
+                            Id = "1f3c1817-ba71-4277-ac92-c4676a6facc0",
                             Name = "Super Admin",
                             NormalizedName = "SUPER ADMIN"
                         },
                         new
                         {
-                            Id = "7b6d1f75-885a-4936-a9ad-7c4caa429b2d",
+                            Id = "63d5f700-0e02-4f6b-8760-406196cfb2e5",
                             Name = "Visitor",
                             NormalizedName = "VISITOR"
                         });

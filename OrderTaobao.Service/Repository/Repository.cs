@@ -4,16 +4,18 @@ using BaseSource.Dto;
 using BaseSource.Helper;
 using BaseSource.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BaseSource.BackendAPI.Services
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request, string route, IUriService uriService);
+        Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request, string route, IUriService uriService, params Expression<Func<T, object>>[] properties);
 
         Task<List<T>> ReadAllAsync();
 
-        Task<T> ReadByIdAsync(string id);
+        Task<T> ReadByIdAsync(string id, params string[] properties);
 
         Task AddAsync(T entity);
 
@@ -36,7 +38,7 @@ namespace BaseSource.BackendAPI.Services
             _entities = _context.Set<T>();
         }
 
-        public async Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request,string route, IUriService uriService)
+        public async Task<PageResponse<List<T>>> GetPagedDataAsync(PaginationRequest request,string route, IUriService uriService, params Expression<Func<T, object>>[] properties)
         {
             var validFilter = new PaginationRequest(request.PageNumber, request.PageSize);
 
@@ -49,13 +51,18 @@ namespace BaseSource.BackendAPI.Services
                 query = query.Where(e => e.Enable == (request.Status == StatusEnum.Enable));
             }
 
-            var lists = await query
+            if (properties != null && properties.Any())
+            {
+                query = properties.Aggregate(query, (current, include) => current.Include(include));
+            }
+
+            var records = await query
                 .OrderByDescending(e => e.UpdatedAt)
                 .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                 .Take(validFilter.PageSize)
                 .ToListAsync();
 
-            var pagedReponse = PaginationHelper.CreatePagedReponse(lists, validFilter, totalRecords, uriService, route);
+            var pagedReponse = PaginationHelper.CreatePagedReponse(records, validFilter, totalRecords, uriService, route);
 
             return pagedReponse;
         }
@@ -67,9 +74,17 @@ namespace BaseSource.BackendAPI.Services
             return records;
         }
 
-        public async Task<T> ReadByIdAsync(string id)
+        public async Task<T> ReadByIdAsync(string id, params string[] properties)
         {
-            T? record = await _entities.FirstOrDefaultAsync(t => t.Id == id);
+            var query = _entities.AsQueryable();
+
+            foreach (var includeProperty in properties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            T? record = await query.FirstOrDefaultAsync(t => t.Id == id);
+
             return record!;
         }
 
@@ -86,11 +101,6 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task DeleteAsync(T entity)
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
-
             Updated(entity);
             Disable(entity);
 
@@ -99,10 +109,6 @@ namespace BaseSource.BackendAPI.Services
 
         public async Task EraseAsync(T entity)
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
             _entities.Remove(entity);
 
             await Save();

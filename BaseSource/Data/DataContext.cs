@@ -45,6 +45,8 @@ namespace BaseScource.Data
             modelBuilder.ApplyConfiguration(new DistrictConfiguration());
             modelBuilder.ApplyConfiguration(new ProvinceConfiguration());
             modelBuilder.ApplyConfiguration(new ImageConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleClaimConfiguration());
+            modelBuilder.ApplyConfiguration(new UserClaimConfiguration());
 
             modelBuilder.Entity<User>().ToTable("USER");
             modelBuilder.Entity<Role>().ToTable("ROLE");

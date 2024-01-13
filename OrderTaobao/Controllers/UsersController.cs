@@ -2,14 +2,12 @@
 using BaseSource.Dto.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.Table;
-using OfficeOpenXml;
+
 
 namespace BaseSource.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UsersController : StatusController
     {
         private readonly IUserService _userService;
@@ -20,29 +18,11 @@ namespace BaseSource.BackendAPI.Controllers
         }
 
         // GET: api/Users/page
-        [HttpGet("page")]
+        [HttpGet]
         public async Task<IActionResult> GetPagedData([FromQuery] PaginationRequest request)
         {
-            var result = await _userService.GetPagedData(request, Request.Path.Value!,true);
+            var result = await _userService.GetPagedData(request, Request.Path.Value!);
             return StatusCode(result.StatusCode,result);
-        }
-
-        // GET: api/Users/page-disable
-        [HttpGet("page-disable")]
-        [ClaimRequirement("permission", "disable.view")]
-        public async Task<IActionResult> GetPagedDisableData([FromQuery] PaginationRequest request)
-        {
-            var result = await _userService.GetPagedData(request, Request.Path.Value!,false);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // GET: api/Users
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Get()
-        {
-            var result = await _userService.Get();
-            return StatusCode(result.StatusCode, result);
         }
 
         // GET: api/Users/5
@@ -52,70 +32,44 @@ namespace BaseSource.BackendAPI.Controllers
             return await PerformAction(id, _userService.GetById);
         }
 
-        // PUT: api/Users/5
+        // POST: api/Users
+        [HttpPost]
+        [Permission]
+        public async Task<IActionResult> Post(UserRequest request)
+        {
+            return await PerformAction(request, _userService.Add);
+        }
+
+        // PUT: api/Users/123
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, UserRequest request)
+        [Permission]
+        public async Task<IActionResult> Put(string id,[FromBody] UserRequest request)
         {
             var result = await _userService.Update(id,request);
             return StatusCode(result.StatusCode, result);
         }
 
-        // POST: api/Users
-        [HttpPost]
-        [ClaimRequirement("permission", "user.add")]
-        public async Task<IActionResult> Add(UserRequest request)
+        // PUT: api/Users
+        [HttpPut]
+        [Permission]
+        public async Task<IActionResult> BulkPut(MultipleRequest request)
         {
-            return await PerformAction(request, _userService.Add);
-        }
-
-        // DELETE: api/Users/delete/usersubmit
-        [HttpPut("disable/{id}")]
-        [ClaimRequirement("permission", "user.edit")]
-        public async Task<IActionResult> Disable(string id)
-        {
-            var result = await _userService.Enable(id, false);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // PUT: api/Users/Restore/5
-        [HttpPut("restore/{id}")]
-        [ClaimRequirement("permission", "user.edit")]
-        public async Task<IActionResult> Restore(string id)
-        {
-            var result = await _userService.Enable(id, true);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // DELETE: api/Users/delete/multiple
-        [HttpPut("disable/multiple")]
-        [ClaimRequirement("permission", "user.edit")]
-        public async Task<IActionResult> MultipleDisable(MultipleRequest request)
-        {
-            var result = await _userService.MultipleEnable(request, false);
-            return StatusCode(result.StatusCode, result);
-        }
-
-        // PUT: api/Users/Restore/multiple
-        [HttpPut("restore/multiple")]
-        [ClaimRequirement("permission", "user.edit")]
-        public async Task<IActionResult> MultipleRestore(MultipleRequest request)
-        {
-            var result = await _userService.MultipleEnable(request, true);
+            var result = await _userService.MultipleUpdate(request);
             return StatusCode(result.StatusCode, result);
         }
 
         // DELETE: api/Users/erase/123
-        [HttpDelete("erase/{id}")]
-        [ClaimRequirement("permission", "user.delete")]
-        public async Task<IActionResult> Erase(string id)
+        [HttpDelete("{id}")]
+        [Permission]
+        public async Task<IActionResult> Delete(string id)
         {
             return await PerformAction(id, _userService.Erase);
         }
 
         // DELETE: api/Users/erase/multiple
-        [HttpDelete("erase/multiple")]
-        [ClaimRequirement("permission", "user.delete")]
-        public async Task<IActionResult> MultipleErase(MultipleRequest request)
+        [HttpDelete]
+        [Permission]
+        public async Task<IActionResult> BulkDelete(MultipleRequest request)
         {
             return await PerformAction(request, _userService.MultipleErase);
         }

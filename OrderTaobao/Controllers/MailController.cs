@@ -13,8 +13,7 @@ namespace BaseSource.BackendAPI.Controllers
             _mailService = mailService;
         }
 
-        [HttpPost]
-        [Route("reset-password")]
+        [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(MailRequest request)
         {
             if (request is null)
@@ -23,8 +22,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPost]
-        [Route("confirm-email")]
+        [HttpPost("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(MailRequest request)
         {
             if (request is null)
@@ -33,8 +31,7 @@ namespace BaseSource.BackendAPI.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpPost]
-        [Route("2fa")]
+        [HttpPost("2fa")]
         public async Task<IActionResult> TwoFactorAuthentication(MailRequest request)
         {
             if (request is null)
