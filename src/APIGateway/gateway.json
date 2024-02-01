@@ -1,0 +1,433 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/Authenticate/reset-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/reset-password",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "auth"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Authenticate/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/login",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "auth"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Roles",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/roles",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "role"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Roles/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/roles/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "role"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Groups",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/groups",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "SwaggerKey": "group"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Groups/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/groups/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "group"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Permissions",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/permissions",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "permission"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Permissions/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/permissions/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "permission"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Assignments",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/assignments",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "SwaggerKey": "assignment"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Assignments/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/assignments/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "assignment"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Images",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5007
+        }
+      ],
+      "UpstreamPathTemplate": "/images",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "SwaggerKey": "image"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Images/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5007
+        }
+      ],
+      "UpstreamPathTemplate": "/images/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete" ],
+      "SwaggerKey": "image"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Images/{path}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5007
+        }
+      ],
+      "UpstreamPathTemplate": "/images/{path}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "image"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Documents",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5009
+        }
+      ],
+      "UpstreamPathTemplate": "/documents",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "SwaggerKey": "document"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Documents/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5009
+        }
+      ],
+      "UpstreamPathTemplate": "/documents/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete" ],
+      "SwaggerKey": "document"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Documents/{flightId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5009
+        }
+      ],
+      "UpstreamPathTemplate": "/documents/{flightId}",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "document"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Users",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/users",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "user"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Users/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/users/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "user"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Flights",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/flights",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "flight"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Flights/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/flights/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "flight"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Airports",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/airports",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "airport"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Airports/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/airports/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "airport"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Roles/ByUserId/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/roles/user/{userId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "Key": "roles",
+      "SwaggerKey": "role"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Users/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/users/info/{userId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "Key": "user"
+    }
+  ],
+  "Aggregates": [
+    {
+      "RouteKeys": [
+        "user",
+        "roles"
+      ],
+      "UpstreamPathTemplate": "/user-detail/{userId}",
+      "SwaggerKey": "user"
+    }
+  ],
+
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5000"
+  },
+  "SwaggerEndPoints": [
+    {
+      "Key": "auth",
+      "Config": [
+        {
+          "Name": "Authenticate API",
+          "Version": "v1",
+          "Url": "https://localhost:5001/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "role",
+      "Config": [
+        {
+          "Name": "Role API",
+          "Version": "v1",
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "group",
+      "Config": [
+        {
+          "Name": "Group API",
+          "Version": "v1",
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "permission",
+      "Config": [
+        {
+          "Name": "Permission API",
+          "Version": "v1",
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "assignment",
+      "Config": [
+        {
+          "Name": "Assignments API",
+          "Version": "v1",
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "user",
+      "Config": [
+        {
+          "Name": "User API",
+          "Version": "v1",
+          "Url": "https://localhost:5005/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "image",
+      "Config": [
+        {
+          "Name": "Image API",
+          "Version": "v1",
+          "Url": "https://localhost:5007/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "document",
+      "Config": [
+        {
+          "Name": "Document API",
+          "Version": "v1",
+          "Url": "https://localhost:5009/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "flight",
+      "Config": [
+        {
+          "Name": "Flight API",
+          "Version": "v1",
+          "Url": "https://localhost:5011/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "airport",
+      "Config": [
+        {
+          "Name": "Airport API",
+          "Version": "v1",
+          "Url": "https://localhost:5011/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}
