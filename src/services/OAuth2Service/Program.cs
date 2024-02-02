@@ -4,7 +4,6 @@ using Infrastructure.EFCore.Service;
 using Microsoft.EntityFrameworkCore;
 using OAuth2Service.Features;
 using OAuth2Service.Infrastructure.Data;
-using OAuth2Service.Models;
 using OAuth2Service.Repository;
 using OAuth2Service.Services;
 
@@ -29,21 +28,24 @@ builder.Services.AddScoped<IAuthenService, AuthenService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
-/*builder.Services.AddScoped<IRepository<User>, OAuth2Repository<User>>();
-builder.Services.AddScoped<IRepository<Role>, OAuth2Repository<Role>>();
-builder.Services.AddScoped<IRepository<Permission>, OAuth2Repository<Permission>>();
-builder.Services.AddScoped<IRepository<Group>, OAuth2Repository<Group>>();
-builder.Services.AddScoped<IRepository<Assignment>, OAuth2Repository<Assignment>>();*/
 builder.Services.AddScoped(typeof(IRepository<>), typeof(OAuth2Repository<>));
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+
+var context = services.GetRequiredService<OAuth2Context>();
+
+if (context.Database.GetPendingMigrations().Any())
+{
+    context.Database.Migrate();
 }
 
 app.ConfigureExceptionHandler();

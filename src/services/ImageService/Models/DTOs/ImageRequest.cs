@@ -1,6 +1,6 @@
 ﻿using Core;
 
-namespace ImageService.Models.DTOs
+namespace ImageService.DTOs
 {
     public class ImageRequest : EntityRequest
     {

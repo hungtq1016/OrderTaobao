@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Core;
 using ImageService.Models;
-using ImageService.Models.DTOs;
+using ImageService.DTOs;
 
 namespace ImageService.Infrastructure.Features
 {

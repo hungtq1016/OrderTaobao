@@ -1,10 +1,11 @@
 ﻿using ImageService.Infrastructure;
 using ImageService.Models;
-using ImageService.Models.DTOs;
-using ImageService.Models.Enums;
+using ImageService.DTOs;
+using ImageService.Enums;
 using Infrastructure.EFCore.Controllers;
 using Infrastructure.EFCore.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Infrastructure.EFCore.Service;
 
 namespace ImageService.Controllers
 {
@@ -14,9 +15,8 @@ namespace ImageService.Controllers
     {
         private readonly IImageService _service;
 
-        public ImagesController(IImageService service) : base(service)
+        public ImagesController(IFileService<Image, ImageRequest, ImageResponse, ImageExtensionsEnum> service) : base(service)
         {
-            _service = service;
         }
 
         [HttpGet("{path}")]

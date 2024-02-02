@@ -5,7 +5,16 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "basesource.backendapi": "StartDebugging",
-        "ordertaobao.upload": "StartDebugging"
+        "ordertaobao.upload": "StartDebugging",
+        "apigateway": "StartDebugging",
+        "productservice": "StartDebugging",
+        "orderservice": "StartDebugging",
+        "oauth2service": "StartDebugging",
+        "notificationservice": "StartDebugging",
+        "mailservice": "StartDebugging",
+        "imageservice": "StartDebugging",
+        "historyservice": "StartDebugging",
+        "addressservice": "StartDebugging"
       }
     }
   }

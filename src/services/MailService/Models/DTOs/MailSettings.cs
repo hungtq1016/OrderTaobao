@@ -1,6 +1,4 @@
-﻿
-
-namespace BaseSource.Dto
+﻿namespace MailService.Models.DTOs
 {
     public class MailSettings
     {

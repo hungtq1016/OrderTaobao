@@ -5,8 +5,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/auth/reset-password",
@@ -18,8 +18,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/auth/login",
@@ -31,8 +31,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/roles",
@@ -44,8 +44,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/roles/{id}",
@@ -57,8 +57,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/groups",
@@ -70,8 +70,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/groups/{id}",
@@ -83,8 +83,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/permissions",
@@ -96,8 +96,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/permissions/{id}",
@@ -109,8 +109,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/assignments",
@@ -122,8 +122,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/assignments/{id}",
@@ -135,8 +135,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "imageservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/images",
@@ -148,8 +148,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "imageservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/images/{id}",
@@ -161,8 +161,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "imageservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/images/{path}",
@@ -170,54 +170,15 @@
       "SwaggerKey": "image"
     },
     {
-      "DownstreamPathTemplate": "/api/Documents",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5009
-        }
-      ],
-      "UpstreamPathTemplate": "/documents",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
-      "SwaggerKey": "document"
-    },
-    {
-      "DownstreamPathTemplate": "/api/Documents/{id}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5009
-        }
-      ],
-      "UpstreamPathTemplate": "/documents/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete" ],
-      "SwaggerKey": "document"
-    },
-    {
-      "DownstreamPathTemplate": "/api/Documents/{flightId}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5009
-        }
-      ],
-      "UpstreamPathTemplate": "/documents/{flightId}",
-      "UpstreamHttpMethod": [ "Post" ],
-      "SwaggerKey": "document"
-    },
-    {
       "DownstreamPathTemplate": "/api/Users",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5005
+          "Port": 5003
         }
       ],
-      "UpstreamPathTemplate": "/users",
+      "UpstreamPathTemplate": "/Users",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "SwaggerKey": "user"
     },
@@ -227,7 +188,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5005
+          "Port": 5003
         }
       ],
       "UpstreamPathTemplate": "/users/{id}",
@@ -235,64 +196,12 @@
       "SwaggerKey": "user"
     },
     {
-      "DownstreamPathTemplate": "/api/Flights",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5011
-        }
-      ],
-      "UpstreamPathTemplate": "/flights",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "SwaggerKey": "flight"
-    },
-    {
-      "DownstreamPathTemplate": "/api/Flights/{id}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5011
-        }
-      ],
-      "UpstreamPathTemplate": "/flights/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
-      "SwaggerKey": "flight"
-    },
-    {
-      "DownstreamPathTemplate": "/api/Airports",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5011
-        }
-      ],
-      "UpstreamPathTemplate": "/airports",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "SwaggerKey": "airport"
-    },
-    {
-      "DownstreamPathTemplate": "/api/Airports/{id}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5011
-        }
-      ],
-      "UpstreamPathTemplate": "/airports/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
-      "SwaggerKey": "airport"
-    },
-    {
       "DownstreamPathTemplate": "/api/Roles/ByUserId/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/roles/user/{userId}",
@@ -305,8 +214,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5005
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/info/{userId}",
@@ -335,7 +244,7 @@
         {
           "Name": "Authenticate API",
           "Version": "v1",
-          "Url": "https://localhost:5001/swagger/v1/swagger.json"
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
         }
       ]
     },
@@ -385,7 +294,7 @@
         {
           "Name": "User API",
           "Version": "v1",
-          "Url": "https://localhost:5005/swagger/v1/swagger.json"
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
         }
       ]
     },
@@ -395,37 +304,7 @@
         {
           "Name": "Image API",
           "Version": "v1",
-          "Url": "https://localhost:5007/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "document",
-      "Config": [
-        {
-          "Name": "Document API",
-          "Version": "v1",
-          "Url": "https://localhost:5009/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "flight",
-      "Config": [
-        {
-          "Name": "Flight API",
-          "Version": "v1",
-          "Url": "https://localhost:5011/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "airport",
-      "Config": [
-        {
-          "Name": "Airport API",
-          "Version": "v1",
-          "Url": "https://localhost:5011/swagger/v1/swagger.json"
+          "Url": "https://localhost:6003/swagger/v1/swagger.json"
         }
       ]
     }
