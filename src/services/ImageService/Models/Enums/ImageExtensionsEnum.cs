@@ -1,4 +1,4 @@
-﻿namespace ImageService.Models.Enums
+﻿namespace ImageService.Enums
 {
     public enum ImageExtensionsEnum
     {

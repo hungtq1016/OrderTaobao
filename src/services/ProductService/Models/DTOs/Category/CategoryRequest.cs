@@ -1,6 +1,8 @@
-﻿namespace ProductService.Models.DTOs.Category
+﻿using Core;
+
+namespace ProductService.DTOs
 {
-    public class CategoryRequest
+    public class CategoryRequest : EntityRequest
     {
         public string? Name { get; set; }
         public string? Slug { get; set; }

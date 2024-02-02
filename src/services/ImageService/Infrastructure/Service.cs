@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ImageService.Models;
-using ImageService.Models.DTOs;
-using ImageService.Models.Enums;
+using ImageService.DTOs;
+using ImageService.Enums;
 using Infrastructure.EFCore.DTOs;
 using Infrastructure.EFCore.Helpers;
 using Infrastructure.EFCore.Repository;

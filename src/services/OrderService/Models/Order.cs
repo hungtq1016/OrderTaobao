@@ -1,27 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Core;
 
-namespace BaseSource.Model
+namespace OrderService.Models
 {
-    [Table("ORDERS")]
-    public class Order : BaseEntity
+    public class Order : Entity
     {
-
-        [Column("STATUS")]
         public Byte Status { get; set; }
-
-        [Column("USER_ID", TypeName = "nvarchar"), MaxLength(450)]
-        [ForeignKey("User")]
-        [NotMapped]
-        public string? UserId { get; set; }
-
-        [NotMapped]
-        public User? User { get; set; }
-
-        [NotMapped]
-        public Notification? Notification { get; set; }
-
-        [NotMapped]
-        public ICollection<OrderDetail>? Details { get; } = new List<OrderDetail>();
+        public ICollection<Detail>? Details { get; } = new List<Detail>();
     }
 }

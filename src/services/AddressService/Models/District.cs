@@ -1,15 +1,8 @@
-﻿
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BaseSource.Model
+﻿namespace AddressService.Models
 {
-    [Table("DISTRICTS")]
     public class District : BaseAddress
     {
-        [Column("PROVINCE_ID", TypeName = "varchar"), MaxLength(36)]
-        [ForeignKey("Province")]
-        public string ProvinceId { get; set; }
+        public Guid ProvinceId { get; set; }
         public Province? Province { get; set; } = null!;
         public ICollection<Ward>? Wards { get; } = new List<Ward>();
     }

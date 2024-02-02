@@ -1,12 +1,8 @@
-﻿using BaseSource.Model;
-
-namespace BaseSource.Dto
+﻿namespace OrderService.DTOs
 {
-    public class CategoryResponse:BaseEntity
+    public class CategoryResponse
     {
         public string Name { get; set; }
-
         public string Slug { get; set; }
-        
     }
 }

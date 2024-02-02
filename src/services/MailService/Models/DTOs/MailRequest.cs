@@ -1,5 +1,4 @@
-﻿
-namespace BaseSource.Dto
+﻿namespace MailService.DTOs
 {
     public class MailRequest
     {
