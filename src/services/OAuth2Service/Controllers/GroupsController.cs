@@ -1,10 +1,4 @@
-﻿using Infrastructure.EFCore.Controllers;
-using Infrastructure.EFCore.Service;
-using Microsoft.AspNetCore.Mvc;
-using OAuth2Service.Models;
-using OAuth2Service.DTOs;
-
-namespace AuthorizeService.Controllers
+﻿namespace OAuth2Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

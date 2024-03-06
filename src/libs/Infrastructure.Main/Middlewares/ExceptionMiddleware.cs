@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace BaseSource.BackendAPI.Middlewares
+namespace OAuth2Service.Middlewares
 {
     /*public class ExceptionMiddleware
     {

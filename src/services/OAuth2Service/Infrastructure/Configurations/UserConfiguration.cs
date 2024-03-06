@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Infrastructure.Main;
-using OAuth2Service.Models;
-
-namespace OAuth2Service.Configurations
+﻿namespace OAuth2Service.Configurations
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {

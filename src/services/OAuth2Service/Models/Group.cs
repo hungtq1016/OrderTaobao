@@ -1,6 +1,4 @@
-﻿using Core;
-
-namespace OAuth2Service.Models
+﻿namespace OAuth2Service.Models
 {
     public class Group: Entity
     {

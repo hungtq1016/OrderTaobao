@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace BaseSource.BackendAPI.Controllers
+namespace OAuth2Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

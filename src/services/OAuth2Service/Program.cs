@@ -1,12 +1,3 @@
-using Infrastructure.EFCore.Extensions;
-using Infrastructure.EFCore.Repository;
-using Infrastructure.EFCore.Service;
-using Microsoft.EntityFrameworkCore;
-using OAuth2Service.Features;
-using OAuth2Service.Infrastructure.Data;
-using OAuth2Service.Repository;
-using OAuth2Service.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
@@ -23,11 +14,9 @@ builder.Services.AddJWT(configuration);
 builder.Services.AddSqlServerDbContext<OAuth2Context>(configuration.GetConnectionString("oauth2DB"));
 builder.Services.AddCustomMapper<OAuth2Profile>();
 
-builder.Services.AddScoped(typeof(IService<,,>), typeof(Service<,,>));
 builder.Services.AddScoped<IAuthenService, AuthenService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
-
 builder.Services.AddScoped(typeof(IRepository<>), typeof(OAuth2Repository<>));
 
 var app = builder.Build();

@@ -4,8 +4,6 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "basesource.backendapi": "StartDebugging",
-        "ordertaobao.upload": "StartDebugging",
         "apigateway": "StartDebugging",
         "productservice": "StartDebugging",
         "orderservice": "StartDebugging",

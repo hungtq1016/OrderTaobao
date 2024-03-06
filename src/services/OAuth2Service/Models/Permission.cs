@@ -1,7 +1,4 @@
-﻿using Core;
-using System.Text.Json.Serialization;
-
-namespace OAuth2Service.Models
+﻿namespace OAuth2Service.Models
 {
     public class Permission: Entity
     {

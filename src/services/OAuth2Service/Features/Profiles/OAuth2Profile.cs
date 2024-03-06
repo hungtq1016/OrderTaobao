@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using OAuth2Service.DTOs;
-using OAuth2Service.Models;
-
-namespace OAuth2Service.Features
+﻿namespace OAuth2Service.Profiles
 {
     public class OAuth2Profile : Profile
     {

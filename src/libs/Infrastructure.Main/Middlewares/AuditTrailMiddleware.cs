@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text;
 
-namespace BaseSource.BackendAPI.Middlewares
+namespace OAuth2Service.Middlewares
 {
     public class AuditTrailMiddleware
     {
