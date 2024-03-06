@@ -1,6 +1,4 @@
-﻿using Core;
-using Infrastructure.EFCore.Service;
-using MediatR;
+﻿using Infrastructure.EFCore.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +18,9 @@ namespace Infrastructure.EFCore.Extensions
                 });
             });
             services.AddScoped(typeof(IService<,,>), typeof(Service<,,>));
+
             return services;
         }
+
     }
 }
