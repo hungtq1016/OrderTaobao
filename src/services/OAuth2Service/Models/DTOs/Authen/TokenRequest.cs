@@ -1,5 +1,4 @@
-﻿
-namespace OAuth2Service.DTOs
+﻿namespace OAuth2Service.DTOs
 {
     public class TokenRequest
     {

@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OAuth2Service.DTOs;
-using OAuth2Service.Services;
-
-namespace BaseSource.BackendAPI.Controllers
+﻿namespace OAuth2Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

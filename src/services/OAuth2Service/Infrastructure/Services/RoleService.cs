@@ -1,14 +1,4 @@
-﻿using AutoMapper;
-using Infrastructure.EFCore.DTOs;
-using Infrastructure.EFCore.Helpers;
-using Infrastructure.EFCore.Repository;
-using Infrastructure.EFCore.Service;
-using OAuth2Service.DTOs;
-using OAuth2Service.Models;
-using System.Data;
-using System.Linq.Expressions;
-
-namespace OAuth2Service.Services
+﻿namespace OAuth2Service.Services
 {
     public interface IRoleService : IService<Role,RoleRequest,RoleResponse>
     {

@@ -1,8 +1,4 @@
-﻿using Infrastructure.Main;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OAuth2Service.Models;
-
+﻿
 namespace OAuth2Service.Configurations
 {
     public class AssignmentConfiguration : IEntityTypeConfiguration<Assignment>

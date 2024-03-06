@@ -219,7 +219,7 @@ namespace OAuth2Service.Infrastructure.Data.Migrations
                     b.Property<string>("Password")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("$2a$11$tj7vQfF88w7aY7XyxFN.Duoi8nDODupny3MHivPvkdeFXB82N38ga");
+                        .HasDefaultValue("$2a$11$WXB7CzGrnqwEqkJEEGMoBez0G5BjTXlkW7kR4LH2uV1c8MAON4pA2");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()

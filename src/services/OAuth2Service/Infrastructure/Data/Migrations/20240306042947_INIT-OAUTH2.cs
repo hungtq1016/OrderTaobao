@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OAuth2Service.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initdb : Migration
+    public partial class INITOAUTH2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,7 +50,7 @@ namespace OAuth2Service.Infrastructure.Data.Migrations
                     Id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false, defaultValueSql: "NEWID()"),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "$2a$11$tj7vQfF88w7aY7XyxFN.Duoi8nDODupny3MHivPvkdeFXB82N38ga"),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValue: "$2a$11$WXB7CzGrnqwEqkJEEGMoBez0G5BjTXlkW7kR4LH2uV1c8MAON4pA2"),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageId = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
                     Enable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),

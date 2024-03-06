@@ -1,9 +1,4 @@
-﻿using Infrastructure.EFCore.Data;
-using Microsoft.EntityFrameworkCore;
-using OAuth2Service.Configurations;
-using OAuth2Service.Models;
-
-namespace OAuth2Service.Infrastructure.Data
+﻿namespace OAuth2Service.Infrastructure.Data
 {
     public class OAuth2Context : AppDbContext
     {
