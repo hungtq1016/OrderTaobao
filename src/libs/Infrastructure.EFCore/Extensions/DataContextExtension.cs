@@ -18,7 +18,7 @@ namespace Infrastructure.EFCore.Extensions
                 });
             });
             services.AddScoped(typeof(IService<,,>), typeof(Service<,,>));
-
+            services.AddScoped<IRabbitMQService,RabbitMQService>();
             return services;
         }
 

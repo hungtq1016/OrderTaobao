@@ -1,7 +1,5 @@
 ﻿using Core;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json.Linq;
-using System;
 
 namespace Infrastructure.EFCore.Helpers
 {

@@ -114,6 +114,36 @@ namespace OAuth2Service.Infrastructure.Data.Migrations
                     b.ToTable("Groups");
                 });
 
+            modelBuilder.Entity("OAuth2Service.Models.OTP", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ExpiredTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Otps");
+                });
+
             modelBuilder.Entity("OAuth2Service.Models.Permission", b =>
                 {
                     b.Property<string>("Id")
@@ -219,7 +249,7 @@ namespace OAuth2Service.Infrastructure.Data.Migrations
                     b.Property<string>("Password")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("$2a$11$WXB7CzGrnqwEqkJEEGMoBez0G5BjTXlkW7kR4LH2uV1c8MAON4pA2");
+                        .HasDefaultValue("$2a$11$k/5Vg6TgEmTfS.27ch.Mp.UrkMr07a6jC7emIO0ECGFdlYnsdL51.");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
