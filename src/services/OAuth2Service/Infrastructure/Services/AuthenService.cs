@@ -1,24 +1,34 @@
-﻿namespace OAuth2Service.Services
+﻿using OAuth2Service.Authen;
+using OAuth2Service.Models;
+
+namespace OAuth2Service.Services
 {
     public interface IAuthenService
     {
         Task<Response<TokenResponse>> LoginAsync(LoginRequest request);
         Task<Response<TokenResponse>> RegisterAsync(RegisterRequest request);
-        Task<Response<bool>> ResetPasswordAsync(ResetPasswordRequest request);
+        Task<Response<bool>> SendResetPasswordAsync(ResetPasswordRequest request);
+        Task<Response<bool>> SendOTPAsync(string email);
+        Task<Response<bool>> ReceiveOTPAsync(OTPRequest request);
        /* Task<Response<TokenResponse>> RefreshToken(TokenRequest request);*/
     }
     public class AuthenService : IAuthenService
     {
-        private readonly IRepository<User> _repository;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<OTP> _otpRepository;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IRabbitMQService _rabbitMQService;
 
-        public AuthenService(ITokenService tokenService, IRepository<User> userRepo, IMapper mapper)
+        public AuthenService(ITokenService tokenService, IRepository<User> userRepository, IMapper mapper, IRabbitMQService rabbitMQService, IRepository<OTP> otpRepository)
         {
             _tokenService = tokenService;
-            _repository = userRepo;
+            _userRepository = userRepository;
             _mapper = mapper;
+            _rabbitMQService = rabbitMQService;
+            _otpRepository = otpRepository;
         }
+
 
         public async Task<Response<TokenResponse>> LoginAsync(LoginRequest request)
         {
@@ -43,32 +53,81 @@
 
             var response = _mapper.Map<User>(request);
             response.Password = BC.HashPassword(response.Password);
-            await _repository.AddAsync(response);
+            await _userRepository.AddAsync(response);
 
             return ResponseHelper.CreateCreatedResponse(await _tokenService.GetTokenResponseAsync(response));
         }
 
-        public async Task<Response<bool>> ResetPasswordAsync(ResetPasswordRequest request)
+        public async Task<Response<bool>> SendResetPasswordAsync(ResetPasswordRequest request)
         {
-            User user = await FindByEmailAsync(request.Email);
+            User userEmail = await FindByEmailAsync(request.Email);
 
-            if (user is null)
-                return ResponseHelper.CreateNotFoundResponse<bool>("Email wrong or time expired");
+            if (userEmail is null)
+            {
+                return ResponseHelper.CreateNotFoundResponse<bool>("Email not found!");
+            }
 
-            user.Password = BC.HashPassword(request.Password);
+            _rabbitMQService.SendMessage(request);
 
-            await _repository.EditAsync(user);
+            return ResponseHelper.CreateSuccessResponse(true);
+        }
 
+        public async Task<Response<bool>> SendOTPAsync(string email)
+        {
+            User userEmail = await FindByEmailAsync(email);
+
+            if (userEmail is null)
+            {
+                return ResponseHelper.CreateNotFoundResponse<bool>("Email not found!");
+            }
+
+            int code = GenerateOTP();
+
+            OTP otp = new OTP
+            {
+                Email = email,
+                Code = code,
+                ExpiredTime = DateTime.Now.AddMinutes(5)
+            };
+
+            await _otpRepository.AddAsync(otp);
+
+            _rabbitMQService.SendMessage(otp);
+
+            return ResponseHelper.CreateSuccessResponse(true);
+        }
+
+        public async Task<Response<bool>> ReceiveOTPAsync(OTPRequest request)
+        {
+            OTP exist = await _otpRepository.FindOneAsync(conditions: new Expression<Func<OTP, bool>>[]
+                                                        {
+                                                           otp => otp.Email == request.Email 
+                                                           && otp.Code == request.OTP
+                                                           && otp.ExpiredTime > DateTime.Now
+                                                        });
+            if (exist is null)
+            {
+                return ResponseHelper.CreateNotFoundResponse<bool>("Expired time");
+            }
+            
             return ResponseHelper.CreateSuccessResponse(true);
         }
 
         private async Task<User> FindByEmailAsync(string email)
         {
-            return await _repository
+            return await _userRepository
                         .FindOneAsync(conditions: new Expression<Func<User, bool>>[]
                         {
-                                user => user.Email == email
-                            });
+                           user => user.Email == email
+                        });
+        }
+
+        private int GenerateOTP()
+        {
+            // Generate a random 6-digit OTP
+            Random random = new Random();
+            int otp = random.Next(100000, 999999);
+            return otp;
         }
     }
 }

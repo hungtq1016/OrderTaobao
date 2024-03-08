@@ -9,6 +9,7 @@
         public DbSet<Permission> Permissions => Set<Permission>();
         public DbSet<Group> Groups => Set<Group>();
         public DbSet<Assignment> Assignments => Set<Assignment>();
+        public DbSet<OTP> Otps => Set<OTP>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

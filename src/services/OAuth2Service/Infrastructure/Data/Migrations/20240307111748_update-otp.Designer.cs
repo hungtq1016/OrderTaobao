@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OAuth2Service.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using OAuth2Service.Infrastructure.Data;
 namespace OAuth2Service.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(OAuth2Context))]
-    partial class OAuth2ContextModelSnapshot : ModelSnapshot
+    [Migration("20240307111748_update-otp")]
+    partial class updateotp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

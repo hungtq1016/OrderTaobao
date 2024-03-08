@@ -8,7 +8,7 @@ global using Infrastructure.EFCore.Extensions;
 global using Infrastructure.EFCore.Helpers;
 global using Infrastructure.EFCore.Repository;
 global using Infrastructure.EFCore.Service;
-global using Infrastructure.Main;
+global using Constants = Infrastructure.Main.Constants;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Filters;
 global using Microsoft.EntityFrameworkCore;
