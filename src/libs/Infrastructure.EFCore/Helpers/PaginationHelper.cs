@@ -1,34 +1,21 @@
-﻿using Infrastructure.EFCore.DTOs;
-using Infrastructure.EFCore.Service;
-
-namespace Infrastructure.EFCore.Helpers
+﻿namespace Infrastructure.EFCore.Helpers
 {
-    public class PaginationHelper
+    public class PaginationHelper<TEntity>
     {
-        public static PaginationResponse<List<T>> PaginationGeneration<T>(List<T> data, PaginationRequest request, IUriService util, string route)
+        public static PaginationResponse<List<TEntity>> GeneratePaginationResponse(List<TEntity> data, PaginationRequest request, int totalRecords)
         {
-            int totalRecords = data.Count();
+            int totalPages = totalRecords / request.PageSize + 1;
 
-            var response = new PaginationResponse<List<T>>(data, request.PageNumber, request.PageSize);
+            var response = new PaginationResponse<List<TEntity>>(data, request.PageNumber, request.PageSize);
 
-            int totalPages = totalRecords / request.PageSize;
+            response.PreviousPage = request.PageNumber > 1 ? request.PageNumber - 1 : 1;
+            response.NextPage = request.PageNumber < totalPages ? request.PageNumber + 1 : totalPages;
 
-            response.PreviousPage =
-                request.PageNumber > 1
-                ? util.GetPageUri(new PaginationRequest(request.PageNumber - 1, request.PageSize), route)
-                : null;
-
-            response.NextPage =
-                request.PageNumber < totalPages
-                ? util.GetPageUri(new PaginationRequest(request.PageNumber + 1, request.PageSize), route)
-                : null;
-
-            response.FirstPage = util.GetPageUri(new PaginationRequest(1, request.PageSize), route);
-            response.LastPage = util.GetPageUri(new PaginationRequest(totalPages, request.PageSize), route);
-
+            response.FirstPage = 1;
+            response.LastPage = totalPages;
             response.TotalPages = totalPages;
             response.TotalRecords = totalRecords;
-
+            
             return response;
         }
     }

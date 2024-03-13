@@ -36,7 +36,11 @@ if (context.Database.GetPendingMigrations().Any())
 {
     context.Database.Migrate();
 }
-
+app.UseCors(builder =>
+        builder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
 app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthorization();

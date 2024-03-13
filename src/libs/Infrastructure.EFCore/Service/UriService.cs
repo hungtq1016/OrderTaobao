@@ -1,7 +1,4 @@
-﻿using Infrastructure.EFCore.DTOs;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.WebUtilities;
 
 namespace Infrastructure.EFCore.Service
 {

@@ -16,10 +16,11 @@ namespace Infrastructure.EFCore.DTOs
             Status = EnableEnum.All;
         }
 
-        public PaginationRequest(int pageNumber, int pageSize)
+        public PaginationRequest(int pageNumber, int pageSize, EnableEnum status = EnableEnum.All)
         {
             PageNumber = pageNumber < 1 ? 1 : pageNumber;
             PageSize = pageSize > 100 ? 100 : pageSize;
+            Status = status;
         }
     }
 }

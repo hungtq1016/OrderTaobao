@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddressService", "src\servi
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioService", "src\services\AudioService\AudioService.csproj", "{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{8D800595-3680-4BA6-A852-121FAF4F60FC} = {58F67D75-A4C3-40BB-8DE1-540940816CAD}
 		{2F486F0F-318B-4B51-80F1-107A91AE0666} = {58F67D75-A4C3-40BB-8DE1-540940816CAD}
 		{D2845321-E788-4631-869F-94A7F2CD5197} = {58F67D75-A4C3-40BB-8DE1-540940816CAD}
+		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542} = {58F67D75-A4C3-40BB-8DE1-540940816CAD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8EE5FD1B-FF01-4EB6-988B-3FAB1836EC92}

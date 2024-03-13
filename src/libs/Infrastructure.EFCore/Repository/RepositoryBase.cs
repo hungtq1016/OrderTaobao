@@ -1,7 +1,4 @@
-﻿using Core;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using System.Linq.Expressions;
+﻿using Infrastructure.Main;
 
 namespace Infrastructure.EFCore.Repository
 {
@@ -18,12 +15,6 @@ namespace Infrastructure.EFCore.Repository
             _context = context;
             _entity = context.Set<TEntity>();
             _cache = cache;
-        }
-
-        public async Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default)
-        {
-            var entities = await _entity.ToListAsync(cancellationToken: cancellationToken);
-            return entities;
         }
 
         public async Task<TEntity> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -73,7 +64,30 @@ namespace Infrastructure.EFCore.Repository
 
             return await query.ToListAsync();
         }
-        public async Task<List<TEntity>> FindAllAsync( params string[] properties)
+
+        public async Task<PaginationResponse<List<TEntity>>> FindPageAsync(PaginationRequest request, string route, IUriService uriService)
+        {
+            var validFilter = new PaginationRequest(request.PageNumber, request.PageSize, request.Status);
+
+            IQueryable<TEntity> query = _entity;
+
+            if (request.Status != EnableEnum.All)
+            {
+                query = query.Where(e => e.Enable == (request.Status == EnableEnum.Enabled));
+            }
+
+            int totalRecords = await query.CountAsync();
+
+            var lists = await query
+                .OrderByDescending(e => e.UpdatedAt)
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
+
+            return PaginationHelper<TEntity>.GeneratePaginationResponse(lists, validFilter, totalRecords);
+        }
+
+        public async Task<List<TEntity>> FindAllAsync(params string[] properties)
         {
             IQueryable<TEntity> query = _entity;
 
@@ -105,25 +119,33 @@ namespace Infrastructure.EFCore.Repository
         {
             var entry = _context.Entry(entity);
 
-            entry.State = EntityState.Modified;
-
             await _context.SaveChangesAsync(cancellationToken);
 
-            return await Task.FromResult(entry.Entity);
+            return entry.Entity;
         }
 
         public async Task<List<TEntity>> BulkEditAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
         {
             foreach (var entity in entities)
             {
-                var ent = _entity.Where(e => e.Id == entity.Id).FirstOrDefault();
-                var entry = _context.Entry(entity);
-                entry.State = EntityState.Modified;
+                var existingEntity = await _context.Set<TEntity>().FindAsync(new object[] { entity.Id }, cancellationToken);
+
+                if (existingEntity != null)
+                {
+                    _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+                }
+                else
+                {
+                    _context.Attach(entity);
+                    _context.Entry(entity).State = EntityState.Modified;
+                }
             }
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return entities;
         }
+
 
         public async ValueTask BulkDeleteAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
         {

@@ -1,11 +1,4 @@
-﻿using AutoMapper;
-using Core;
-using Infrastructure.EFCore.DTOs;
-using Infrastructure.EFCore.Helpers;
-using Infrastructure.EFCore.Repository;
-using Microsoft.AspNetCore.Http;
-
-namespace Infrastructure.EFCore.Service
+﻿namespace Infrastructure.EFCore.Service
 {
     public interface IFileService<TEntity, TRequest, TResponse, TExtensionEnum>
         : IService<TEntity, TRequest, TResponse>
@@ -24,7 +17,7 @@ namespace Infrastructure.EFCore.Service
         private readonly IRepository<TEntity> _repository;
         private readonly IMapper _mapper;
 
-        public FileService(IRepository<TEntity> repository, IMapper mapper) : base(repository, mapper)
+        public FileService(IRepository<TEntity> repository, IMapper mapper, IUriService uriService) : base(repository, mapper, uriService)
         {
             _repository = repository;
             _mapper = mapper;

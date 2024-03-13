@@ -1,8 +1,4 @@
-﻿using Infrastructure.EFCore.Service;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Infrastructure.EFCore.Extensions
+﻿namespace Infrastructure.EFCore.Extensions
 {
     public static class DataContextExtension
     {
@@ -18,6 +14,8 @@ namespace Infrastructure.EFCore.Extensions
                 });
             });
             services.AddScoped(typeof(IService<,,>), typeof(Service<,,>));
+            services.AddSingleton<IUriService, UriService>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRabbitMQService,RabbitMQService>();
             return services;
         }
