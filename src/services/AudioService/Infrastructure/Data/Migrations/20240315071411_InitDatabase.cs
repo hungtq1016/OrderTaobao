@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AudioService.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initdb : Migration
+    public partial class InitDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,8 +17,8 @@ namespace AudioService.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false, defaultValueSql: "NEWID()"),
                     Enable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Alt = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Size = table.Column<long>(type: "bigint", nullable: false),
@@ -38,8 +38,8 @@ namespace AudioService.Infrastructure.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Enable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()")
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
                 {
@@ -54,8 +54,8 @@ namespace AudioService.Infrastructure.Data.Migrations
                     CollectionId = table.Column<string>(type: "varchar(36)", nullable: false),
                     AudioId = table.Column<string>(type: "varchar(36)", nullable: false),
                     Enable = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()")
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
                 {

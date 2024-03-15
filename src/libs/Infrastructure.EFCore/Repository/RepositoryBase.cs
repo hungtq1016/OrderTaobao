@@ -1,4 +1,4 @@
-﻿using Infrastructure.Main;
+﻿using Core;
 
 namespace Infrastructure.EFCore.Repository
 {
@@ -9,12 +9,16 @@ namespace Infrastructure.EFCore.Repository
         protected readonly TDbContext _context;
         protected readonly DbSet<TEntity> _entity;
         private readonly IMemoryCache _cache;
+        private readonly string indexName;
+        private readonly ElasticsearchClient client;
 
         protected RepositoryBase(TDbContext context, IMemoryCache cache)
         {
             _context = context;
             _entity = context.Set<TEntity>();
             _cache = cache;
+            indexName = typeof(TEntity).Name.ToLower();
+            client = new ElasticsearchClient();
         }
 
         public async Task<TEntity> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -105,6 +109,8 @@ namespace Infrastructure.EFCore.Repository
 
             await _context.SaveChangesAsync(cancellationToken);
 
+            await client.IndexAsync(entity, indexName);
+
             return entity;
         }
 
@@ -113,44 +119,49 @@ namespace Infrastructure.EFCore.Repository
             _entity.Remove(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            await client.DeleteAsync(indexName, entity.Id);
         }
 
         public async Task<TEntity> EditAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            var entry = _context.Entry(entity);
+            if (!_context.Set<TEntity>().Local.Any(e => e.Id == entity.Id))
+            {
+                _context.Set<TEntity>().Attach(entity);
+            }
+
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            _context.Entry(entity).State = EntityState.Modified;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entry.Entity;
+            await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
+
+            return entity;
         }
+
 
         public async Task<List<TEntity>> BulkEditAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
         {
             foreach (var entity in entities)
             {
-                var existingEntity = await _context.Set<TEntity>().FindAsync(new object[] { entity.Id }, cancellationToken);
-
-                if (existingEntity != null)
-                {
-                    _context.Entry(existingEntity).CurrentValues.SetValues(entity);
-                }
-                else
-                {
-                    _context.Attach(entity);
-                    _context.Entry(entity).State = EntityState.Modified;
-                }
+                await EditAsync(entity, cancellationToken);
             }
-
-            await _context.SaveChangesAsync(cancellationToken);
 
             return entities;
         }
-
 
         public async ValueTask BulkDeleteAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
         {
             _entity.RemoveRange(entities);
             await _context.SaveChangesAsync(cancellationToken);
+
+            foreach (var entity in entities)
+            {
+                await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
+            }
         }
+     
     }
 }

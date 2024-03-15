@@ -10,19 +10,20 @@
 
     public abstract class Entity: IEntity
     {
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
 
-        public bool Enable { get; set; } 
+        public bool Enable { get; set; }
 
-        public DateTime CreatedAt { get; set; } 
+        public DateTime CreatedAt { get; set; }
 
-        public DateTime UpdatedAt { get; set; } 
+        public DateTime UpdatedAt { get; set; }
     }
 
     public abstract class EntityRequest
     {
         public Guid Id { get; set; }
-        public DateTime UpdatedAt { get; set; } = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
     }
 

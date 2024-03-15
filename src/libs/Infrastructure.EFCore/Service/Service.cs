@@ -12,7 +12,7 @@
             _mapper = mapper;
             _uriService = uriService;
         }
-
+        
         public async Task<Response<PaginationResponse<List<TResponse>>>> FindPageAsync(PaginationRequest request, string route)
         {
             var entities = await _repository.FindPageAsync(request, route, _uriService);
@@ -88,24 +88,30 @@
 
         public async Task<Response<TResponse>> EditAsync(Guid id, TRequest request)
         {
-            TEntity record = await _repository.FindByIdAsync(id);
-
-            if (record is null)
+            if (id != request.Id)
+            {
                 return ResponseHelper.CreateNotFoundResponse<TResponse>(null);
+            }
 
-            var res = _mapper.Map(request, record);
-            await Console.Out.WriteLineAsync(res.Enable.ToString());
+            TEntity record = await _repository.FindByIdAsync(id);
+            if (record == null)
+            {
+                return ResponseHelper.CreateNotFoundResponse<TResponse>(null);
+            }
 
-            await _repository.EditAsync(record);
+            _mapper.Map(request, record);
 
-            TResponse response = _mapper.Map<TResponse>(record);
+            TEntity result = await _repository.EditAsync(record);
+
+            TResponse response = _mapper.Map<TResponse>(result);
 
             return ResponseHelper.CreateSuccessResponse(response);
         }
 
+
         public async Task<Response<List<TResponse>>> BulkEditAsync(List<TRequest> requests)
         {
-            var entities = _mapper.Map<List<TEntity>>(requests);
+            List<TEntity> entities = _mapper.Map<List<TEntity>>(requests);
 
             List<TEntity> records = await _repository.BulkEditAsync(entities);
 
@@ -116,7 +122,7 @@
 
         public async Task<Response<bool>> BulkDeleteAsync(List<TRequest> requests)
         {
-            var entities = _mapper.Map<List<TEntity>>(requests);
+            List<TEntity> entities = _mapper.Map<List<TEntity>>(requests);
 
             await _repository.BulkDeleteAsync(entities);
 

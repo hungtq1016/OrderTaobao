@@ -1,9 +1,4 @@
-﻿using Core;
-using Infrastructure.EFCore.DTOs;
-using Infrastructure.EFCore.Service;
-using System.Linq.Expressions;
-
-namespace Infrastructure.EFCore.Repository
+﻿namespace Infrastructure.EFCore.Repository
 {
     public interface IRepository<TEntity> where TEntity : Entity
     {

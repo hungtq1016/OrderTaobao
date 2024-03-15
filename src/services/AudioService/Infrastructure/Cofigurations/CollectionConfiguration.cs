@@ -20,8 +20,8 @@
                 .IsRequired(true);
 
             builder.Property(collection => collection.Enable)
-                .HasDefaultValue(true)
-                .IsRequired(true);
+                            .HasDefaultValue(true)
+                            .IsRequired(true);
 
             builder.HasMany(collection => collection.Albums)
                 .WithOne(album => album.Collection)

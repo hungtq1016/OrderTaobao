@@ -12,3 +12,7 @@ global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Infrastructure.Main;
+global using Elastic.Clients.Elasticsearch;
+global using Elastic.Transport;
+global using Elastic.Clients.Elasticsearch.QueryDsl;

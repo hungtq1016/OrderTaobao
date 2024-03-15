@@ -4,7 +4,7 @@ global using AudioService.Models;
 global using AudioService.Cofigurations;
 global using Infrastructure.Main;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
-global using ImageService.Data;
+global using AudioService.Data;
 global using Infrastructure.EFCore.Repository;
 global using Microsoft.Extensions.Caching.Memory;
 global using AudioService.DTOs;

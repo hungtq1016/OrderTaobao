@@ -4,22 +4,22 @@
     {
         public void Configure(EntityTypeBuilder<Album> builder)
         {
-            builder.HasKey(image => image.Id);
+            builder.HasKey(album => album.Id);
 
-            builder.Property(image => image.Id).HasColumnType("varchar")
+            builder.Property(album => album.Id).HasColumnType("varchar")
                 .HasMaxLength(36)
                 .HasDefaultValueSql(Constants.UuidAlgorithm)
                 .IsRequired(true);
 
-            builder.Property(image => image.CreatedAt).HasColumnType("datetime")
+            builder.Property(album => album.CreatedAt).HasColumnType("datetime")
                 .HasDefaultValueSql(Constants.DateTimeAlgorithm)
                 .IsRequired(true);
 
-            builder.Property(image => image.UpdatedAt).HasColumnType("datetime")
+            builder.Property(album => album.UpdatedAt).HasColumnType("datetime")
                 .HasDefaultValueSql(Constants.DateTimeAlgorithm)
                 .IsRequired(true);
 
-            builder.Property(image => image.Enable)
+            builder.Property(album => album.Enable)
                 .HasDefaultValue(true)
                 .IsRequired(true);
         }

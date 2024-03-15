@@ -26,7 +26,7 @@
             builder.HasMany(audio => audio.Albums)
                 .WithOne(album => album.Audio)
                 .HasForeignKey(audio => audio.AudioId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull);            
         }
     }
 }

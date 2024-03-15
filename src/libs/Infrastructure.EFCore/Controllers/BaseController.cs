@@ -1,8 +1,4 @@
-﻿using Core;
-using Infrastructure.EFCore.Service;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Infrastructure.EFCore.Controllers
+﻿namespace Infrastructure.EFCore.Controllers
 {
     public abstract class SingletonController<TEntity, TRequest, TResponse> : ControllerBase where TEntity : Entity where TRequest : EntityRequest
     {

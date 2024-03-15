@@ -15,7 +15,7 @@ namespace ImageService.Infrastructure
     }
     public class CImageService : FileService<Image, ImageRequest, ImageResponse, ImageExtensionsEnum>, IImageService
     {
-        public CImageService(IRepository<Image> repository, IMapper mapper) : base(repository, mapper)
+        public CImageService(IRepository<Image> repository, IMapper mapper, IUriService uriService) : base(repository, mapper, uriService)
         {
             
         }

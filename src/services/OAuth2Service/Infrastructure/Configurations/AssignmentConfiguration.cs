@@ -1,6 +1,4 @@
-﻿
-
-namespace OAuth2Service.Configurations
+﻿namespace OAuth2Service.Configurations
 {
     public class AssignmentConfiguration : IEntityTypeConfiguration<Assignment>
     {

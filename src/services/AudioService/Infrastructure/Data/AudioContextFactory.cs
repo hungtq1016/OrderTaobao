@@ -1,4 +1,4 @@
-﻿namespace ImageService.Data
+﻿namespace AudioService.Data
 {
     public class AudioContextFactory : AppDbContextFactory<AudioContext>
     {

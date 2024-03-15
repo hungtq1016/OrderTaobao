@@ -257,7 +257,7 @@
         }
       ],
       "UpstreamPathTemplate": "/audios/page",
-      "UpstreamHttpMethod": [ "Get"],
+      "UpstreamHttpMethod": [ "Get" ],
       "SwaggerKey": "audio"
     },
     {
@@ -350,6 +350,84 @@
       "UpstreamPathTemplate": "/users/{id}",
       "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
       "SwaggerKey": "user"
+    },
+    {
+      "DownstreamPathTemplate": "/api/collections",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/collections",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "collections"
+    },
+    {
+      "DownstreamPathTemplate": "/api/collections/page",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/collections/page",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "collections"
+    },
+    {
+      "DownstreamPathTemplate": "/api/collections/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/collections/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "collections"
+    },
+    {
+      "DownstreamPathTemplate": "/api/albums",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/albums",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "albums"
+    },
+    {
+      "DownstreamPathTemplate": "/api/albums/page",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/albums/page",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "albums"
+    },
+    {
+      "DownstreamPathTemplate": "/api/albums/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/albums/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "albums"
     }
   ],
   "GlobalConfiguration": {
@@ -421,6 +499,26 @@
       "Config": [
         {
           "Name": "Audio API",
+          "Version": "v1",
+          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "collections",
+      "Config": [
+        {
+          "Name": "Collections API",
+          "Version": "v1",
+          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "albums",
+      "Config": [
+        {
+          "Name": "Albums API",
           "Version": "v1",
           "Url": "https://localhost:5002/swagger/v1/swagger.json"
         }
