@@ -42,20 +42,6 @@ services:
     networks:
       - elastic_es-net
 
-  historyservice:
-    image: ${DOCKER_REGISTRY-}historyservice
-    
-    build:
-      context: .
-      dockerfile: src/services/HistoryService/Dockerfile
-    depends_on:
-      - sqlserverservice
-    ports:
-      - 15003:80
-      - 5003:443
-    networks:
-      - elastic_es-net
-
   imageservice:
     image: ${DOCKER_REGISTRY-}imageservice
     
