@@ -18,7 +18,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddJWT(configuration);
-builder.Services.AddSqlServerDbContext<ImageContext>(configuration.GetConnectionString("imageDB"));
+builder.Services.AddSqlServerDbContext<ImageContext>(configuration.GetConnectionString("imageDB.docker"));
 builder.Services.AddCustomMapper<ImageProfile>();
 
 builder.Services.AddScoped<IRepository<Image>, ImageRepository>();

@@ -2,7 +2,7 @@
 {
     public class OAuth2ContextFactory : AppDbContextFactory<OAuth2Context>
     {
-        public OAuth2ContextFactory() : base("oauth2DB")
+        public OAuth2ContextFactory() : base("oauth2DB.docker")
         {
         }
     }

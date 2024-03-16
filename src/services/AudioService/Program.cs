@@ -12,7 +12,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddJWT(configuration);
-builder.Services.AddSqlServerDbContext<AudioContext>(configuration.GetConnectionString("audioDB"));
+builder.Services.AddSqlServerDbContext<AudioContext>(configuration.GetConnectionString("audioDB.docker"));
 builder.Services.AddCustomMapper<AudioProfile>();
 
 builder.Services.AddScoped<IAudioService, CAudioService>();
