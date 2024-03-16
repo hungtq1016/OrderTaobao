@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
-namespace Infrastructure.EFCore.Extensions
+﻿namespace Infrastructure.EFCore.Extensions
 {
     public static class JWTExtension
     {

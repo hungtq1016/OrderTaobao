@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Infrastructure.EFCore.Extensions
+﻿namespace Infrastructure.EFCore.Extensions
 {
     public static class MapperExtension
     {

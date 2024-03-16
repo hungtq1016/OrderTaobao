@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
-using Infrastructure.EFCore.Helpers;
-using Microsoft.Extensions.Configuration;
-
-namespace Infrastructure.EFCore.Data
+﻿namespace Infrastructure.EFCore.Data
 {
     public abstract class AppDbContextFactory<TDbContext> : IDesignTimeDbContextFactory<TDbContext> where TDbContext : DbContext
     {

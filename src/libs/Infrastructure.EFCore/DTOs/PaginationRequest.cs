@@ -1,7 +1,4 @@
-﻿using Core;
-using Infrastructure.Main;
-
-namespace Infrastructure.EFCore.DTOs
+﻿namespace Infrastructure.EFCore.DTOs
 {
     public class PaginationRequest
     {

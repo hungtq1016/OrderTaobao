@@ -1,7 +1,4 @@
-﻿
-using Microsoft.Extensions.Configuration;
-
-namespace Infrastructure.EFCore.Helpers
+﻿namespace Infrastructure.EFCore.Helpers
 {
     public class ConfigurationHelper
     {

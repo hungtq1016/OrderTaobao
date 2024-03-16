@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
-
-namespace Infrastructure.EFCore.Service
+﻿namespace Infrastructure.EFCore.Service
 {
     public interface IUriService
     {

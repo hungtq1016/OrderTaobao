@@ -1,7 +1,4 @@
-﻿using Core;
-using Microsoft.AspNetCore.Http;
-
-namespace Infrastructure.EFCore.Helpers
+﻿namespace Infrastructure.EFCore.Helpers
 {
     public static class FileHelper
     {

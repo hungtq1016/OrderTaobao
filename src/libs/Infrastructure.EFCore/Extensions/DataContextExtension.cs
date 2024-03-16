@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.EFCore.Extensions
+﻿using Nest;
+
+namespace Infrastructure.EFCore.Extensions
 {
     public static class DataContextExtension
     {
@@ -17,6 +19,11 @@
             services.AddSingleton<IUriService, UriService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRabbitMQService,RabbitMQService>();
+
+            var settings = new ConnectionSettings(new Uri("http://elasticsearch:9200"));
+
+            services.AddSingleton<IElasticClient>(new ElasticClient(settings));
+
             return services;
         }
 

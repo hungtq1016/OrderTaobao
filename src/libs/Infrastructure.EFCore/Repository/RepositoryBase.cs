@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using Elastic.Clients.Elasticsearch;
+using Nest;
 
 namespace Infrastructure.EFCore.Repository
 {
@@ -10,15 +11,17 @@ namespace Infrastructure.EFCore.Repository
         protected readonly DbSet<TEntity> _entity;
         private readonly IMemoryCache _cache;
         private readonly string indexName;
-        private readonly ElasticsearchClient client;
+        private readonly IElasticClient _elasticClient;
+        private readonly ILogger _logger;
 
-        protected RepositoryBase(TDbContext context, IMemoryCache cache)
+        protected RepositoryBase(TDbContext context, IMemoryCache cache, IElasticClient elasticClient, ILogger logger)
         {
             _context = context;
             _entity = context.Set<TEntity>();
             _cache = cache;
+            _elasticClient = elasticClient; // Use DI to get an instance of IElasticClient
+            _logger = logger;
             indexName = typeof(TEntity).Name.ToLower();
-            client = new ElasticsearchClient();
         }
 
         public async Task<TEntity> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -106,10 +109,22 @@ namespace Infrastructure.EFCore.Repository
         public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             await _entity.AddAsync(entity, cancellationToken);
-
             await _context.SaveChangesAsync(cancellationToken);
 
-            await client.IndexAsync(entity, indexName);
+            try
+            {
+                var response = await _elasticClient.IndexAsync(entity, idx => idx.Index(indexName));
+
+
+                if (!response.IsValid)
+                {
+                    _logger.LogError("Failed to index entity in Elasticsearch. Error: {0}", response.OriginalException?.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception occurred while indexing entity in Elasticsearch.");
+            }
 
             return entity;
         }
@@ -120,7 +135,7 @@ namespace Infrastructure.EFCore.Repository
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            await client.DeleteAsync(indexName, entity.Id);
+            //await client.DeleteAsync(indexName, entity.Id);
         }
 
         public async Task<TEntity> EditAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -136,7 +151,7 @@ namespace Infrastructure.EFCore.Repository
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
+            //await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
 
             return entity;
         }
@@ -157,10 +172,10 @@ namespace Infrastructure.EFCore.Repository
             _entity.RemoveRange(entities);
             await _context.SaveChangesAsync(cancellationToken);
 
-            foreach (var entity in entities)
+            /*foreach (var entity in entities)
             {
                 await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
-            }
+            }*/
         }
      
     }

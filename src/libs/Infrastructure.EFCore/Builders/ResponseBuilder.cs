@@ -1,8 +1,4 @@
-﻿using Infrastructure.EFCore.DTOs;
-using Infrastructure.Main;
-using System.Net;
-
-namespace Infrastructure.EFCore.Builders
+﻿namespace Infrastructure.EFCore.Builders
 {
     public class ResponseBuilder<TEntity>
     {

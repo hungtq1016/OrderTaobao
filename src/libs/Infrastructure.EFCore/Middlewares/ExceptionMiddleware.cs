@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System.Net;
-using Infrastructure.EFCore.DTOs;
-
-namespace Infrastructure.EFCore.Middlewares
+﻿namespace Infrastructure.EFCore.Middlewares
 {
     public class ExceptionMiddleware
     {

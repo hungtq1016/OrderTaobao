@@ -1,9 +1,4 @@
-﻿using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Text;
-
-namespace Infrastructure.EFCore.Service
+﻿namespace Infrastructure.EFCore.Service
 {
     public interface IRabbitMQService
     {
@@ -19,8 +14,8 @@ namespace Infrastructure.EFCore.Service
         {
             _factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = 5673,
+                HostName = "rabbitmq",
+                Port = 5672,
                 UserName = "guest",
                 Password = "guest",
                 VirtualHost = "/"
