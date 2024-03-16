@@ -23,7 +23,7 @@
             return new TokenResponse
             {
                 AccessToken = await GetAccessToken(user),
-                ExpiredAt = DateTime.Now.AddMinutes(ExpiredTime()),
+                ExpiredAt = DateTime.UtcNow.AddMinutes(ExpiredTime()),
                 RefreshToken = Guid.NewGuid().ToString(),
                 TokenType = "Beared"
             };
@@ -63,7 +63,7 @@
                 (
                     issuer: _config["JWT:ValidIssuer"],
                     audience: _config["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddMinutes(ExpiredTime()),
+                    expires: DateTime.UtcNow.AddMinutes(ExpiredTime()),
                     claims: claims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );

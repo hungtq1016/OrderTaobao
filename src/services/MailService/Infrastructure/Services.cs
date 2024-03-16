@@ -120,51 +120,81 @@ namespace MailService.Infrastructure
 
         private string TemplateMail(MailRequest request, string id)
         {
-            return @$"
-                <div style=""max-width:560px;padding:20px 0;margin:0 auto;font-family:Open Sans,Helvetica,Arial;font-size:15px;color:#666"">
-                    <div class=""adM"">
-                    </div>
-                    <div style=""background:#080606;padding:10px 20px"">
-                        <div class=""adM"">
-                        </div>
-                        <div style=""text-align:center;font-weight:600;font-size:14px;padding:10px 0;color:#fff"">OrderTaobao.net - Web Đặt Hàng #1</div>
-                        <div style=""clear:both"">&nbsp;</div>
-                    </div>
-                    <div style=""padding:0 30px 30px 30px;border-bottom:1px solid #eeeeee;background:#fff"">
-                        <div style=""padding:30px 0;font-size:24px;text-align:center;line-height:40px"">{request.Body}</div>
-                        <div style=""padding:10px 0 20px 0;text-align:center""><a style=""background:#555555;color:#fff;padding:12px 30px;text-decoration:none;border-radius:3px;letter-spacing:0.3px"" href=""https://www.google.com?q={id}&email={request.To}"" target=""_blank"">Thay đổi mật khẩu</a></div>
-                        <div style=""padding:20px;text-align:center"">Nếu có vấn đề liên hệ qua <a style=""color:#3ba1da;text-decoration:none"" href=""mailto:hungtq1016@gmail.com"" target=""_blank"">mail hungtq1016@gmail.com</a> nhé</div>
-                    </div>
-                    <div style=""color:#585858;padding:10px 20px;text-align:center;background:#fff;font-size:13px"">
-                        <div>Copyright © 2022 - 2023 OrderTaobao</div>
-                        <div class=""yj6qo""></div>
-                        <div class=""adL"">
-                        </div>
-                    </div>
-                    <div class=""adL"">
-                    </div>
-                </div>";
+            return @$"<div style=""box-sizing:inherit;margin:0;color:rgba(0,0,0,0.87);font-family:'Roboto','Helvetica','Arial',sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;background-color:#000000""><div class=""adM"">
+                    </div><div style=""box-sizing:inherit;font-weight:400;font-size:16px;padding:32px 0;margin:0;letter-spacing:0.15008px;line-height:1.5;background-color:#000000;font-family:'Iowan Old Style','Palatino Linotype','URW Palladio L',P052,serif;color:#ffffff""><div class=""adM"">
+                      </div><div id=""m_6480876213820302322__react-email-preview"" style=""box-sizing:inherit;display:none;overflow:hidden;line-height:1px;opacity:0;max-height:0;max-width:0"">This code will expire in 30 minutes.<div style=""box-sizing:inherit"">&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏<wbr>﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌<wbr>​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍<wbr>‎‏﻿&nbsp;‌​‍‎‏﻿</div>
+                      </div>
+                      <table align=""center"" width=""100%"" style=""box-sizing:inherit;background-color:#000000;max-width:600px;min-height:48px"" role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" bgcolor=""#000000"">
+                        <tbody style=""box-sizing:inherit"">
+                          <tr style=""box-sizing:inherit;width:100%"">
+                            <td style=""box-sizing:inherit"">
+                              <div style=""color:#ffffff;font-family:inherit;font-size:16px;font-weight:normal;padding:16px 24px 16px 24px;text-align:center;max-width:100%;box-sizing:border-box"">
+
+                                <div style=""box-sizing:inherit"">
+                                  <div style=""box-sizing:inherit"">
+                                    <p style=""box-sizing:inherit;margin-top:0px;margin-bottom:0px"">We have processed your password change request.<br/> If you are the one who submitted this request,<br/> please click on the link below to change your password.</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div style=""font-family:inherit;font-weight:bold;padding:16px 24px 16px 24px;text-align:center;max-width:100%;box-sizing:border-box"">
+                                <a href=""https://www.google.com?q={id}&email={request.To}"" style=""background:#00466a;margin:0 auto;width:max-content;padding:8px 14px;color:#fff;border-radius:4px; text-decoration: none; font-size: 24px;"">Change password</a>
+                            </div>
+                              <div style=""color:#868686;font-family:inherit;font-size:14px;font-weight:normal;padding:16px 24px 16px 24px;text-align:center;max-width:100%;box-sizing:border-box"">
+                                <div style=""box-sizing:inherit"">
+                                  <div style=""box-sizing:inherit"">
+                                    <p style=""box-sizing:inherit;margin-top:0px;margin-bottom:0px""><em style=""box-sizing:inherit"">Problems? Just reply to <a href=""mailto:hungbanghung@gmail.com"" target=""_blank"" jslog=""32272; 1:WyIjdGhyZWFkLWY6MTc5MzA0NTQ1MDA1NzQxOTE3NiJd; 4:WyIjbXNnLWY6MTc5MzA0NjQyOTk2NjczMjEyMiJd"">this email</a>.</em></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table><div class=""yj6qo""></div><div class=""adL"">
+                    </div></div><div class=""adL"">
+                    </div></div>";
         }
 
         private string TemplateMailOTP(OTP request)
         {
-            return @$"<div style=""font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2"">
-                        <div style=""margin:50px auto;width:70%;padding:20px 0"">
-                            <div style=""border-bottom:1px solid #eee"">
-                                <a href="""" style=""font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600"">Order Taobao</a>
+            return @$"<div style=""box-sizing: inherit; margin: 0; color: rgba(0, 0, 0, 0.87); font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; font-weight: 400; font-size: 1rem; line-height: 1.5; letter-spacing: 0.00938em; background-color: #000000;"">
+                  <div class=""MuiBox-root css-1p9u5cx"" style=""box-sizing: inherit; font-weight: 400; font-size: 16px; padding: 32px 0; margin: 0; letter-spacing: 0.15008px; line-height: 1.5; background-color: #000000; font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif; color: #ffffff;"">
+                    <div id=""__react-email-preview"" style=""box-sizing: inherit; display: none; overflow: hidden; line-height: 1px; opacity: 0; max-height: 0; max-width: 0;"">This code will expire in 30 minutes.<div style=""box-sizing: inherit;"">&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿&nbsp;‌​‍‎‏﻿</div>
+                    </div>
+                    <table align=""center"" width=""100%"" style=""box-sizing: inherit; background-color: #000000; max-width: 600px; min-height: 48px;"" role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" bgcolor=""#000000"">
+                      <tbody style=""box-sizing: inherit;"">
+                        <tr style=""box-sizing: inherit; width: 100%;"">
+                          <td style=""box-sizing: inherit;"">
+                            <div style=""color: #ffffff; font-family: inherit; font-size: 16px; font-weight: normal; padding: 16px 24px 16px 24px; text-align: center; max-width: 100%; box-sizing: border-box;"">
+              
+                              <div class=""MuiBox-root css-vii0ua"" style=""box-sizing: inherit;"">
+                                <div style=""box-sizing: inherit;"">
+                                  <p style=""box-sizing: inherit; margin-top: 0px; margin-bottom: 0px;"">Here is your one-time passcode:</p>
+                                </div>
+                              </div>
                             </div>
-                            <p style=""font-size:1.1em"">Hi,{request.Email}</p>
-                            <p>Thank you for choosing Order Taobao.<br/> Use the following OTP to complete your Sign Up procedures.<br/> OTP is valid for 5 minutes</p>
-                            <h2 style=""background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;"">{request.Code}</h2>
-                            <p style=""font-size:0.9em;"">Regards,<br />Order Taobao</p>
-                            <hr style=""border:none;border-top:1px solid #eee"" />
-                            <div style=""float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300"">
-                                <p>Order Taobao Inc</p>
-                                <p>Ho Chi Minh City</p>
-                                <p>VietNam</p>
+                            <div style=""font-family: inherit; font-weight: bold; padding: 16px 24px 16px 24px; text-align: center; max-width: 100%; box-sizing: border-box;"">
+                              <h1 style=""box-sizing: inherit; margin-top: 40px; margin-bottom: 16px; font-weight: inherit; margin: 0; font-size: 32px;"">{request.Code}</h1>
                             </div>
-                        </div>
-                    </div>";
+                            <div style=""color: #868686; font-family: inherit; font-size: 16px; font-weight: normal; padding: 16px 24px 16px 24px; text-align: center; max-width: 100%; box-sizing: border-box;"">
+                              <div class=""MuiBox-root css-vii0ua"" style=""box-sizing: inherit;"">
+                                <div style=""box-sizing: inherit;"">
+                                  <p style=""box-sizing: inherit; margin-top: 0px; margin-bottom: 0px;"">This code will expire in 5 minutes.</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div style=""color: #868686; font-family: inherit; font-size: 14px; font-weight: normal; padding: 16px 24px 16px 24px; text-align: center; max-width: 100%; box-sizing: border-box;"">
+                              <div class=""MuiBox-root css-vii0ua"" style=""box-sizing: inherit;"">
+                                <div style=""box-sizing: inherit;"">
+                                  <p style=""box-sizing: inherit; margin-top: 0px; margin-bottom: 0px;""><em style=""box-sizing: inherit;"">Problems? Just reply to <a href=""mailto:hungbanghung@gmail.com"">this email</a>.</em></p>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>";
         }
     }
 }

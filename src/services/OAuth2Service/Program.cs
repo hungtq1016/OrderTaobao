@@ -9,9 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
-
+builder.Services.AddCors();
 builder.Services.AddJWT(configuration);
-builder.Services.AddSqlServerDbContext<OAuth2Context>(configuration.GetConnectionString("oauth2DB"));
+builder.Services.AddSqlServerDbContext<OAuth2Context>(configuration.GetConnectionString("oauth2DB.docker"));
 builder.Services.AddCustomMapper<OAuth2Profile>();
 
 builder.Services.AddScoped<IAuthenService, AuthenService>();
@@ -36,6 +36,11 @@ if (context.Database.GetPendingMigrations().Any())
 {
     context.Database.Migrate();
 }
+app.UseCors(builder =>
+        builder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
 
 app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();

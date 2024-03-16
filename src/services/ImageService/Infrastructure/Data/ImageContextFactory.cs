@@ -4,7 +4,7 @@ namespace ImageService.Data
 {
     public class ImageContextFactory : AppDbContextFactory<ImageContext>
     {
-        public ImageContextFactory() : base("imageDB")
+        public ImageContextFactory() : base("imageDB.docker")
         {
         }
     }

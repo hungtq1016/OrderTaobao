@@ -15,8 +15,9 @@ namespace ImageService.Controllers
     {
         private readonly IImageService _service;
 
-        public ImagesController(IFileService<Image, ImageRequest, ImageResponse, ImageExtensionsEnum> service) : base(service)
+        public ImagesController(IImageService service) : base(service)
         {
+            _service = service;
         }
 
         [HttpGet("{path}")]

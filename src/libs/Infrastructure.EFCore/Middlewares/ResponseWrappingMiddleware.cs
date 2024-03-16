@@ -1,9 +1,4 @@
-﻿using Infrastructure.EFCore.DTOs;
-using Infrastructure.Main;
-using Microsoft.AspNetCore.Http;
-using System.Text;
-
-namespace Infrastructure.EFCore.Middlewares
+﻿namespace Infrastructure.EFCore.Middlewares
 {
     public class ResponseWrappingMiddleware
     {

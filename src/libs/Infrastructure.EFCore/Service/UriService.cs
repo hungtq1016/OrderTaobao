@@ -1,9 +1,4 @@
-﻿using Infrastructure.EFCore.DTOs;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Infrastructure.EFCore.Service
+﻿namespace Infrastructure.EFCore.Service
 {
     public interface IUriService
     {

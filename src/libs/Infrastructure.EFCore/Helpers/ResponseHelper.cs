@@ -1,7 +1,4 @@
-﻿using Infrastructure.EFCore.Builders;
-using Infrastructure.EFCore.DTOs;
-
-namespace Infrastructure.EFCore.Helpers
+﻿namespace Infrastructure.EFCore.Helpers
 {
     public class ResponseHelper
     {

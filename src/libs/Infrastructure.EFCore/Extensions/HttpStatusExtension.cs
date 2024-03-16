@@ -1,7 +1,4 @@
-﻿using Infrastructure.EFCore.Middlewares;
-using Microsoft.AspNetCore.Builder;
-
-namespace Infrastructure.EFCore.Extensions
+﻿namespace Infrastructure.EFCore.Extensions
 {
     public static class HttpStatusExtension
     {

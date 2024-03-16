@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Infrastructure.EFCore.DTOs
+﻿namespace Infrastructure.EFCore.DTOs
 {
     public class Response<TEntity>
     {

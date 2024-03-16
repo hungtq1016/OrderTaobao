@@ -1,8 +1,4 @@
-﻿using Infrastructure.EFCore.Repository;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-
-namespace Infrastructure.EFCore.Extensions
+﻿namespace Infrastructure.EFCore.Extensions
 {
     public static class ServiceExtension
     {

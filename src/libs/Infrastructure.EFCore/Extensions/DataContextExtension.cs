@@ -1,6 +1,4 @@
-﻿using Infrastructure.EFCore.Service;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Nest;
 
 namespace Infrastructure.EFCore.Extensions
 {
@@ -18,7 +16,14 @@ namespace Infrastructure.EFCore.Extensions
                 });
             });
             services.AddScoped(typeof(IService<,,>), typeof(Service<,,>));
+            services.AddSingleton<IUriService, UriService>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRabbitMQService,RabbitMQService>();
+
+            var settings = new ConnectionSettings(new Uri("http://elasticsearch:9200"));
+
+            services.AddSingleton<IElasticClient>(new ElasticClient(settings));
+
             return services;
         }
 

@@ -1,5 +1,4 @@
 ﻿using OAuth2Service.Authen;
-using OAuth2Service.Models;
 
 namespace OAuth2Service.Services
 {
@@ -87,7 +86,7 @@ namespace OAuth2Service.Services
             {
                 Email = email,
                 Code = code,
-                ExpiredTime = DateTime.Now.AddMinutes(5)
+                ExpiredTime = DateTime.UtcNow.AddMinutes(5)
             };
 
             await _otpRepository.AddAsync(otp);
@@ -103,7 +102,7 @@ namespace OAuth2Service.Services
                                                         {
                                                            otp => otp.Email == request.Email 
                                                            && otp.Code == request.OTP
-                                                           && otp.ExpiredTime > DateTime.Now
+                                                           && otp.ExpiredTime > DateTime.UtcNow
                                                         });
             if (exist is null)
             {

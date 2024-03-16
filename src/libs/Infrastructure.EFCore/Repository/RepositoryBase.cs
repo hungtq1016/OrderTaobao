@@ -1,7 +1,5 @@
-﻿using Core;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using System.Linq.Expressions;
+﻿using Elastic.Clients.Elasticsearch;
+using Nest;
 
 namespace Infrastructure.EFCore.Repository
 {
@@ -12,18 +10,18 @@ namespace Infrastructure.EFCore.Repository
         protected readonly TDbContext _context;
         protected readonly DbSet<TEntity> _entity;
         private readonly IMemoryCache _cache;
+        private readonly string indexName;
+        private readonly IElasticClient _elasticClient;
+        private readonly ILogger _logger;
 
-        protected RepositoryBase(TDbContext context, IMemoryCache cache)
+        protected RepositoryBase(TDbContext context, IMemoryCache cache, IElasticClient elasticClient, ILogger logger)
         {
             _context = context;
             _entity = context.Set<TEntity>();
             _cache = cache;
-        }
-
-        public async Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken = default)
-        {
-            var entities = await _entity.ToListAsync(cancellationToken: cancellationToken);
-            return entities;
+            _elasticClient = elasticClient; // Use DI to get an instance of IElasticClient
+            _logger = logger;
+            indexName = typeof(TEntity).Name.ToLower();
         }
 
         public async Task<TEntity> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -73,7 +71,30 @@ namespace Infrastructure.EFCore.Repository
 
             return await query.ToListAsync();
         }
-        public async Task<List<TEntity>> FindAllAsync( params string[] properties)
+
+        public async Task<PaginationResponse<List<TEntity>>> FindPageAsync(PaginationRequest request, string route, IUriService uriService)
+        {
+            var validFilter = new PaginationRequest(request.PageNumber, request.PageSize, request.Status);
+
+            IQueryable<TEntity> query = _entity;
+
+            if (request.Status != EnableEnum.All)
+            {
+                query = query.Where(e => e.Enable == (request.Status == EnableEnum.Enabled));
+            }
+
+            int totalRecords = await query.CountAsync();
+
+            var lists = await query
+                .OrderByDescending(e => e.UpdatedAt)
+                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize)
+                .ToListAsync();
+
+            return PaginationHelper<TEntity>.GeneratePaginationResponse(lists, validFilter, totalRecords);
+        }
+
+        public async Task<List<TEntity>> FindAllAsync(params string[] properties)
         {
             IQueryable<TEntity> query = _entity;
 
@@ -88,8 +109,22 @@ namespace Infrastructure.EFCore.Repository
         public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             await _entity.AddAsync(entity, cancellationToken);
-
             await _context.SaveChangesAsync(cancellationToken);
+
+            try
+            {
+                var response = await _elasticClient.IndexAsync(entity, idx => idx.Index(indexName));
+
+
+                if (!response.IsValid)
+                {
+                    _logger.LogError("Failed to index entity in Elasticsearch. Error: {0}", response.OriginalException?.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception occurred while indexing entity in Elasticsearch.");
+            }
 
             return entity;
         }
@@ -99,28 +134,35 @@ namespace Infrastructure.EFCore.Repository
             _entity.Remove(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            //await client.DeleteAsync(indexName, entity.Id);
         }
 
         public async Task<TEntity> EditAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            var entry = _context.Entry(entity);
+            if (!_context.Set<TEntity>().Local.Any(e => e.Id == entity.Id))
+            {
+                _context.Set<TEntity>().Attach(entity);
+            }
 
-            entry.State = EntityState.Modified;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            _context.Entry(entity).State = EntityState.Modified;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return await Task.FromResult(entry.Entity);
+            //await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
+
+            return entity;
         }
+
 
         public async Task<List<TEntity>> BulkEditAsync(List<TEntity> entities, CancellationToken cancellationToken = default)
         {
             foreach (var entity in entities)
             {
-                var ent = _entity.Where(e => e.Id == entity.Id).FirstOrDefault();
-                var entry = _context.Entry(entity);
-                entry.State = EntityState.Modified;
+                await EditAsync(entity, cancellationToken);
             }
-            await _context.SaveChangesAsync(cancellationToken);
 
             return entities;
         }
@@ -129,6 +171,12 @@ namespace Infrastructure.EFCore.Repository
         {
             _entity.RemoveRange(entities);
             await _context.SaveChangesAsync(cancellationToken);
+
+            /*foreach (var entity in entities)
+            {
+                await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
+            }*/
         }
+     
     }
 }

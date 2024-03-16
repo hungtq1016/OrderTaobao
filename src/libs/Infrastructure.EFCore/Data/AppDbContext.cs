@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.EFCore.Data
+﻿namespace Infrastructure.EFCore.Data
 {
     public class AppDbContext : DbContext
     {

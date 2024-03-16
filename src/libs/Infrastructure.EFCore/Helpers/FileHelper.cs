@@ -1,7 +1,4 @@
-﻿using Core;
-using Microsoft.AspNetCore.Http;
-
-namespace Infrastructure.EFCore.Helpers
+﻿namespace Infrastructure.EFCore.Helpers
 {
     public static class FileHelper
     {
@@ -22,7 +19,7 @@ namespace Infrastructure.EFCore.Helpers
                 //Denine if file do not match extensions
                 if (IsExtensionDefined<TExtensionEnum>(extension))
                 {
-                    string newName = DateTime.Now.Ticks.ToString() + "." + extension;
+                    string newName = DateTime.UtcNow.Ticks.ToString() + "." + extension;
                     var filepath = Path.Combine(Directory.GetCurrentDirectory(), $"Upload/{folder}");
 
                     if (!Directory.Exists(filepath))
@@ -44,8 +41,8 @@ namespace Infrastructure.EFCore.Helpers
                             Size = file.Length,
                             Enable = true,
                             Alt = newName,
-                            CreatedAt = DateTime.Now,
-                            UpdatedAt = DateTime.Now,
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow,
                         }); ;
                     }
                 }
