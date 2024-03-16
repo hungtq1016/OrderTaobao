@@ -5,34 +5,38 @@ using Ocelot.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-IConfiguration config = builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
+builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("gateway.json", optional: false, reloadOnChange: true)
-    .Build();
+    .AddEnvironmentVariables(); 
 
 builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOcelot(config);
-builder.Services.AddSwaggerForOcelot(config);
+builder.Services.AddOcelot(builder.Configuration); 
+builder.Services.AddSwaggerForOcelot(builder.Configuration);
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 app.UseRouting();
-app.UseCors(builder =>
-        builder
+
+app.UseCors(corsPolicyBuilder =>
+    corsPolicyBuilder
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerForOcelotUI(opt =>
     {
         opt.PathToSwaggerGenerator = "/swagger/docs";
+        opt.DownstreamSwaggerEndPointBasePath = "/swagger/docs";
     });
 }
 
 app.UseOcelot().Wait();
+
 app.ConfigureExceptionHandler();
 
 app.Run();

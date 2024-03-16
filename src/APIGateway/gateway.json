@@ -1,506 +1,554 @@
 {
   "Routes": [
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/authenticate/send-reset-password",
       "DownstreamScheme": "https",
+
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/authenticate/send-reset-password",
-      "UpstreamHttpMethod": [ "Post" ],
-      "SwaggerKey": "auth"
+      "UpstreamhttpsMethod": [ "Post" ],
+      "SwaggerKey": "oauth2"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/authenticate/send-otp",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/authenticate/send-otp",
-      "UpstreamHttpMethod": [ "Post" ],
-      "SwaggerKey": "auth"
+      "UpstreamhttpsMethod": [ "Post" ],
+      "SwaggerKey": "oauth2"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/authenticate/receive-otp",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/authenticate/receive-otp",
-      "UpstreamHttpMethod": [ "Post" ],
-      "SwaggerKey": "auth"
+      "UpstreamhttpsMethod": [ "Post" ],
+      "SwaggerKey": "oauth2"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/authenticate/login",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/authenticate/login",
-      "UpstreamHttpMethod": [ "Post" ],
-      "SwaggerKey": "auth"
+      "UpstreamhttpsMethod": [ "Post" ],
+      "SwaggerKey": "oauth2"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/authenticate/register",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/authenticate/register",
-      "UpstreamHttpMethod": [ "Post" ],
-      "SwaggerKey": "auth"
+      "UpstreamhttpsMethod": [ "Post" ],
+      "SwaggerKey": "oauth2"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/roles",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/roles",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "SwaggerKey": "role"
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "roles"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/roles/page",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/roles/page",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "SwaggerKey": "role"
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "roles"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/roles/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/roles/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
-      "SwaggerKey": "role"
+      "UpstreamhttpsMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "roles"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/roles/ByUserId/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/roles/user/{userId}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "SwaggerKey": "role"
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "roles"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/groups",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/groups",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
-      "SwaggerKey": "group"
+      "UpstreamhttpsMethod": [ "Get", "Post" ],
+      "SwaggerKey": "groups"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/groups/page",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/groups/page",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
-      "SwaggerKey": "group"
+      "UpstreamhttpsMethod": [ "Get", "Post" ],
+      "SwaggerKey": "groups"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/groups/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/groups/{id}",
-      "UpstreamHttpMethod": [ "Delete", "Get" ],
-      "SwaggerKey": "group"
+      "UpstreamhttpsMethod": [ "Delete", "Get" ],
+      "SwaggerKey": "groups"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/permissions",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/permissions",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "SwaggerKey": "permission"
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "permissions"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/permissions/page",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/permissions/page",
-      "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "permission"
+      "UpstreamhttpsMethod": [ "Get" ],
+      "SwaggerKey": "permissions"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/permissions/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "httpss",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/permissions/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
-      "SwaggerKey": "permission"
+      "UpstreamhttpsMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "permissions"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/assignments",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/assignments",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
-      "SwaggerKey": "assignment"
+      "UpstreamhttpsMethod": [ "Get", "Post" ],
+      "SwaggerKey": "assignments"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/assignments/page",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/assignments/page",
-      "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "assignment"
+      "UpstreamhttpsMethod": [ "Get" ],
+      "SwaggerKey": "assignments"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/assignments/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/assignments/{id}",
-      "UpstreamHttpMethod": [ "Delete", "Get" ],
-      "SwaggerKey": "assignment"
+      "UpstreamhttpsMethod": [ "Delete", "Get" ],
+      "SwaggerKey": "assignments"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/audios",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/audios",
-      "UpstreamHttpMethod": [ "Get", "Post", "Delete", "Put" ],
-      "SwaggerKey": "audio"
+      "UpstreamhttpsMethod": [ "Get", "Post", "Delete", "Put" ],
+      "SwaggerKey": "audios"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/audios/page",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/audios/page",
-      "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "audio"
+      "UpstreamhttpsMethod": [ "Get" ],
+      "SwaggerKey": "audios"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/audios/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/audios/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get", "Put" ],
-      "SwaggerKey": "audio"
+      "UpstreamhttpsMethod": [ "Put", "Delete", "Get", "Put" ],
+      "SwaggerKey": "audios"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/audios/{path}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/audios/{path}",
-      "UpstreamHttpMethod": [ "Get" ],
-      "SwaggerKey": "audio"
+      "UpstreamhttpsMethod": [ "Get" ],
+      "SwaggerKey": "audios"
     },
     {
-      "DownstreamPathTemplate": "/api/Images",
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/images",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5004
+          "Host": "imageservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/images",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
-      "SwaggerKey": "image"
+      "UpstreamhttpsMethod": [ "Get", "Post" ],
+      "SwaggerKey": "images"
     },
     {
-      "DownstreamPathTemplate": "/api/Images/{id}",
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/images/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5004
+          "Host": "imageservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/images/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete" ],
-      "SwaggerKey": "image"
+      "UpstreamhttpsMethod": [ "Put", "Delete" ],
+      "SwaggerKey": "images"
     },
     {
-      "DownstreamPathTemplate": "/api/Images/{path}",
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/images/{path}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5004
+          "Host": "imageservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/images/{path}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamhttpsMethod": [ "GET" ],
       "SwaggerKey": "image"
     },
     {
-      "DownstreamPathTemplate": "/api/Users",
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/users",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
-      "UpstreamPathTemplate": "/Users",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "SwaggerKey": "user"
+      "UpstreamPathTemplate": "/users",
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "users"
     },
     {
-      "DownstreamPathTemplate": "/api/Users/{id}",
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/users/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5007
+          "Host": "oauth2service",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
-      "SwaggerKey": "user"
+      "UpstreamhttpsMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "users"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/Users/page",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "oauth2service",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/users/page",
+      "UpstreamhttpsMethod": [ "Get" ],
+      "SwaggerKey": "users"
+    },
+    {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/collections",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/collections",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
       "SwaggerKey": "collections"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/collections/page",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/collections/page",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
       "SwaggerKey": "collections"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/collections/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/collections/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "UpstreamhttpsMethod": [ "Put", "Delete", "Get" ],
       "SwaggerKey": "collections"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/albums",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/albums",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
       "SwaggerKey": "albums"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/albums/page",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/albums/page",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamhttpsMethod": [ "Get" ],
       "SwaggerKey": "albums"
     },
     {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/albums/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "audioservice",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/albums/{id}",
-      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "UpstreamhttpsMethod": [ "Put", "Delete", "Get" ],
       "SwaggerKey": "albums"
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5000"
+    "BaseUrl": "https://host.docker.internal:5000"
   },
   "SwaggerEndPoints": [
     {
-      "Key": "auth",
+      "Key": "oauth2",
       "Config": [
         {
           "Name": "Authenticate API",
           "Version": "v1",
-          "Url": "https://localhost:5007/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5007/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "role",
+      "Key": "roles",
       "Config": [
         {
           "Name": "Role API",
           "Version": "v1",
-          "Url": "https://localhost:5007/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5007/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "group",
+      "Key": "groups",
       "Config": [
         {
           "Name": "Group API",
           "Version": "v1",
-          "Url": "https://localhost:5007/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5007/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "permission",
+      "Key": "permissions",
       "Config": [
         {
           "Name": "Permission API",
           "Version": "v1",
-          "Url": "https://localhost:5007/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5007/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "assignment",
+      "Key": "assignments",
       "Config": [
         {
-          "Name": "assignments API",
+          "Name": "Asignments API",
           "Version": "v1",
-          "Url": "https://localhost:5007/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5007/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "user",
+      "Key": "users",
       "Config": [
         {
           "Name": "User API",
           "Version": "v1",
-          "Url": "https://localhost:5007/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5007/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "audio",
+      "Key": "audios",
       "Config": [
         {
           "Name": "Audio API",
           "Version": "v1",
-          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5002/swagger/v1/swagger.json"
         }
       ]
     },
@@ -510,7 +558,7 @@
         {
           "Name": "Collections API",
           "Version": "v1",
-          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5002/swagger/v1/swagger.json"
         }
       ]
     },
@@ -520,17 +568,17 @@
         {
           "Name": "Albums API",
           "Version": "v1",
-          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5002/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "image",
+      "Key": "images",
       "Config": [
         {
           "Name": "Image API",
           "Version": "v1",
-          "Url": "https://localhost:5004/swagger/v1/swagger.json"
+          "Url": "https://host.docker.internal:5004/swagger/v1/swagger.json"
         }
       ]
     }
