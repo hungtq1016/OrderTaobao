@@ -12,7 +12,8 @@
         "mailservice": "StartDebugging",
         "imageservice": "StartDebugging",
         "historyservice": "StartDebugging",
-        "addressservice": "StartDebugging"
+        "addressservice": "StartDebugging",
+        "audioservice": "StartDebugging"
       }
     }
   }

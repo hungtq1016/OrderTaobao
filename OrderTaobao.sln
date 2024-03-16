@@ -31,9 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HistoryService", "src\servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddressService", "src\services\AddressService\AddressService.csproj", "{D2845321-E788-4631-869F-94A7F2CD5197}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioService", "src\services\AudioService\AudioService.csproj", "{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioService", "src\services\AudioService\AudioService.csproj", "{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CA8800D8-FD90-4E64-8680-B76389554655}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,14 +89,14 @@ Global
 		{D2845321-E788-4631-869F-94A7F2CD5197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2845321-E788-4631-869F-94A7F2CD5197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2845321-E788-4631-869F-94A7F2CD5197}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B29FB33C-7ECB-4C07-B1D8-E5E67C312E9F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C645DBFE-E444-4AA8-891C-4CA5AFA7D542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA8800D8-FD90-4E64-8680-B76389554655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA8800D8-FD90-4E64-8680-B76389554655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA8800D8-FD90-4E64-8680-B76389554655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA8800D8-FD90-4E64-8680-B76389554655}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

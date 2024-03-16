@@ -1,174 +1,165 @@
 version: '3.4'
 
-networks:
-  ordertaobao:
-    
 services:
   apigateway:
     image: ${DOCKER_REGISTRY-}apigateway
     build:
       context: .
       dockerfile: src/APIGateway/Dockerfile
-    links:
-      - productservice
-      - orderservice
-      - oauth2service
-      - notificationservice
-      - mailservice
-      - imageservice
-      - historyservice
-      - addressservice
     depends_on:
-      - productservice
-      - orderservice
-      - oauth2service
-      - notificationservice
-      - mailservice
-      - imageservice
-      - historyservice
-      - addressservice
-      - ordertaobao.db
+      - sqlserverservice 
     ports:
-        - 6000:80
-        - 5000:443
+      - 15000:80
+      - 5000:443
     networks:
-        - ordertaobao
+      - elastic_es-net
 
-  productservice:
-    image: ${DOCKER_REGISTRY-}productservice
+  addressservice:
+    image: ${DOCKER_REGISTRY-}addressservice
+    
     build:
       context: .
-      dockerfile: src/services/ProductService/Dockerfile
+      dockerfile: src/services/AddressService/Dockerfile
     depends_on:
-        - ordertaobao.db
+      - sqlserverservice
     ports:
-        - 6001:80
-        - 5001:443
+      - 15001:80
+      - 5001:443
     networks:
-        - ordertaobao
+      - elastic_es-net
 
-  orderservice:
-    image: ${DOCKER_REGISTRY-}orderservice
+  audioservice:
+    image: ${DOCKER_REGISTRY-}audioservice
+    
     build:
       context: .
-      dockerfile: src/services/OrderService/Dockerfile
+      dockerfile: src/services/AudioService/Dockerfile
     depends_on:
-        - ordertaobao.db
+      - sqlserverservice
     ports:
-        - 6002:80
-        - 5002:443
+      - 15002:80
+      - 5002:443
     networks:
-        - ordertaobao
-
-  oauth2service:
-    image: ${DOCKER_REGISTRY-}oauth2service
-    build:
-      context: .
-      dockerfile: src/services/OAuth2Service/Dockerfile
-    depends_on:
-        - ordertaobao.db
-    ports:
-        - 6003:80
-        - 5003:443
-    networks:
-        - ordertaobao
-
-  notificationservice:
-    image: ${DOCKER_REGISTRY-}notificationservice
-    build:
-      context: .
-      dockerfile: src/services/NotificationService/Dockerfile
-    depends_on:
-        - ordertaobao.db
-    ports:
-        - 6004:80
-        - 5004:443
-    networks:
-        - ordertaobao
-
-  mailservice:
-    image: ${DOCKER_REGISTRY-}mailservice
-    build:
-      context: .
-      dockerfile: src/services/MailService/Dockerfile
-    depends_on:
-        - ordertaobao.db
-    ports:
-        - 6005:80
-        - 5005:443
-    networks:
-        - ordertaobao
-
-  imageservice:
-    image: ${DOCKER_REGISTRY-}imageservice
-    build:
-      context: .
-      dockerfile: src/services/ImageService/Dockerfile
-    depends_on:
-        - ordertaobao.db
-    ports:
-        - 6006:80
-        - 5006:443
-    networks:
-        - ordertaobao
+      - elastic_es-net
 
   historyservice:
     image: ${DOCKER_REGISTRY-}historyservice
+    
     build:
       context: .
       dockerfile: src/services/HistoryService/Dockerfile
     depends_on:
-        - ordertaobao.db
+      - sqlserverservice
     ports:
-        - 6007:80
-        - 5007:443
+      - 15003:80
+      - 5003:443
     networks:
-        - ordertaobao
+      - elastic_es-net
 
-  addressservice:
-    image: ${DOCKER_REGISTRY-}addressservice
+  imageservice:
+    image: ${DOCKER_REGISTRY-}imageservice
+    
     build:
       context: .
-      dockerfile: src/services/AddressService/Dockerfile        
+      dockerfile: src/services/ImageService/Dockerfile
     depends_on:
-        - ordertaobao.db
-
+      - sqlserverservice
     ports:
-        - 6008:80
-        - 5008:443
+      - 15004:80
+      - 5004:443
     networks:
-        - ordertaobao
+      - elastic_es-net
 
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
+  mailservice:
+    image: ${DOCKER_REGISTRY-}mailservice
+    
+    build:
+      context: .
+      dockerfile: src/services/MailService/Dockerfile
+    depends_on:
+      - sqlserverservice
     ports:
-        - 5672:5672
-        - 15672:15672
-    volumes:
-        - rabbitmq_data:/var/lib/rabbitmq/
-        - rabbitmq_log:/var/log/rabbitmq/
+      - 15005:80
+      - 5005:443
     networks:
-        - ordertaobao
+      - elastic_es-net
 
-  ordertaobao.db:
-    container_name: SQLServer
+  notificationservice:
+    image: ${DOCKER_REGISTRY-}notificationservice
+    
+    build:
+      context: .
+      dockerfile: src/services/NotificationService/Dockerfile
+    depends_on:
+      - sqlserverservice
+    ports:
+      - 15006:80
+      - 5006:443
+    networks:
+      - elastic_es-net
+
+  oauth2service:
+    image: ${DOCKER_REGISTRY-}oauth2service
+
+    build:
+      context: .
+      dockerfile: src/services/OAuth2Service/Dockerfile
+    depends_on:
+      - sqlserverservice
+    ports:
+      - 15007:80
+      - 5007:443
+    networks:
+      - elastic_es-net
+
+  orderservice:
+    image: ${DOCKER_REGISTRY-}orderservice
+    
+    build:
+      context: .
+      dockerfile: src/services/OrderService/Dockerfile
+    depends_on:
+      - sqlserverservice
+    ports:
+      - 15008:80
+      - 5008:443
+    networks:
+      - elastic_es-net
+
+  productservice:
+    image: ${DOCKER_REGISTRY-}productservice
+    
+    build:
+      context: .
+      dockerfile: src/services/ProductService/Dockerfile
+    depends_on:
+      - sqlserverservice
+    ports:
+      - 15009:80
+      - 5009:443
+    networks:
+      - elastic_es-net
+
+  sqlserverservice:
+    container_name: sqlserver
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-        - 8002:1433
+        - 5555:1433
     environment:
-        - ACCEPT_EULA=Y
-        - MSSQL_SA_PASSWORD=Strong(!)Password 
-        - MSSQL_USER=SA
-        - MSSQL_PID=Developer
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Strong(!)Password 
+      - MSSQL_USER=SA
+      - MSSQL_PID=Developer
     networks:
-        - ordertaobao
+      - elastic_es-net
     volumes:
       - sql_data:/var/opt/mssql
-    
 
 volumes:
   sql_data:
-  rabbitmq_data:
-  rabbitmq_log:
+
+networks:
+  elastic_es-net:
+     external: true
+
 
