@@ -14,10 +14,10 @@
         where TExtensionEnum : Enum
         where TRequest : EntityRequest
     {
-        private readonly IRepository<TEntity> _repository;
+        private readonly Repository.IRepository<TEntity> _repository;
         private readonly IMapper _mapper;
 
-        public FileService(IRepository<TEntity> repository, IMapper mapper, IUriService uriService) : base(repository, mapper, uriService)
+        public FileService(Repository.IRepository<TEntity> repository, IMapper mapper, IUriService uriService) : base(repository, mapper, uriService)
         {
             _repository = repository;
             _mapper = mapper;

@@ -8,7 +8,7 @@
 
             foreach (var type in assembly.GetTypes())
             {
-                if (type.IsClass && !type.IsAbstract && type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRepository<>)))
+                if (type.IsClass && !type.IsAbstract && type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(Repository.IRepository<>)))
                 {
                     services.AddScoped(type); // Register the IRepository<>
                 }
