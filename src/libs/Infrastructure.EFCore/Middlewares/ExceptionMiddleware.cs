@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.EFCore.Middlewares
+﻿
+
+namespace Infrastructure.EFCore.Middlewares
 {
     public class ExceptionMiddleware
     {

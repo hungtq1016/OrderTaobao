@@ -2,11 +2,11 @@
 {
     public class Service<TEntity, TRequest, TResponse> : IService<TEntity, TRequest, TResponse> where TEntity : Entity where TRequest : EntityRequest
     {
-        private readonly IRepository<TEntity> _repository;
+        private readonly Repository.IRepository<TEntity> _repository;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
 
-        public Service(IRepository<TEntity> repository, IMapper mapper, IUriService uriService)
+        public Service(Repository.IRepository<TEntity> repository, IMapper mapper, IUriService uriService)
         {
             _repository = repository;
             _mapper = mapper;

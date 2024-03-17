@@ -1,4 +1,4 @@
-﻿using Nest;
+﻿
 
 namespace Infrastructure.EFCore.Extensions
 {
@@ -19,6 +19,9 @@ namespace Infrastructure.EFCore.Extensions
             services.AddSingleton<IUriService, UriService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRabbitMQService,RabbitMQService>();
+
+            var loggerConfig = new LoggerConfiguration()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://elasticsearch:9200")));
 
             var settings = new ConnectionSettings(new Uri("http://elasticsearch:9200"));
 

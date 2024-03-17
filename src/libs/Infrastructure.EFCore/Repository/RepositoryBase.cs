@@ -1,7 +1,4 @@
-﻿using Elastic.Clients.Elasticsearch;
-using Nest;
-
-namespace Infrastructure.EFCore.Repository
+﻿namespace Infrastructure.EFCore.Repository
 {
     public abstract class RepositoryBase<TDbContext, TEntity> : IRepository<TEntity>
         where TEntity : Entity
@@ -12,9 +9,9 @@ namespace Infrastructure.EFCore.Repository
         private readonly IMemoryCache _cache;
         private readonly string indexName;
         private readonly IElasticClient _elasticClient;
-        private readonly ILogger _logger;
+        private readonly Microsoft.Extensions.Logging.ILogger _logger;
 
-        protected RepositoryBase(TDbContext context, IMemoryCache cache, IElasticClient elasticClient, ILogger logger)
+        protected RepositoryBase(TDbContext context, IMemoryCache cache, IElasticClient elasticClient, Microsoft.Extensions.Logging.ILogger logger)
         {
             _context = context;
             _entity = context.Set<TEntity>();
