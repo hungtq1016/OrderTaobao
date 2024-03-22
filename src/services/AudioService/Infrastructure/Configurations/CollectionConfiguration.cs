@@ -1,4 +1,4 @@
-﻿namespace AudioService.Cofigurations
+﻿namespace AudioService.Configurations
 {
     public class CollectionConfiguration : IEntityTypeConfiguration<Collection>
     {
@@ -22,11 +22,10 @@
             builder.Property(collection => collection.Enable)
                             .HasDefaultValue(true)
                             .IsRequired(true);
-
             builder.HasMany(collection => collection.Albums)
-                .WithOne(album => album.Collection)
-                .HasForeignKey(collection => collection.CollectionId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+               .WithOne(collection => collection.Collection)
+               .HasForeignKey(collection => collection.CollectionId)
+               .IsRequired(false);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace AudioService.Cofigurations
+﻿namespace AudioService.Configurations
 {
     public class AudioConfiguration : IEntityTypeConfiguration<Audio>
     {
@@ -6,27 +6,30 @@
         {
             builder.HasKey(audio => audio.Id);
 
-            builder.Property(audio => audio.Id).HasColumnType("varchar")
+            builder.Property(audio => audio.Id)
+                .HasColumnType("varchar(36)")
                 .HasMaxLength(36)
                 .HasDefaultValueSql(Constants.UuidAlgorithm)
-                .IsRequired(true);
+                .IsRequired();
 
-            builder.Property(audio => audio.CreatedAt).HasColumnType("datetime")
+            builder.Property(audio => audio.CreatedAt)
+                .HasColumnType("datetime")
                 .HasDefaultValueSql(Constants.DateTimeAlgorithm)
-                .IsRequired(true);
+                .IsRequired();
 
-            builder.Property(audio => audio.UpdatedAt).HasColumnType("datetime")
+            builder.Property(audio => audio.UpdatedAt)
+                .HasColumnType("datetime")
                 .HasDefaultValueSql(Constants.DateTimeAlgorithm)
-                .IsRequired(true);
+                .IsRequired();
 
             builder.Property(audio => audio.Enable)
                 .HasDefaultValue(true)
                 .IsRequired(true);
 
             builder.HasMany(audio => audio.Albums)
-                .WithOne(album => album.Audio)
+                .WithOne(audio => audio.Audio)
                 .HasForeignKey(audio => audio.AudioId)
-                .OnDelete(DeleteBehavior.ClientSetNull);            
+                .IsRequired(false);
         }
     }
 }

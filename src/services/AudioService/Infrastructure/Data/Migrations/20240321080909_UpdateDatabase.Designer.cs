@@ -4,6 +4,7 @@ using AudioService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AudioService.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AudioContext))]
-    partial class AudioContextModelSnapshot : ModelSnapshot
+    [Migration("20240321080909_UpdateDatabase")]
+    partial class UpdateDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,6 +44,9 @@ namespace AudioService.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(36)");
 
+                    b.Property<string>("CollectionId1")
+                        .HasColumnType("varchar(36)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
@@ -63,6 +69,8 @@ namespace AudioService.Infrastructure.Data.Migrations
                     b.HasIndex("AudioId1");
 
                     b.HasIndex("CollectionId");
+
+                    b.HasIndex("CollectionId1");
 
                     b.ToTable("Albums");
                 });
@@ -162,9 +170,14 @@ namespace AudioService.Infrastructure.Data.Migrations
                         .HasForeignKey("AudioId1");
 
                     b.HasOne("AudioService.Models.Collection", "Collection")
-                        .WithMany("Albums")
+                        .WithMany()
                         .HasForeignKey("CollectionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AudioService.Models.Collection", null)
+                        .WithMany("Albums")
+                        .HasForeignKey("CollectionId1");
 
                     b.Navigation("Audio");
 

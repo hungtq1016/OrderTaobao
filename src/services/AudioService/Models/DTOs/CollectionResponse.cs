@@ -1,8 +1,7 @@
 ﻿namespace AudioService.DTOs
 {
-    public class CollectionResponse : Entity
+    public class CollectionResponse : Collection
     {
-        public string Name { get; set; }
-        public string Slug { get; set; }
+       
     }
 }

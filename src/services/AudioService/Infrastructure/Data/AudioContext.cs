@@ -1,4 +1,6 @@
-﻿namespace AudioService.Data
+﻿using AudioService.Configurations;
+
+namespace AudioService.Data
 {
     public class AudioContext : AppDbContext
     {
