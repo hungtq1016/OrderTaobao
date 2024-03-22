@@ -2,7 +2,13 @@
 {
     public class PermissionAttribute : TypeFilterAttribute
     {
-        public PermissionAttribute(string? type, string? value) : base(typeof(PermissionFilter))
+        public PermissionAttribute() : base(typeof(PermissionFilter))
+        {
+            Arguments = new object[] { new Claim("", "") };
+
+        }
+
+        public PermissionAttribute(string type, string value) : base(typeof(PermissionFilter))
         {
             Arguments = new object[] { new Claim(type, value) };
         }
@@ -27,12 +33,14 @@
 
             var userId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             var user = context.HttpContext.User;
+
             if (context?.HttpContext?.User?.Claims == null)
-    {
-        _logger.LogError("HttpContext, User, or Claims is null");
-        context.Result = new UnauthorizedResult();
-        return;
-    }
+            {
+                _logger.LogError("HttpContext, User, or Claims is null");
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+
             if (!IsAuthenticated(context, userId)) return;
 
             var permission = $"{context.HttpContext.Request.RouteValues["controller"]}.{context.HttpContext.Request.Method}";
@@ -72,7 +80,7 @@
 
             return principal.Claims.Any(p =>
                 (p.Type.ToLower() == "controller" && p.Value.ToLower() == permissionLower) ||
-                (p.Type.ToLower() == _claim.Type?.ToLower() && p.Value.ToLower() == _claim.Value?.ToLower()) ||
+                (p.Type.ToLower() == _claim?.Type?.ToLower() && p.Value.ToLower() == _claim?.Value?.ToLower()) ||
                 (p.Type.ToLower() == "admin" && p.Value.ToLower() == "all"));
         }
     }

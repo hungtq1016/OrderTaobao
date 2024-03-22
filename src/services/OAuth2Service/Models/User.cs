@@ -8,6 +8,7 @@
         public string PhoneNumber { get; set; }
         public Guid? ImageId { get; set; }
 
-        public ICollection<Group>? Groups { get; set; }
+        public ICollection<Group>? Groups { get; } = new List<Group>();
+        public ICollection<Token> Tokens { get; } = new List<Token>();
     }
 }

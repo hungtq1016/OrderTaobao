@@ -1,4 +1,5 @@
 ﻿using OAuth2Service.Authen;
+using OAuth2Service.Models;
 
 namespace OAuth2Service.Services
 {
@@ -9,7 +10,8 @@ namespace OAuth2Service.Services
         Task<Response<bool>> SendResetPasswordAsync(ResetPasswordRequest request);
         Task<Response<bool>> SendOTPAsync(string email);
         Task<Response<bool>> ReceiveOTPAsync(OTPRequest request);
-       /* Task<Response<TokenResponse>> RefreshToken(TokenRequest request);*/
+        Task<Response<TokenResponse>> GenerateAccessToken(Guid userId);
+        Task<Response<TokenResponse>> RefreshAccessToken(TokenRequest request);
     }
     public class AuthenService : IAuthenService
     {
@@ -55,6 +57,27 @@ namespace OAuth2Service.Services
             await _userRepository.AddAsync(response);
 
             return ResponseHelper.CreateCreatedResponse(await _tokenService.GetTokenResponseAsync(response));
+        }
+
+        public async Task<Response<TokenResponse>> GenerateAccessToken(Guid userId)
+        {
+            User user = await _userRepository.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return ResponseHelper.CreateErrorResponse<TokenResponse>(409, "User not found");
+            }
+
+            return ResponseHelper.CreateSuccessResponse(await _tokenService.GetTokenResponseAsync(user));
+        }
+
+        public async Task<Response<TokenResponse>> RefreshAccessToken(TokenRequest request)
+        {
+            ClaimsPrincipal? principal = _tokenService.GetPrincipalFromExpiredAccessToken(request.AccessToken);
+
+            Guid userId = Guid.Parse(principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+
+            return await GenerateAccessToken(userId);
         }
 
         public async Task<Response<bool>> SendResetPasswordAsync(ResetPasswordRequest request)

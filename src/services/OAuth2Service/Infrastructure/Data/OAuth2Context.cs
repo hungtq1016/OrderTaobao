@@ -10,6 +10,7 @@
         public DbSet<Group> Groups => Set<Group>();
         public DbSet<Assignment> Assignments => Set<Assignment>();
         public DbSet<OTP> Otps => Set<OTP>();
+        public DbSet<Token> Tokens => Set<Token>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +21,8 @@
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new PermissionConfiguration());
             modelBuilder.ApplyConfiguration(new AssignmentConfiguration());
+            modelBuilder.ApplyConfiguration(new OTPConfiguration());
+            modelBuilder.ApplyConfiguration(new TokenConfiguration());
         }
     }
 }

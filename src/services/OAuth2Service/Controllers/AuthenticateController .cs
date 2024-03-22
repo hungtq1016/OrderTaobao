@@ -27,6 +27,20 @@ namespace OAuth2Service.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [HttpPost("generate-token")]
+        public async Task<IActionResult> AccessToken([FromBody] Guid userId)
+        {
+            var result = await _service.GenerateAccessToken(userId);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest request)
+        {
+            var result = await _service.RefreshAccessToken(request);
+            return StatusCode(result.StatusCode, result);
+        }
+
         [HttpPost("send-reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
