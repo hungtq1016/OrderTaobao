@@ -17,6 +17,36 @@
     },
     {
       "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/authenticate/generate-token",
+      "DownstreamScheme": "https",
+
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "oauth2service",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/authenticate/generate-token",
+      "UpstreamhttpsMethod": [ "Post" ],
+      "SwaggerKey": "oauth2"
+    },
+    {
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/authenticate/refresh-token",
+      "DownstreamScheme": "https",
+
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "oauth2service",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/authenticate/refresh-token",
+      "UpstreamhttpsMethod": [ "Post" ],
+      "SwaggerKey": "oauth2"
+    },
+    {
+      "DangerousAcceptAnyServerCertificateValidator": true,
       "DownstreamPathTemplate": "/api/authenticate/send-otp",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
