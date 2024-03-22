@@ -16,7 +16,7 @@
             _context = context;
             _entity = context.Set<TEntity>();
             _cache = cache;
-            _elasticClient = elasticClient; // Use DI to get an instance of IElasticClient
+            _elasticClient = elasticClient; 
             _logger = logger;
             indexName = typeof(TEntity).Name.ToLower();
         }
@@ -37,6 +37,18 @@
                 }
             }
             return entity;
+        }
+
+        public async Task<TEntity> FindByParamsAsync(Guid id, params string[] properties)
+        {
+            IQueryable<TEntity> query = _entity;
+
+            foreach (var include in properties)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(entity => entity.Id == id);
         }
 
         public async Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>>[] conditions, CancellationToken cancellationToken = default)
@@ -132,7 +144,19 @@
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            //await client.DeleteAsync(indexName, entity.Id);
+            try
+            {
+                var response = await _elasticClient.DeleteAsync<TEntity>(entity.Id, idx => idx.Index(indexName));
+
+                if (!response.IsValid)
+                {
+                    _logger.LogError($"Failed to delete {typeof(TEntity).Name} in Elasticsearch. Error: {0}", response.OriginalException?.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception occurred while indexing entity in Elasticsearch.");
+            }
         }
 
         public async Task<TEntity> EditAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -148,7 +172,19 @@
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            //await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
+            try
+            {
+                var response = await _elasticClient.UpdateAsync<TEntity, object>(entity.Id, u => u.Doc(entity).Index(indexName));
+
+                if (!response.IsValid)
+                {
+                    _logger.LogError($"Failed to update {typeof(TEntity).Name} in Elasticsearch. Error: {0}", response.OriginalException?.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception occurred while indexing entity in Elasticsearch.");
+            }
 
             return entity;
         }
@@ -169,10 +205,22 @@
             _entity.RemoveRange(entities);
             await _context.SaveChangesAsync(cancellationToken);
 
-            /*foreach (var entity in entities)
+            foreach (var entity in entities)
             {
-                await client.UpdateAsync<TEntity, TEntity>(indexName, entity.Id, u => u.Doc(entity));
-            }*/
+                try
+                {
+                    var response = await _elasticClient.DeleteAsync<TEntity>(entity.Id, idx => idx.Index(indexName));
+
+                    if (!response.IsValid)
+                    {
+                        _logger.LogError($"Failed to delete {typeof(TEntity).Name} in Elasticsearch. Error: {0}", response.OriginalException?.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Exception occurred while indexing entity in Elasticsearch.");
+                }
+            }
         }
      
     }

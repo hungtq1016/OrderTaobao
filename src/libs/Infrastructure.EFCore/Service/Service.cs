@@ -39,6 +39,18 @@
             return ResponseHelper.CreateSuccessResponse(response);
         }
 
+        public async Task<Response<TResponse>> FindByParamsAsync(Guid id, params string[] properties)
+        {
+            TEntity record = await _repository.FindByParamsAsync(id, properties);
+
+            if (record is null)
+                return ResponseHelper.CreateNotFoundResponse<TResponse>(null);
+
+            var response = _mapper.Map<TResponse>(record);
+
+            return ResponseHelper.CreateSuccessResponse(response);
+        }
+
         public async Task<Response<TResponse>> FindByIdAsync(Guid id)
         {
             TEntity record = await _repository.FindByIdAsync(id);
