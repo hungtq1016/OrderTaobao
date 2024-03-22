@@ -130,7 +130,7 @@ services:
     container_name: sqlserver
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-        - 5555:1433
+        - 6666:1433
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Strong(!)Password 
@@ -143,6 +143,7 @@ services:
 
 volumes:
   sql_data:
+
 
 networks:
   elastic_es-net:

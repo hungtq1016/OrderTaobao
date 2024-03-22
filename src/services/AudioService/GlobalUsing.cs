@@ -1,7 +1,7 @@
 ﻿global using Infrastructure.EFCore.Data;
 global using Microsoft.EntityFrameworkCore;
 global using AudioService.Models;
-global using AudioService.Cofigurations;
+global using AudioService.Configurations;
 global using Infrastructure.Main;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using AudioService.Data;

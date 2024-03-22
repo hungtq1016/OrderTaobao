@@ -5,13 +5,13 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "apigateway": "StartDebugging",
-        "productservice": "StartDebugging",
-        "orderservice": "StartDebugging",
+        //"productservice": "StartDebugging",
+        //"orderservice": "StartDebugging",
         "oauth2service": "StartDebugging",
-        "notificationservice": "StartDebugging",
+        //"notificationservice": "StartDebugging",
         "mailservice": "StartDebugging",
         "imageservice": "StartDebugging",
-        "addressservice": "StartDebugging",
+        //"addressservice": "StartDebugging",
         "audioservice": "StartDebugging"
       }
     }

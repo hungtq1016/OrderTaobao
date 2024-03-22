@@ -1,4 +1,4 @@
-﻿namespace AudioService.Cofigurations
+﻿namespace AudioService.Configurations
 {
     public class AlbumConfiguration : IEntityTypeConfiguration<Album>
     {
@@ -22,6 +22,19 @@
             builder.Property(album => album.Enable)
                 .HasDefaultValue(true)
                 .IsRequired(true);
+
+            builder.HasOne(album => album.Audio) 
+                .WithMany() 
+                .HasForeignKey(album => album.AudioId) 
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(album => album.Collection)
+                .WithMany()
+                .HasForeignKey(album => album.CollectionId)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

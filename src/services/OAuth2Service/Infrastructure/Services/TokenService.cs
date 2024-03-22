@@ -4,14 +4,14 @@
     {
         Task<TokenResponse> GetTokenResponseAsync(User user);
         Task<string> GetAccessToken(User user);
-        Task<string> GetRefreshToken(User user);
-
+        ClaimsPrincipal GetPrincipalFromExpiredAccessToken(string token);
     }
 
     public class TokenService : ITokenService
     {
-        private IConfiguration _config;
+        private readonly IConfiguration _config;
         private readonly OAuth2Context _context;
+
         public TokenService(IConfiguration config, OAuth2Context context)
         {
             _config = config;
@@ -23,10 +23,39 @@
             return new TokenResponse
             {
                 AccessToken = await GetAccessToken(user),
-                ExpiredAt = DateTime.UtcNow.AddMinutes(ExpiredTime()),
-                RefreshToken = Guid.NewGuid().ToString(),
-                TokenType = "Beared"
+                ExpiredAt = DateTime.UtcNow.AddMinutes(ExpiredAccessTime()),
+                RefreshToken = await GetRefreshToken(user),
+                TokenType = "Bearer "
             };
+        }
+
+        public async Task<string> GetRefreshToken(User user)
+        {
+            // Find the existing token for the user
+            Token token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserId == user.Id);
+
+            // Check if the token is null or expired
+            if (token == null || token.ExpiredTime < DateTime.UtcNow)
+            {
+                // Create a new token if it's null or expired
+                Token newToken = new Token
+                {
+                    // Assume ExpiredRefreshTime() is a method that returns the number of days until expiration
+                    ExpiredTime = DateTime.UtcNow.AddDays(ExpiredRefreshTime()),
+                    UserId = user.Id,
+                    RefreshToken = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid(), // Assuming Id is of type Guid
+                };
+
+                await _context.Tokens.AddAsync(newToken);
+                await _context.SaveChangesAsync(); // Don't forget to save the changes to the database
+
+                // Assign the new token to the token variable to return its RefreshToken
+                token = newToken;
+            }
+
+            // Return the refresh token
+            return token.RefreshToken;
         }
 
         public async Task<string> GetAccessToken(User user)
@@ -42,16 +71,10 @@
 
             foreach (var permission in permissions)
             {
-                claims.Add(new Claim(permission.Type, permission.Value)); // Assuming 'Name' is a property of 'Permission'
+                claims.Add(new Claim(permission.Type, permission.Value)); 
             }
 
-            // Generate the access token with the claims
             return AccessTokenGenerator(claims);
-        }
-
-        public Task<string> GetRefreshToken(User user)
-        {
-            throw new NotImplementedException();
         }
 
         private string AccessTokenGenerator(List<Claim> claims)
@@ -63,7 +86,7 @@
                 (
                     issuer: _config["JWT:ValidIssuer"],
                     audience: _config["JWT:ValidAudience"],
-                    expires: DateTime.UtcNow.AddMinutes(ExpiredTime()),
+                    expires: DateTime.UtcNow.AddMinutes(ExpiredAccessTime()),
                     claims: claims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
@@ -81,7 +104,30 @@
                 .Distinct()
                 .ToListAsync();
         }
-        private int ExpiredTime() => int.TryParse(_config["JWT:AccessTokenValidityInMinutes"], out int accessTokenValidityInMinutes) ? accessTokenValidityInMinutes : 0;
+
+        public ClaimsPrincipal GetPrincipalFromExpiredAccessToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false, 
+                ValidateIssuer = false, 
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]!)), 
+                ValidateLifetime = false 
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            return principal;
+        }
+
+        private int ExpiredAccessTime() => int.TryParse(_config["JWT:AccessTokenValidityInMinutes"], out int accessTokenValidityInMinutes) ? accessTokenValidityInMinutes : 120;
+        private int ExpiredRefreshTime() => int.TryParse(_config["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays) ? refreshTokenValidityInDays : 7;
     }
 }
 
