@@ -1,6 +1,6 @@
 ﻿namespace OAuth2Service.Profiles
 {
-    public class OAuth2Profile : Profile
+    public class OAuth2Profile : AutoMapper.Profile
     {
         public OAuth2Profile()
         {

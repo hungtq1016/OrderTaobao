@@ -1,5 +1,4 @@
 ﻿using OAuth2Service.Authen;
-using OAuth2Service.Models;
 
 namespace OAuth2Service.Services
 {

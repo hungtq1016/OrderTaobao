@@ -1,4 +1,6 @@
-﻿namespace OAuth2Service.Services
+﻿using Infrastructure.EFCore.Repository;
+
+namespace OAuth2Service.Services
 {
     public interface IRoleService : IService<Role,RoleRequest,RoleResponse>
     {

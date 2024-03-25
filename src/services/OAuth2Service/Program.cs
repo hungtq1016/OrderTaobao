@@ -1,7 +1,4 @@
-﻿using Serilog.Sinks.Elasticsearch;
-using Serilog;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // Add services to the container.
@@ -20,7 +17,7 @@ builder.Services.AddCustomMapper<OAuth2Profile>();
 builder.Services.AddScoped<IAuthenService, AuthenService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(OAuth2Repository<>));
+builder.Services.AddScoped(typeof(Infrastructure.EFCore.Repository.IRepository<>), typeof(OAuth2Repository<>));
 
 var app = builder.Build();
 

@@ -10,7 +10,7 @@
         public DbSet<Group> Groups => Set<Group>();
         public DbSet<Assignment> Assignments => Set<Assignment>();
         public DbSet<OTP> Otps => Set<OTP>();
-        public DbSet<Token> Tokens => Set<Token>();
+        public DbSet<Models.Token> Tokens => Set<Models.Token>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
