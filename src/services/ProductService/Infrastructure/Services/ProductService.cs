@@ -2,12 +2,13 @@
 using System.Web;
 using Infrastructure.EFCore.Helpers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ProductService.Services
 {
     public interface IProductService
     {
-        Task<Response<object>> GetProductByUrlAsync(string uri);
+        Task<Response<string>> GetProductByUrlAsync(string uri);
     }
     public class BaseProductService : IProductService
     {
@@ -20,13 +21,13 @@ namespace ProductService.Services
             _mapper = mapper;
         }
 
-        public async Task<Response<object>> GetProductByUrlAsync(string uri)
+        public async Task<Response<string>> GetProductByUrlAsync(string uri)
         {
             var id = GetIdFromUrl(uri);
 
             if (id == null)
             {
-                return ResponseHelper.CreateNotFoundResponse<object>("Invalid URL");
+                return ResponseHelper.CreateNotFoundResponse<string>("Invalid URL");
             }
 
             var client = new HttpClient();
@@ -45,23 +46,29 @@ namespace ProductService.Services
             {
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
-
-                var result = JsonConvert.DeserializeObject(body);
-
-                return ResponseHelper.CreateSuccessResponse(result);
+                
+                return ResponseHelper.CreateSuccessResponse(body);
 
             };
         }
 
         private string? GetIdFromUrl(string url)
         {
-            Uri myUri = new Uri(url);
-            Console.WriteLine("url: " + url);
+            // Decode the URL first
+            string decodedUrl = HttpUtility.UrlDecode(url);
+
+            Console.WriteLine("Original URL: " + url);
+            Console.WriteLine("Decoded URL: " + decodedUrl);
+
+            // Create the Uri with the decoded URL
+            Uri myUri = new Uri(decodedUrl);
+
             Console.WriteLine("myUri: " + myUri);
             string id = HttpUtility.ParseQueryString(myUri.Query).Get("id");
 
             return id;
         }
+
 
     }
 }
