@@ -5,7 +5,7 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "apigateway": "StartDebugging",
-        //"productservice": "StartDebugging",
+        "productservice": "StartDebugging",
         //"orderservice": "StartDebugging",
         "oauth2service": "StartDebugging",
         //"notificationservice": "StartDebugging",
