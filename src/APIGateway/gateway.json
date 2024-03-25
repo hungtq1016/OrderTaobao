@@ -506,12 +506,78 @@
       "UpstreamPathTemplate": "/albums/{id}",
       "UpstreamhttpsMethod": [ "Put", "Delete", "Get" ],
       "SwaggerKey": "albums"
+    },
+    {
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/products",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productservice",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamhttpsMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "products"
+    },
+    {
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/products/page",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productservice",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/products/page",
+      "UpstreamhttpsMethod": [ "Get" ],
+      "SwaggerKey": "products"
+    },
+    {
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/products/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productservice",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamhttpsMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "products"
+    },
+    {
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "DownstreamPathTemplate": "/api/products/taobao/{url}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productservice",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/taobao/{url}",
+      "UpstreamhttpsMethod": [  "Get" ],
+      "SwaggerKey": "products"
     }
   ],
   "GlobalConfiguration": {
     "BaseUrl": "https://host.docker.internal:5000"
   },
   "SwaggerEndPoints": [
+    {
+      "Key": "products",
+      "Config": [
+        {
+          "Name": "Product API",
+          "Version": "v1",
+          "Url": "https://host.docker.internal:5009/swagger/v1/swagger.json"
+        }
+      ]
+    },
     {
       "Key": "oauth2",
       "Config": [
