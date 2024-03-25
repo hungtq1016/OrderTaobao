@@ -1,6 +1,4 @@
-﻿using Core;
-
-namespace ProductService.Models
+﻿namespace ProductService.Models
 {
     public class Product : Entity
     {
@@ -14,8 +12,6 @@ namespace ProductService.Models
         public string Description { get; set; } = string.Empty;
 
         public int Quantity { get; set; }
-
-        public List<ProductCategory>? Categories { get; } = new();
 
     }
 }
